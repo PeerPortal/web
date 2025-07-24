@@ -1,7 +1,7 @@
 'use client';
 
-import { useState, useMemo, useEffect, Suspense } from 'react';
-import { useSearchParams } from 'next/navigation';
+import { useState, useMemo, Suspense } from 'react';
+import { useQueryState } from 'nuqs';
 import {
   Search,
   Filter,
@@ -38,25 +38,39 @@ interface Tutor {
 }
 
 function TutorSearchContent() {
-  const searchParams = useSearchParams();
-  const [searchTerm, setSearchTerm] = useState('');
-  const [selectedMajors, setSelectedMajors] = useState<string[]>([]);
-  const [selectedUniversities, setSelectedUniversities] = useState<string[]>(
-    []
+  const [searchTerm, setSearchTerm] = useQueryState('q', {
+    defaultValue: ''
+  });
+  const [selectedMajors, setSelectedMajors] = useQueryState('majors', {
+    defaultValue: [] as string[],
+    serialize: value => (value.length > 0 ? value.join(',') : ''),
+    parse: value => (value ? value.split(',').filter(Boolean) : [])
+  });
+  const [selectedUniversities, setSelectedUniversities] = useQueryState(
+    'universities',
+    {
+      defaultValue: [] as string[],
+      serialize: value => (value.length > 0 ? value.join(',') : ''),
+      parse: value => (value ? value.split(',').filter(Boolean) : [])
+    }
   );
-  const [selectedLanguages, setSelectedLanguages] = useState<string[]>([]);
-  const [priceRange, setPriceRange] = useState<[number, number]>([0, 300]);
+  const [selectedLanguages, setSelectedLanguages] = useQueryState('languages', {
+    defaultValue: [] as string[],
+    serialize: value => (value.length > 0 ? value.join(',') : ''),
+    parse: value => (value ? value.split(',').filter(Boolean) : [])
+  });
+  const [priceRange, setPriceRange] = useQueryState('price', {
+    defaultValue: [0, 300] as [number, number],
+    serialize: value => `${value[0]}-${value[1]}`,
+    parse: value => {
+      if (!value) return [0, 300] as [number, number];
+      const [min, max] = value.split('-').map(Number);
+      return [min || 0, max || 300] as [number, number];
+    }
+  });
   const [showFilters, setShowFilters] = useState(false);
 
   const tutors: Tutor[] = tutorsData;
-
-  // Set search term from URL parameter
-  useEffect(() => {
-    const query = searchParams.get('q');
-    if (query) {
-      setSearchTerm(query);
-    }
-  }, [searchParams]);
 
   // Get unique values for filters
   const allMajors = Array.from(
