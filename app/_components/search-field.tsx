@@ -36,7 +36,7 @@ export default function SearchField({
       <div className="relative">
         <Input
           type="search"
-          placeholder="搜索导师姓名、专业或大学..."
+          placeholder="搜索专业或大学..."
           className="w-full py-6 px-4 text-base"
           value={searchTerm}
           onChange={handleChange}
