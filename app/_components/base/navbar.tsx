@@ -108,7 +108,9 @@ export default function Component() {
             <div className="flex items-center gap-2">
               {/* Info menu */}
               {/* <InfoMenu /> */}
-              <Button>登录</Button>
+              <Link href="/login">
+                <Button>登录</Button>
+              </Link>
               {/* Notification */}
               {/* <NotificationMenu /> */}
             </div>
