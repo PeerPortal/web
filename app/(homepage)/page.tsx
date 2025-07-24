@@ -241,7 +241,7 @@ export default function TutorSearch() {
                       onChange={e =>
                         setPriceRange([priceRange[0], parseInt(e.target.value)])
                       }
-                      className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer slider"
+                      className="w-full h-2 rounded-lg appearance-none cursor-pointer slider"
                       style={{
                         background: `linear-gradient(to right, #3b82f6 0%, #3b82f6 ${(priceRange[1] / 300) * 100}%, #e5e7eb ${(priceRange[1] / 300) * 100}%, #e5e7eb 100%)`
                       }}
