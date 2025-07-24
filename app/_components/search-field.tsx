@@ -30,7 +30,7 @@ export default function SearchField({
   showSuggestions = true
 }: SearchFieldProps) {
   const [searchTerm, setSearchTerm] = useState(initialValue);
-  
+
   // Update internal state when initialValue changes
   useEffect(() => {
     setSearchTerm(initialValue);
