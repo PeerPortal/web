@@ -163,19 +163,21 @@ export default function SearchField({
           >
             <Command className="w-full">
               <CommandList className="max-h-[300px] overflow-auto">
-                {/* Always show recommended schools */}
-                <CommandGroup>
-                  {recommendedSchools.map(school => (
-                    <CommandItem
-                      key={school.value}
-                      value={school.value}
-                      onSelect={() => handleSelectSuggestion(school)}
-                      className="cursor-pointer"
-                    >
-                      {school.label}
-                    </CommandItem>
-                  ))}
-                </CommandGroup>
+                {/* Only show recommended schools when there's no input */}
+                {searchTerm.length === 0 && (
+                  <CommandGroup>
+                    {recommendedSchools.map(school => (
+                      <CommandItem
+                        key={school.value}
+                        value={school.value}
+                        onSelect={() => handleSelectSuggestion(school)}
+                        className="cursor-pointer"
+                      >
+                        {school.label}
+                      </CommandItem>
+                    ))}
+                  </CommandGroup>
+                )}
 
                 {/* Show search results if there's a search term */}
                 {searchTerm.length > 0 && (
