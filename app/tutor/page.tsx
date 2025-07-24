@@ -141,7 +141,11 @@ function TutorSearchContent() {
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Search Bar */}
         <div className="w-full flex flex-row gap-3 items-center">
-          <SearchField initialValue={searchTerm} onSearch={setSearchTerm} />
+          <SearchField
+            initialValue={searchTerm}
+            onSearch={setSearchTerm}
+            showSuggestions={false}
+          />
           <FilterModal
             showFilters={showFilters}
             setShowFilters={setShowFilters}
