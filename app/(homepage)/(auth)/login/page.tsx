@@ -13,7 +13,7 @@ import { View } from 'lucide-react';
 export default function Page() {
   const router = useRouter();
   //   const { session } = useSupabaseAuth();
-  const [redirect] = useQueryState('redirect');
+  // const [redirect] = useQueryState('redirect');
   //   const [isRedirecting, setIsRedirecting] = useState(false);
 
   //   useEffect(() => {
@@ -26,12 +26,12 @@ export default function Page() {
   return (
     <div className="flex justify-center items-center">
       <div className="max-w-4xl w-full gap-4">
-        <AuthHeader
+        {/* <AuthHeader
           title="登录"
           question="没有账号？"
           actionText="注册"
           actionPath={`/signup${redirect ? `?redirect=${redirect}` : ''}`}
-        />
+        /> */}
         {/* <LoginForm
           redirect={redirect || undefined}
           onLoginSuccess={() => setIsRedirecting(true)}
