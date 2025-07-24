@@ -121,7 +121,7 @@ export default function TutorSearch() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-white">
       {/* Header */}
       <div className="bg-white">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -135,7 +135,7 @@ export default function TutorSearch() {
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Search Bar */}
         <SearchField />
-        <div className="bg-white rounded-xl shadow-sm p-6 mb-8">
+        <div className="bg-gray-50 rounded-xl shadow-sm p-6 mb-8">
           <div className="flex gap-4">
             <button
               onClick={() => setShowFilters(!showFilters)}
@@ -149,7 +149,7 @@ export default function TutorSearch() {
 
         {/* Filters */}
         {showFilters && (
-          <div className="bg-white rounded-xl shadow-sm p-8 mb-8">
+          <div className="bg-gray-50 rounded-xl shadow-sm p-8 mb-8">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
               {/* Major Filter */}
               <div>
@@ -267,7 +267,7 @@ export default function TutorSearch() {
           {filteredTutors.map(tutor => (
             <div
               key={tutor.id}
-              className="bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow p-6"
+              className="bg-gray-50 rounded-lg shadow-sm hover:shadow-md transition-shadow p-6"
             >
               {/* Tutor Header */}
               <div className="flex items-start gap-4 mb-4">
