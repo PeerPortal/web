@@ -14,6 +14,8 @@ import tutorsData from '@/data/tutors.json';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import SearchField from '@/components/search-field';
+import { Button } from '@/components/ui/button';
+import FilterModal from '@/components/modal/filter-modal';
 
 interface Tutor {
   id: number;
@@ -124,8 +126,8 @@ export default function TutorSearch() {
     <div className="min-h-screen bg-white">
       {/* Header */}
       <div className="bg-white">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          <h1 className="text-2xl font-bold text-gray-900 mb-2">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pt-14 py-8">
+          <h1 className="text-3xl font-bold text-gray-900 mb-2">
             留学导师搜索
           </h1>
           <p className="text-gray-600 text-lg">寻找最适合的留学申请导师</p>
@@ -134,128 +136,24 @@ export default function TutorSearch() {
 
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Search Bar */}
-        <SearchField />
-        <div className="bg-gray-50 rounded-xl shadow-sm p-6 mb-8">
-          <div className="flex gap-4">
-            <button
-              onClick={() => setShowFilters(!showFilters)}
-              className="flex items-center gap-2 px-8 py-4 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition-colors font-medium"
-            >
-              <Filter className="w-5 h-5" />
-              筛选
-            </button>
-          </div>
+        <div className="w-full flex flex-row gap-3 items-center">
+          <SearchField />
+          <FilterModal
+            showFilters={showFilters}
+            setShowFilters={setShowFilters}
+            allMajors={allMajors}
+            allUniversities={allUniversities}
+            allLanguages={allLanguages}
+            selectedMajors={selectedMajors}
+            selectedUniversities={selectedUniversities}
+            selectedLanguages={selectedLanguages}
+            priceRange={priceRange}
+            onMajorToggle={handleMajorToggle}
+            onUniversityToggle={handleUniversityToggle}
+            onLanguageToggle={handleLanguageToggle}
+            onPriceRangeChange={setPriceRange}
+          />
         </div>
-
-        {/* Filters */}
-        {showFilters && (
-          <div className="bg-gray-50 rounded-xl shadow-sm p-8 mb-8">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-              {/* Major Filter */}
-              <div>
-                <h3 className="font-semibold text-gray-900 mb-4 text-base">
-                  专业领域
-                </h3>
-                <div className="space-y-3 max-h-48 overflow-y-auto">
-                  {allMajors.map(major => (
-                    <label
-                      key={major}
-                      className="flex items-center cursor-pointer hover:bg-gray-50 p-1 rounded"
-                    >
-                      <input
-                        type="checkbox"
-                        checked={selectedMajors.includes(major)}
-                        onChange={() => handleMajorToggle(major)}
-                        className="w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500 focus:ring-2"
-                      />
-                      <span className="ml-3 text-sm text-gray-700">
-                        {major}
-                      </span>
-                    </label>
-                  ))}
-                </div>
-              </div>
-
-              {/* University Filter */}
-              <div>
-                <h3 className="font-semibold text-gray-900 mb-4 text-base">
-                  毕业院校
-                </h3>
-                <div className="space-y-3 max-h-48 overflow-y-auto">
-                  {allUniversities.map(university => (
-                    <label
-                      key={university}
-                      className="flex items-center cursor-pointer hover:bg-gray-50 p-1 rounded"
-                    >
-                      <input
-                        type="checkbox"
-                        checked={selectedUniversities.includes(university)}
-                        onChange={() => handleUniversityToggle(university)}
-                        className="w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500 focus:ring-2"
-                      />
-                      <span className="ml-3 text-sm text-gray-700">
-                        {university}
-                      </span>
-                    </label>
-                  ))}
-                </div>
-              </div>
-
-              {/* Language Filter */}
-              <div>
-                <h3 className="font-semibold text-gray-900 mb-4 text-base">
-                  授课语言
-                </h3>
-                <div className="space-y-3 max-h-48 overflow-y-auto">
-                  {allLanguages.map(language => (
-                    <label
-                      key={language}
-                      className="flex items-center cursor-pointer hover:bg-gray-50 p-1 rounded"
-                    >
-                      <input
-                        type="checkbox"
-                        checked={selectedLanguages.includes(language)}
-                        onChange={() => handleLanguageToggle(language)}
-                        className="w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500 focus:ring-2"
-                      />
-                      <span className="ml-3 text-sm text-gray-700">
-                        {language}
-                      </span>
-                    </label>
-                  ))}
-                </div>
-              </div>
-
-              {/* Price Filter */}
-              <div>
-                <h3 className="font-semibold text-gray-900 mb-4 text-base">
-                  价格范围 ($/小时)
-                </h3>
-                <div className="space-y-4">
-                  <div className="relative">
-                    <input
-                      type="range"
-                      min="0"
-                      max="300"
-                      value={priceRange[1]}
-                      onChange={e =>
-                        setPriceRange([priceRange[0], parseInt(e.target.value)])
-                      }
-                      className="w-full h-2 rounded-lg appearance-none cursor-pointer slider"
-                      style={{
-                        background: `linear-gradient(to right, #3b82f6 0%, #3b82f6 ${(priceRange[1] / 300) * 100}%, #e5e7eb ${(priceRange[1] / 300) * 100}%, #e5e7eb 100%)`
-                      }}
-                    />
-                  </div>
-                  <div className="flex justify-between text-sm text-gray-600 font-medium">
-                    <span>$0</span>
-                    <span>${priceRange[1]}</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
 
         {/* Results Count */}
         <div className="mb-4">
