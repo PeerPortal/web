@@ -30,6 +30,11 @@ export default function SearchField({
   showSuggestions = true
 }: SearchFieldProps) {
   const [searchTerm, setSearchTerm] = useState(initialValue);
+  
+  // Update internal state when initialValue changes
+  useEffect(() => {
+    setSearchTerm(initialValue);
+  }, [initialValue]);
   const [open, setOpen] = useState(false);
   const [filteredSuggestions, setFilteredSuggestions] = useState<Suggestion[]>(
     []
@@ -107,9 +112,14 @@ export default function SearchField({
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchTerm(e.target.value);
+    const value = e.target.value;
+    setSearchTerm(value);
     if (showSuggestions) {
       setOpen(true);
+    }
+    // Immediately update query parameter when typing
+    if (onSearch) {
+      onSearch(value);
     }
   };
 
