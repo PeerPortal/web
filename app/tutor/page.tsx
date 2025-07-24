@@ -133,7 +133,7 @@ function TutorSearchContent() {
 
   return (
     <div className="min-h-screen bg-white">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Search Bar */}
         <div className="w-full mb-6">
           <SearchField
@@ -263,7 +263,7 @@ function TutorSearchContent() {
             </div>
 
             {/* Tutors Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2  gap-6">
               {filteredTutors.map(tutor => (
                 <div
                   key={tutor.id}
