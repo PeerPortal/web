@@ -109,7 +109,10 @@ export default function Component() {
               {/* Info menu */}
               {/* <InfoMenu /> */}
               <Link href="/login">
-                <Button>登录</Button>
+                <Button variant="outline">登录</Button>
+              </Link>
+              <Link href="/profile">
+                <Button>个人中心</Button>
               </Link>
               {/* Notification */}
               {/* <NotificationMenu /> */}
