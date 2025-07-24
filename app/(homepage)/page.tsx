@@ -13,6 +13,7 @@ import {
 import tutorsData from '@/data/tutors.json';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import SearchField from '@/components/search-field';
 
 interface Tutor {
   id: number;
@@ -127,7 +128,7 @@ export default function TutorSearch() {
           <h1 className="text-2xl font-bold text-gray-900 mb-2">
             留学导师搜索
           </h1>
-          <p className="text-gray-600 text-lg">寻找最适合的美国本科申请导师</p>
+          <p className="text-gray-600 text-lg">寻找最适合的留学申请导师</p>
         </div>
       </div>
 
@@ -135,19 +136,6 @@ export default function TutorSearch() {
         {/* Search Bar */}
         <div className="bg-white rounded-xl shadow-sm p-6 mb-8">
           <div className="flex gap-4">
-            <div className="*:not-first:mt-2">
-              <Input type="search" placeholder="搜索导师姓名、专业或大学..." />
-            </div>
-            <div className="flex-1 relative">
-              <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
-              <input
-                type="text"
-                placeholder="搜索导师姓名、专业或大学..."
-                className="w-full pl-12 pr-4 py-4 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent text-base"
-                value={searchTerm}
-                onChange={e => setSearchTerm(e.target.value)}
-              />
-            </div>
             <button
               onClick={() => setShowFilters(!showFilters)}
               className="flex items-center gap-2 px-8 py-4 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition-colors font-medium"
