@@ -127,9 +127,9 @@ export default function SearchField({
     setSearchTerm(suggestion.label);
     setOpen(false);
     if (onSearch) {
-      onSearch(suggestion.label);
+      onSearch(suggestion.value);
     } else {
-      router.push(`/tutor?q=${encodeURIComponent(suggestion.label)}`);
+      router.push(`/tutor?q=${encodeURIComponent(suggestion.value)}`);
     }
   };
 
