@@ -11,6 +11,8 @@ import {
   Award
 } from 'lucide-react';
 import tutorsData from '@/data/tutors.json';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 
 interface Tutor {
   id: number;
@@ -122,7 +124,7 @@ export default function TutorSearch() {
       {/* Header */}
       <div className="bg-white">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">
+          <h1 className="text-2xl font-bold text-gray-900 mb-2">
             留学导师搜索
           </h1>
           <p className="text-gray-600 text-lg">寻找最适合的美国本科申请导师</p>
@@ -133,6 +135,9 @@ export default function TutorSearch() {
         {/* Search Bar */}
         <div className="bg-white rounded-xl shadow-sm p-6 mb-8">
           <div className="flex gap-4">
+            <div className="*:not-first:mt-2">
+              <Input type="search" placeholder="搜索导师姓名、专业或大学..." />
+            </div>
             <div className="flex-1 relative">
               <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
               <input
