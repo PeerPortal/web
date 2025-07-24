@@ -12,7 +12,7 @@ import {
 } from 'lucide-react';
 import tutorsData from '@/data/tutors.json';
 import SearchField from '@/components/search-field';
-import TutorFilterSidebar from './_components/tutor-filter-sidebar';
+import TutorFilterSidebar from '../_components/tutor-filter-sidebar';
 
 interface Tutor {
   id: number;
@@ -158,6 +158,8 @@ function TutorSearchContent() {
             onUniversitiesChange={handleUniversitiesChange}
             onLanguagesChange={handleLanguagesChange}
             onPriceChange={setPriceRange}
+            tutors={tutors}
+            filteredTutorCount={filteredTutors.length}
           />
 
           {/* Content Area */}
@@ -174,7 +176,7 @@ function TutorSearchContent() {
               {filteredTutors.map(tutor => (
                 <div
                   key={tutor.id}
-                  className="bg-gray-50 rounded-lg shadow-sm hover:shadow-md transition-shadow p-6"
+                  className="border border-gray-200 rounded-lg shadow-sm hover:shadow-md transition-shadow p-6"
                 >
                   {/* Tutor Header */}
                   <div className="flex items-start gap-4 mb-4">
