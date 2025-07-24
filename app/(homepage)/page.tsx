@@ -100,26 +100,16 @@ export default function TutorSearch() {
     priceRange
   ]);
 
-  const handleMajorToggle = (major: string) => {
-    setSelectedMajors(prev =>
-      prev.includes(major) ? prev.filter(m => m !== major) : [...prev, major]
-    );
+  const handleMajorsChange = (majors: string[]) => {
+    setSelectedMajors(majors);
   };
 
-  const handleUniversityToggle = (university: string) => {
-    setSelectedUniversities(prev =>
-      prev.includes(university)
-        ? prev.filter(u => u !== university)
-        : [...prev, university]
-    );
+  const handleUniversitiesChange = (universities: string[]) => {
+    setSelectedUniversities(universities);
   };
 
-  const handleLanguageToggle = (language: string) => {
-    setSelectedLanguages(prev =>
-      prev.includes(language)
-        ? prev.filter(l => l !== language)
-        : [...prev, language]
-    );
+  const handleLanguagesChange = (languages: string[]) => {
+    setSelectedLanguages(languages);
   };
 
   return (
@@ -148,15 +138,15 @@ export default function TutorSearch() {
             selectedUniversities={selectedUniversities}
             selectedLanguages={selectedLanguages}
             priceRange={priceRange}
-            onMajorToggle={handleMajorToggle}
-            onUniversityToggle={handleUniversityToggle}
-            onLanguageToggle={handleLanguageToggle}
+            onMajorsChange={handleMajorsChange}
+            onUniversitiesChange={handleUniversitiesChange}
+            onLanguagesChange={handleLanguagesChange}
             onPriceRangeChange={setPriceRange}
           />
         </div>
 
         {/* Results Count */}
-        <div className="mb-4">
+        <div className="my-4">
           <p className="text-gray-600">找到 {filteredTutors.length} 位导师</p>
         </div>
 

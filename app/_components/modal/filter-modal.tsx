@@ -2,12 +2,17 @@
 
 import {
   Dialog,
+  DialogClose,
   DialogContent,
+  DialogDescription,
+  DialogFooter,
   DialogHeader,
   DialogTitle,
   DialogTrigger
 } from '@/components/ui/dialog';
 import FilterButton from '@/components/filter-button';
+import MultipleSelector, { Option } from '@/components/ui/multiselect';
+import { Button } from '@/components/ui/button';
 
 interface FilterModalProps {
   showFilters: boolean;
@@ -19,9 +24,9 @@ interface FilterModalProps {
   selectedUniversities: string[];
   selectedLanguages: string[];
   priceRange: [number, number];
-  onMajorToggle: (major: string) => void;
-  onUniversityToggle: (university: string) => void;
-  onLanguageToggle: (language: string) => void;
+  onMajorsChange: (majors: string[]) => void;
+  onUniversitiesChange: (universities: string[]) => void;
+  onLanguagesChange: (languages: string[]) => void;
   onPriceRangeChange: (range: [number, number]) => void;
 }
 
@@ -35,11 +40,42 @@ export default function FilterModal({
   selectedUniversities,
   selectedLanguages,
   priceRange,
-  onMajorToggle,
-  onUniversityToggle,
-  onLanguageToggle,
+  onMajorsChange,
+  onUniversitiesChange,
+  onLanguagesChange,
   onPriceRangeChange
 }: FilterModalProps) {
+  const majorOptions: Option[] = allMajors.map(major => ({
+    value: major,
+    label: major
+  }));
+
+  const universityOptions: Option[] = allUniversities.map(university => ({
+    value: university,
+    label: university
+  }));
+
+  const languageOptions: Option[] = allLanguages.map(language => ({
+    value: language,
+    label: language
+  }));
+
+  const selectedMajorOptions: Option[] = selectedMajors.map(major => ({
+    value: major,
+    label: major
+  }));
+
+  const selectedUniversityOptions: Option[] = selectedUniversities.map(
+    university => ({
+      value: university,
+      label: university
+    })
+  );
+
+  const selectedLanguageOptions: Option[] = selectedLanguages.map(language => ({
+    value: language,
+    label: language
+  }));
   return (
     <Dialog open={showFilters} onOpenChange={setShowFilters}>
       <DialogTrigger asChild>
@@ -48,113 +84,117 @@ export default function FilterModal({
           setShowFilters={setShowFilters}
         />
       </DialogTrigger>
-      <DialogContent className="max-w-4xl">
+      <DialogContent className="flex flex-col gap-0 p-0 sm:max-h-[min(640px,80vh)] sm:max-w-lg [&>button:last-child]:hidden">
         <DialogHeader>
-          <DialogTitle>筛选选项</DialogTitle>
+          <DialogTitle className="px-6 py-6 border-b">筛选选项</DialogTitle>
         </DialogHeader>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-          {/* Major Filter */}
-          <div>
-            <h3 className="font-semibold text-gray-900 mb-4 text-base">
-              专业领域
-            </h3>
-            <div className="space-y-3 max-h-48 overflow-y-auto">
-              {allMajors.map(major => (
-                <label
-                  key={major}
-                  className="flex items-center cursor-pointer hover:bg-gray-50 p-1 rounded"
-                >
-                  <input
-                    type="checkbox"
-                    checked={selectedMajors.includes(major)}
-                    onChange={() => onMajorToggle(major)}
-                    className="w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500 focus:ring-2"
+        <div className="overflow-y-auto">
+          <DialogDescription asChild>
+            <div className="px-6 py-6">
+              <div className="flex flex-col gap-6">
+                {/* Major Filter */}
+                <div>
+                  <h3 className="font-semibold text-gray-900 mb-4 text-base">
+                    专业领域
+                  </h3>
+                  <MultipleSelector
+                    defaultOptions={majorOptions}
+                    value={selectedMajorOptions}
+                    placeholder="选择专业领域"
+                    hidePlaceholderWhenSelected
+                    onChange={(options: Option[]) =>
+                      onMajorsChange(options.map((opt: Option) => opt.value))
+                    }
+                    emptyIndicator={
+                      <p className="text-center text-sm">未找到结果</p>
+                    }
                   />
-                  <span className="ml-3 text-sm text-gray-700">{major}</span>
-                </label>
-              ))}
-            </div>
-          </div>
+                </div>
 
-          {/* University Filter */}
-          <div>
-            <h3 className="font-semibold text-gray-900 mb-4 text-base">
-              毕业院校
-            </h3>
-            <div className="space-y-3 max-h-48 overflow-y-auto">
-              {allUniversities.map(university => (
-                <label
-                  key={university}
-                  className="flex items-center cursor-pointer hover:bg-gray-50 p-1 rounded"
-                >
-                  <input
-                    type="checkbox"
-                    checked={selectedUniversities.includes(university)}
-                    onChange={() => onUniversityToggle(university)}
-                    className="w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500 focus:ring-2"
+                {/* University Filter */}
+                <div>
+                  <h3 className="font-semibold text-gray-900 mb-4 text-base">
+                    毕业院校
+                  </h3>
+                  <MultipleSelector
+                    defaultOptions={universityOptions}
+                    value={selectedUniversityOptions}
+                    placeholder="选择毕业院校"
+                    hidePlaceholderWhenSelected
+                    onChange={(options: Option[]) =>
+                      onUniversitiesChange(
+                        options.map((opt: Option) => opt.value)
+                      )
+                    }
+                    emptyIndicator={
+                      <p className="text-center text-sm">未找到结果</p>
+                    }
                   />
-                  <span className="ml-3 text-sm text-gray-700">
-                    {university}
-                  </span>
-                </label>
-              ))}
-            </div>
-          </div>
+                </div>
 
-          {/* Language Filter */}
-          <div>
-            <h3 className="font-semibold text-gray-900 mb-4 text-base">
-              授课语言
-            </h3>
-            <div className="space-y-3 max-h-48 overflow-y-auto">
-              {allLanguages.map(language => (
-                <label
-                  key={language}
-                  className="flex items-center cursor-pointer hover:bg-gray-50 p-1 rounded"
-                >
-                  <input
-                    type="checkbox"
-                    checked={selectedLanguages.includes(language)}
-                    onChange={() => onLanguageToggle(language)}
-                    className="w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500 focus:ring-2"
+                {/* Language Filter */}
+                <div>
+                  <h3 className="font-semibold text-gray-900 mb-4 text-base">
+                    授课语言
+                  </h3>
+                  <MultipleSelector
+                    defaultOptions={languageOptions}
+                    value={selectedLanguageOptions}
+                    placeholder="选择授课语言"
+                    hidePlaceholderWhenSelected
+                    onChange={(options: Option[]) =>
+                      onLanguagesChange(options.map((opt: Option) => opt.value))
+                    }
+                    emptyIndicator={
+                      <p className="text-center text-sm">未找到结果</p>
+                    }
                   />
-                  <span className="ml-3 text-sm text-gray-700">{language}</span>
-                </label>
-              ))}
-            </div>
-          </div>
+                </div>
 
-          {/* Price Filter */}
-          <div>
-            <h3 className="font-semibold text-gray-900 mb-4 text-base">
-              价格范围 ($/小时)
-            </h3>
-            <div className="space-y-4">
-              <div className="relative">
-                <input
-                  type="range"
-                  min="0"
-                  max="300"
-                  value={priceRange[1]}
-                  onChange={e =>
-                    onPriceRangeChange([
-                      priceRange[0],
-                      parseInt(e.target.value)
-                    ])
-                  }
-                  className="w-full h-2 rounded-lg appearance-none cursor-pointer slider"
-                  style={{
-                    background: `linear-gradient(to right, #3b82f6 0%, #3b82f6 ${(priceRange[1] / 300) * 100}%, #e5e7eb ${(priceRange[1] / 300) * 100}%, #e5e7eb 100%)`
-                  }}
-                />
-              </div>
-              <div className="flex justify-between text-sm text-gray-600 font-medium">
-                <span>$0</span>
-                <span>${priceRange[1]}</span>
+                {/* Price Filter */}
+                <div>
+                  <h3 className="font-semibold text-gray-900 mb-4 text-base">
+                    价格范围 ($/小时)
+                  </h3>
+                  <div className="space-y-4">
+                    <div className="relative">
+                      <input
+                        type="range"
+                        min="0"
+                        max="300"
+                        value={priceRange[1]}
+                        onChange={e =>
+                          onPriceRangeChange([
+                            priceRange[0],
+                            parseInt(e.target.value)
+                          ])
+                        }
+                        className="w-full h-2 rounded-lg appearance-none cursor-pointer slider"
+                        style={{
+                          background: `linear-gradient(to right, #3b82f6 0%, #3b82f6 ${(priceRange[1] / 300) * 100}%, #e5e7eb ${(priceRange[1] / 300) * 100}%, #e5e7eb 100%)`
+                        }}
+                      />
+                    </div>
+                    <div className="flex justify-between text-sm text-gray-600 font-medium">
+                      <span>$0</span>
+                      <span>${priceRange[1]}</span>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
-          </div>
+          </DialogDescription>
         </div>
+        <DialogFooter className="border-t px-6 py-4">
+          <DialogClose asChild>
+            <Button type="button" variant="outline">
+              Cancel
+            </Button>
+          </DialogClose>
+          <DialogClose asChild>
+            <Button type="button">Show Results</Button>
+          </DialogClose>
+        </DialogFooter>
       </DialogContent>
     </Dialog>
   );
