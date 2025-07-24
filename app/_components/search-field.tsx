@@ -24,7 +24,7 @@ interface Suggestion {
   type: 'university' | 'major';
 }
 
-export default function SearchField({
+function SearchField({
   initialValue = '',
   onSearch,
   showSuggestions = true
@@ -242,3 +242,5 @@ export default function SearchField({
     </div>
   );
 }
+
+export default SearchField;

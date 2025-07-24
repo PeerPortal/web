@@ -2,6 +2,7 @@
 
 import { useMemo, Suspense } from 'react';
 import { useQueryState } from 'nuqs';
+import Link from 'next/link';
 import {
   Search,
   Star,
@@ -12,7 +13,7 @@ import {
 } from 'lucide-react';
 import tutorsData from '@/data/tutors.json';
 import SearchField from '@/components/search-field';
-import TutorFilterSidebar from '../_components/tutor-filter-sidebar';
+import TutorFilterSidebar from '@/components/tutor-filter-sidebar';
 
 interface Tutor {
   id: number;
@@ -174,9 +175,10 @@ function TutorSearchContent() {
             {/* Tutors Grid */}
             <div className="grid grid-cols-1 md:grid-cols-2  gap-6">
               {filteredTutors.map(tutor => (
-                <div
+                <Link
                   key={tutor.id}
-                  className="border border-gray-200 rounded-lg shadow-sm hover:shadow-md transition-shadow p-6"
+                  href={`/tutor/${tutor.id}`}
+                  className="block border border-gray-200 rounded-lg shadow-sm hover:shadow-md transition-shadow p-6 hover:border-blue-300"
                 >
                   {/* Tutor Header */}
                   <div className="flex items-start gap-4 mb-4">
@@ -269,11 +271,16 @@ function TutorSearchContent() {
                           : 'bg-gray-300 text-gray-500 cursor-not-allowed'
                       }`}
                       disabled={!tutor.available}
+                      onClick={e => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        // TODO: Implement booking functionality
+                      }}
                     >
                       {tutor.available ? '立即预约' : '暂不可约'}
                     </button>
                   </div>
-                </div>
+                </Link>
               ))}
             </div>
 
