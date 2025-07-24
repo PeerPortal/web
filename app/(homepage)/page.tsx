@@ -10,7 +10,7 @@ import {
   Languages,
   Award
 } from 'lucide-react';
-import tutorsData from '../../data/tutors.json';
+import tutorsData from '@/data/tutors.json';
 
 interface Tutor {
   id: number;
