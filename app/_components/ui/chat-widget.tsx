@@ -36,7 +36,7 @@ export default function ChatWidget({
   ];
 
   return (
-    <div className={`fixed ${positionClass} z-50`}>
+    <div className={`fixed ${positionClass} z-50 flex flex-col items-end`}>
       {/* Chat Widget */}
       {isOpen && (
         <Card className="w-80 h-96 mb-4 shadow-2xl animate-in slide-in-from-bottom-2">
