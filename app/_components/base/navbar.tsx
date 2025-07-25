@@ -16,6 +16,7 @@ import {
 } from '@/components/ui/popover';
 import Logo from '@/components/base/logo';
 import Link from 'next/link';
+import { Globe, Menu, MessageCircle, User, Phone } from 'lucide-react';
 
 // Navigation links array to be used in both desktop and mobile menus
 const navigationLinks = [
@@ -108,11 +109,25 @@ export default function Component() {
             <div className="flex items-center gap-2">
               {/* Info menu */}
               {/* <InfoMenu /> */}
+              <Button
+                variant="outline"
+                className="hidden sm:inline-flex rounded-full bg-transparent"
+              >
+                联系我们
+              </Button>
               <Link href="/login">
-                <Button variant="outline">登录</Button>
+                <Button variant="outline" className="rounded-full p-2">
+                  登录
+                </Button>
               </Link>
               <Link href="/profile">
-                <Button>个人中心</Button>
+                <Button
+                  variant="secondary"
+                  className="rounded-full p-2"
+                  size="icon"
+                >
+                  <User size={6} />
+                </Button>
               </Link>
               {/* Notification */}
               {/* <NotificationMenu /> */}
