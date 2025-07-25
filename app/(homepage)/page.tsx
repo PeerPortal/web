@@ -38,6 +38,57 @@ export default function Homepage() {
     }
   ];
 
+  const popularSchools = [
+    {
+      name: '哈佛大学',
+      location: '美国',
+      tutors: '32 位导师',
+      image: '/schools/harvard.jpg'
+    },
+    {
+      name: '斯坦福大学',
+      location: '美国',
+      tutors: '28 位导师',
+      image: '/schools/stanford.jpg'
+    },
+    {
+      name: '麻省理工学院',
+      location: '美国',
+      tutors: '35 位导师',
+      image: '/schools/mit.jpg'
+    },
+    {
+      name: '牛津大学',
+      location: '英国',
+      tutors: '24 位导师',
+      image: '/schools/oxford.jpg'
+    },
+    {
+      name: '剑桥大学',
+      location: '英国',
+      tutors: '22 位导师',
+      image: '/schools/cambridge.jpg'
+    },
+    {
+      name: '东京大学',
+      location: '日本',
+      tutors: '18 位导师',
+      image: '/schools/tokyo.jpg'
+    },
+    {
+      name: '新加坡国立大学',
+      location: '新加坡',
+      tutors: '16 位导师',
+      image: '/schools/nus.jpg'
+    },
+    {
+      name: '香港大学',
+      location: '香港',
+      tutors: '15 位导师',
+      image: '/schools/hku.jpeg'
+    }
+  ];
+
   return (
     <div className="min-h-screen bg-white">
       {/* Hero Section */}
@@ -123,6 +174,50 @@ export default function Homepage() {
                     <p className="text-gray-600 text-sm">
                       {destination.properties}
                     </p>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            <button className="absolute right-0 top-1/2 -translate-y-1/2 bg-white rounded-full p-2 shadow-lg border border-gray-200 hover:shadow-xl transition-shadow">
+              <ChevronRight className="w-5 h-5 text-gray-600" />
+            </button>
+          </div>
+        </div>
+      </section>
+
+      {/* Popular Schools Section */}
+      <section className="py-16 bg-white">
+        <div className="w-full max-w-6xl mx-auto px-4">
+          <div className="mb-6">
+            <h2 className="text-2xl font-bold text-gray-900 mb-2">热门学校</h2>
+            <p className="text-gray-600 text-base">世界顶尖院校申请专业指导</p>
+          </div>
+
+          <div className="relative">
+            <div className="flex gap-4 overflow-x-auto scrollbar-hide pb-4">
+              {popularSchools.map((school, index) => (
+                <div
+                  key={index}
+                  className="flex-shrink-0 w-48 cursor-pointer group"
+                >
+                  <div className="relative overflow-hidden rounded-lg mb-3">
+                    <Image
+                      src={school.image}
+                      alt={school.name}
+                      width={192}
+                      height={128}
+                      className="w-full h-32 object-cover group-hover:scale-105 transition-transform duration-300"
+                    />
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-gray-900 text-base mb-1">
+                      {school.name}
+                    </h3>
+                    <p className="text-gray-500 text-sm mb-1">
+                      {school.location}
+                    </p>
+                    <p className="text-gray-600 text-sm">{school.tutors}</p>
                   </div>
                 </div>
               ))}
