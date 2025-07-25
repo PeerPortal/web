@@ -1,0 +1,36 @@
+# 留学双边信息平台 - 后端依赖包
+# 更新日期: 2024-01-01
+# Python 版本要求: >=3.11
+
+# 核心Web框架
+fastapi==0.116.1
+uvicorn[standard]==0.35.0
+gunicorn==23.0.0
+
+# 数据验证与设置
+pydantic[email]==2.11.7
+pydantic-settings==2.10.1
+
+# 数据库连接
+asyncpg==0.30.0
+psycopg2-binary==2.9.10
+sqlalchemy[asyncio]==2.0.36
+supabase==2.17.0
+
+# 认证与安全
+python-jose[cryptography]==3.5.0
+passlib[bcrypt]==1.7.4
+
+# 环境配置
+python-dotenv==1.0.1
+
+# HTTP客户端
+requests==2.32.4
+
+# 文件上传支持
+python-multipart==0.0.19
+
+# 开发与测试
+pytest==8.3.4
+pytest-asyncio==0.25.0
+httpx==0.28.1
