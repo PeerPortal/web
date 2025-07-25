@@ -16,6 +16,58 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
 import { searchMentors, type MentorPublic } from '@/lib/api';
 
+// 解析导师标题，提取大学和专业信息
+function parseMentorTitle(title: string): {
+  university: string;
+  major: string;
+  degree: string;
+} {
+  // 标题格式："北京大学 计算机科学 导师" 或 "斯坦福 计算机科学 导师" 或 "雅思口语专家"
+  const parts = title.split(' ').filter(part => part.trim() !== '');
+
+  let university = 'Unknown University';
+  let major = 'Unknown Major';
+  let degree = 'Unknown Degree';
+
+  if (parts.length >= 3 && parts[2] === '导师') {
+    // 格式: "大学 专业 导师"
+    university = parts[0];
+    major = parts[1];
+  } else if (parts.length >= 2) {
+    // 其他格式，尝试推断
+    if (
+      parts[0].includes('大学') ||
+      parts[0].includes('Stanford') ||
+      parts[0].includes('斯坦福')
+    ) {
+      university = parts[0];
+      if (parts[1] !== '导师') {
+        major = parts[1];
+      }
+    } else {
+      // 可能是专业名称，如"雅思口语专家"
+      major = parts.join(' ');
+    }
+  } else if (parts.length === 1) {
+    // 单个词，当作专业处理
+    major = parts[0];
+  }
+
+  // 简单的学位推断
+  if (university.includes('大学')) {
+    degree = 'Bachelor';
+  } else if (
+    university.toLowerCase().includes('stanford') ||
+    university.includes('斯坦福')
+  ) {
+    degree = 'Master';
+  } else if (major.includes('专家')) {
+    degree = 'Expert';
+  }
+
+  return { university, major, degree };
+}
+
 interface PageProps {
   params: Promise<{ id: string }>;
 }
@@ -53,13 +105,15 @@ async function getTutorData(id: string): Promise<TutorData | null> {
     }
 
     // Transform backend data to match frontend interface
+    const { university, major, degree } = parseMentorTitle(mentor.title);
+
     return {
       id: mentor.mentor_id || mentor.id,
       name: mentor.title || `Mentor ${mentor.mentor_id || mentor.id}`,
       avatar: '',
-      university: 'Unknown University',
-      degree: 'Unknown Degree',
-      major: 'Unknown Major',
+      university,
+      degree,
+      major,
       specializations: mentor.description ? [mentor.description] : [],
       experience: Math.floor((mentor.sessions_completed || 0) / 10),
       rating: mentor.rating || 4.5,

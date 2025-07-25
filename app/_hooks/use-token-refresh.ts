@@ -9,7 +9,7 @@ const TOKEN_REFRESH_THRESHOLD = 10 * 60 * 1000; // Refresh if expires within 10 
 
 export function useTokenRefresh() {
   const { token, isAuthenticated, refreshToken, logout } = useAuthStore();
-  const intervalRef = useRef<NodeJS.Timeout>();
+  const intervalRef = useRef<NodeJS.Timeout | undefined>(undefined);
 
   useEffect(() => {
     if (!isAuthenticated || !token) {

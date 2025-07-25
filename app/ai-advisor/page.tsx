@@ -2,7 +2,16 @@
 
 import { useState, useRef, useEffect } from 'react';
 import { useSearchParams } from 'next/navigation';
-import { Send, Bot, User, Loader2, Sparkles, MessageSquare, Brain, Lightbulb } from 'lucide-react';
+import {
+  Send,
+  Bot,
+  User,
+  Loader2,
+  Sparkles,
+  MessageSquare,
+  Brain,
+  Lightbulb
+} from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -18,7 +27,14 @@ interface Message {
 }
 
 interface StreamEvent {
-  type: 'start' | 'thinking' | 'tool_start' | 'tool_end' | 'final_answer' | 'end' | 'error';
+  type:
+    | 'start'
+    | 'thinking'
+    | 'tool_start'
+    | 'tool_end'
+    | 'final_answer'
+    | 'end'
+    | 'error';
   content: string;
   tool?: string;
   input?: string;
@@ -32,7 +48,8 @@ export default function AIAdvisorPage() {
     {
       id: '1',
       type: 'assistant',
-      content: '您好！我是启航AI留学规划师 ✨\n\n我可以帮助您：\n• 🎯 推荐适合的学校和专业\n• 📋 查询申请要求和截止日期\n• 👥 匹配合适的学长学姐引路人\n• 🛍️ 推荐相关指导服务\n• 📅 制定申请时间规划\n• 💡 提供文书和面试建议\n\n请告诉我您的留学问题，我会竭诚为您服务！',
+      content:
+        '您好！我是启航AI留学规划师 ✨\n\n我可以帮助您：\n• 🎯 推荐适合的学校和专业\n• 📋 查询申请要求和截止日期\n• 👥 匹配合适的学长学姐引路人\n• 🛍️ 推荐相关指导服务\n• 📅 制定申请时间规划\n• 💡 提供文书和面试建议\n\n请告诉我您的留学问题，我会竭诚为您服务！',
       timestamp: new Date()
     }
   ]);
@@ -60,18 +77,30 @@ export default function AIAdvisorPage() {
   // }, [messages, currentThinking]);
 
   const quickQuestions = [
-    "我想申请美国的计算机科学硕士，需要什么条件？",
-    "推荐一些英国的商科学校",
-    "帮我制定留学申请时间规划",
-    "找一些经验丰富的引路人",
-    "新加坡国立大学的申请截止日期是什么时候？"
+    '我想申请美国的计算机科学硕士，需要什么条件？',
+    '推荐一些英国的商科学校',
+    '帮我制定留学申请时间规划',
+    '找一些经验丰富的引路人',
+    '新加坡国立大学的申请截止日期是什么时候？'
   ];
 
   const capabilities = [
-    { icon: Sparkles, title: "智能推荐", desc: "基于您的背景推荐最适合的学校和专业" },
-    { icon: Brain, title: "深度分析", desc: "分析申请要求，提供个性化建议" },
-    { icon: MessageSquare, title: "实时对话", desc: "流式对话体验，即时获得专业指导" },
-    { icon: Lightbulb, title: "策略指导", desc: "申请策略、文书写作、面试技巧全方位指导" }
+    {
+      icon: Sparkles,
+      title: '智能推荐',
+      desc: '基于您的背景推荐最适合的学校和专业'
+    },
+    { icon: Brain, title: '深度分析', desc: '分析申请要求，提供个性化建议' },
+    {
+      icon: MessageSquare,
+      title: '实时对话',
+      desc: '流式对话体验，即时获得专业指导'
+    },
+    {
+      icon: Lightbulb,
+      title: '策略指导',
+      desc: '申请策略、文书写作、面试技巧全方位指导'
+    }
   ];
 
   const handleSendMessage = async () => {
@@ -102,16 +131,19 @@ export default function AIAdvisorPage() {
     setMessages(prev => [...prev, assistantMessage]);
 
     try {
-      const response = await fetch('http://localhost:8001/api/v1/planner/invoke', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          input: userMessage.content,
-          stream: true
-        })
-      });
+      const response = await fetch(
+        'http://localhost:8001/api/v1/planner/invoke',
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            input: userMessage.content,
+            stream: true
+          })
+        }
+      );
 
       if (!response.ok) {
         throw new Error('Failed to send message');
@@ -136,7 +168,7 @@ export default function AIAdvisorPage() {
           if (line.startsWith('data: ')) {
             try {
               const data: StreamEvent = JSON.parse(line.slice(6));
-              
+
               switch (data.type) {
                 case 'thinking':
                   setCurrentThinking(data.content);
@@ -149,19 +181,31 @@ export default function AIAdvisorPage() {
                   break;
                 case 'final_answer':
                   assistantContent = data.content;
-                  setMessages(prev => prev.map(msg => 
-                    msg.id === assistantMessageId 
-                      ? { ...msg, content: assistantContent, isStreaming: false }
-                      : msg
-                  ));
+                  setMessages(prev =>
+                    prev.map(msg =>
+                      msg.id === assistantMessageId
+                        ? {
+                            ...msg,
+                            content: assistantContent,
+                            isStreaming: false
+                          }
+                        : msg
+                    )
+                  );
                   setCurrentThinking('');
                   break;
                 case 'error':
-                  setMessages(prev => prev.map(msg => 
-                    msg.id === assistantMessageId 
-                      ? { ...msg, content: `❌ ${data.content}`, isStreaming: false }
-                      : msg
-                  ));
+                  setMessages(prev =>
+                    prev.map(msg =>
+                      msg.id === assistantMessageId
+                        ? {
+                            ...msg,
+                            content: `❌ ${data.content}`,
+                            isStreaming: false
+                          }
+                        : msg
+                    )
+                  );
                   setCurrentThinking('');
                   break;
               }
@@ -173,11 +217,17 @@ export default function AIAdvisorPage() {
       }
     } catch (error) {
       console.error('Error sending message:', error);
-      setMessages(prev => prev.map(msg => 
-        msg.id === assistantMessageId 
-          ? { ...msg, content: '❌ 抱歉，发送消息时遇到错误，请稍后重试。', isStreaming: false }
-          : msg
-      ));
+      setMessages(prev =>
+        prev.map(msg =>
+          msg.id === assistantMessageId
+            ? {
+                ...msg,
+                content: '❌ 抱歉，发送消息时遇到错误，请稍后重试。',
+                isStreaming: false
+              }
+            : msg
+        )
+      );
     } finally {
       setIsLoading(false);
       setCurrentThinking('');
@@ -230,8 +280,12 @@ export default function AIAdvisorPage() {
                   <div key={index} className="flex items-start gap-3">
                     <capability.icon className="h-5 w-5 text-primary mt-0.5 flex-shrink-0" />
                     <div>
-                      <h4 className="font-medium text-sm">{capability.title}</h4>
-                      <p className="text-xs text-muted-foreground">{capability.desc}</p>
+                      <h4 className="font-medium text-sm">
+                        {capability.title}
+                      </h4>
+                      <p className="text-xs text-muted-foreground">
+                        {capability.desc}
+                      </p>
                     </div>
                   </div>
                 ))}
@@ -273,7 +327,9 @@ export default function AIAdvisorPage() {
                   </div>
                   <div>
                     <CardTitle className="text-lg">启航AI助手</CardTitle>
-                    <p className="text-sm text-muted-foreground">在线 · 随时为您服务</p>
+                    <p className="text-sm text-muted-foreground">
+                      在线 · 随时为您服务
+                    </p>
                   </div>
                 </div>
               </CardHeader>
@@ -281,8 +337,11 @@ export default function AIAdvisorPage() {
               {/* Messages */}
               <div className="flex-1 p-4 overflow-y-auto" ref={scrollAreaRef}>
                 <div className="space-y-4">
-                  {messages.map((message) => (
-                    <div key={message.id} className={`flex gap-3 ${message.type === 'user' ? 'justify-end' : 'justify-start'}`}>
+                  {messages.map(message => (
+                    <div
+                      key={message.id}
+                      className={`flex gap-3 ${message.type === 'user' ? 'justify-end' : 'justify-start'}`}
+                    >
                       {message.type === 'assistant' && (
                         <div className="flex-shrink-0">
                           <div className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center">
@@ -290,13 +349,17 @@ export default function AIAdvisorPage() {
                           </div>
                         </div>
                       )}
-                      
-                      <div className={`max-w-[80%] ${message.type === 'user' ? 'order-first' : ''}`}>
-                        <div className={`rounded-2xl px-4 py-3 ${
-                          message.type === 'user' 
-                            ? 'bg-primary text-primary-foreground ml-auto' 
-                            : 'bg-muted'
-                        }`}>
+
+                      <div
+                        className={`max-w-[80%] ${message.type === 'user' ? 'order-first' : ''}`}
+                      >
+                        <div
+                          className={`rounded-2xl px-4 py-3 ${
+                            message.type === 'user'
+                              ? 'bg-primary text-primary-foreground ml-auto'
+                              : 'bg-muted'
+                          }`}
+                        >
                           <div className="whitespace-pre-wrap text-sm">
                             {message.content}
                             {message.isStreaming && (
@@ -304,9 +367,11 @@ export default function AIAdvisorPage() {
                             )}
                           </div>
                         </div>
-                        <div className={`text-xs text-muted-foreground mt-1 ${
-                          message.type === 'user' ? 'text-right' : 'text-left'
-                        }`}>
+                        <div
+                          className={`text-xs text-muted-foreground mt-1 ${
+                            message.type === 'user' ? 'text-right' : 'text-left'
+                          }`}
+                        >
                           {message.timestamp.toLocaleTimeString()}
                         </div>
                       </div>
@@ -352,15 +417,15 @@ export default function AIAdvisorPage() {
                   <div className="flex-1 relative">
                     <Input
                       value={input}
-                      onChange={(e) => setInput(e.target.value)}
+                      onChange={e => setInput(e.target.value)}
                       onKeyPress={handleKeyPress}
                       placeholder="输入您的留学问题..."
                       disabled={isLoading}
                       className="pr-12"
                     />
                   </div>
-                  <Button 
-                    onClick={handleSendMessage} 
+                  <Button
+                    onClick={handleSendMessage}
                     disabled={isLoading || !input.trim()}
                     size="icon"
                     className="flex-shrink-0"

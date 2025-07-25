@@ -111,7 +111,10 @@ class ApiClient {
   }
 
   // AI Agent Methods
-  async sendChatMessage(message: string, sessionId?: string): Promise<Response> {
+  async sendChatMessage(
+    message: string,
+    sessionId?: string
+  ): Promise<Response> {
     const response = await fetch(`${this.baseUrl}/api/v1/planner/invoke`, {
       method: 'POST',
       headers: {
@@ -132,9 +135,12 @@ class ApiClient {
   }
 
   async getAICapabilities(): Promise<any> {
-    const response = await fetch(`${this.baseUrl}/api/v1/planner/capabilities`, {
-      method: 'GET'
-    });
+    const response = await fetch(
+      `${this.baseUrl}/api/v1/planner/capabilities`,
+      {
+        method: 'GET'
+      }
+    );
 
     if (!response.ok) {
       throw new Error('Failed to get AI capabilities');

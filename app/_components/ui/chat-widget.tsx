@@ -10,22 +10,23 @@ interface ChatWidgetProps {
   position?: 'bottom-right' | 'bottom-left';
 }
 
-export default function ChatWidget({ position = 'bottom-right' }: ChatWidgetProps) {
+export default function ChatWidget({
+  position = 'bottom-right'
+}: ChatWidgetProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [message, setMessage] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
   const handleSendMessage = async () => {
     if (!message.trim() || isLoading) return;
-    
+
     // Redirect to full AI advisor page with the message
     const encodedMessage = encodeURIComponent(message.trim());
     window.location.href = `/ai-advisor?message=${encodedMessage}`;
   };
 
-  const positionClass = position === 'bottom-right' 
-    ? 'bottom-4 right-4' 
-    : 'bottom-4 left-4';
+  const positionClass =
+    position === 'bottom-right' ? 'bottom-4 right-4' : 'bottom-4 left-4';
 
   const quickActions = [
     '推荐适合我的学校',
@@ -55,7 +56,7 @@ export default function ChatWidget({ position = 'bottom-right' }: ChatWidgetProp
               </Button>
             </div>
           </CardHeader>
-          
+
           <CardContent className="p-4 flex flex-col h-full">
             {/* Welcome Message */}
             <div className="flex-1 space-y-3 overflow-y-auto">
@@ -64,7 +65,7 @@ export default function ChatWidget({ position = 'bottom-right' }: ChatWidgetProp
                   👋 您好！我是启航AI留学规划师，有什么可以帮助您的吗？
                 </p>
               </div>
-              
+
               {/* Quick Actions */}
               <div className="space-y-2">
                 <p className="text-xs font-medium text-gray-600">快速问题：</p>
@@ -79,15 +80,15 @@ export default function ChatWidget({ position = 'bottom-right' }: ChatWidgetProp
                 ))}
               </div>
             </div>
-            
+
             {/* Input Area */}
             <div className="flex gap-2 mt-4">
               <Input
                 value={message}
-                onChange={(e) => setMessage(e.target.value)}
+                onChange={e => setMessage(e.target.value)}
                 placeholder="输入您的问题..."
                 className="text-sm"
-                onKeyPress={(e) => {
+                onKeyPress={e => {
                   if (e.key === 'Enter') {
                     handleSendMessage();
                   }
@@ -102,7 +103,7 @@ export default function ChatWidget({ position = 'bottom-right' }: ChatWidgetProp
                 <Send className="h-4 w-4" />
               </Button>
             </div>
-            
+
             <p className="text-xs text-center text-muted-foreground mt-2">
               点击发送将跳转到完整对话页面
             </p>
