@@ -3,15 +3,7 @@
 import { useMemo, Suspense, useState, useEffect } from 'react';
 import { useQueryState } from 'nuqs';
 import Link from 'next/link';
-import {
-  Search,
-  Star,
-  MapPin,
-  DollarSign,
-  Languages,
-  Award,
-  Loader2
-} from 'lucide-react';
+import { Search, Star, MapPin, Languages, Award, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Alert } from '@/components/ui/alert';
@@ -252,17 +244,6 @@ function TutorSearchContent() {
     setSelectedLanguages(languages);
   };
 
-  if (loading) {
-    return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
-        <div className="text-center">
-          <Loader2 className="w-8 h-8 animate-spin mx-auto mb-4 text-primary" />
-          <p className="text-muted-foreground">加载导师列表中...</p>
-        </div>
-      </div>
-    );
-  }
-
   if (error) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
@@ -317,130 +298,144 @@ function TutorSearchContent() {
             </div>
 
             {/* Tutors Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {filteredTutors.map(tutor => (
-                <Link key={tutor.id} href={`/tutor/${tutor.id}`}>
-                  <div className="border border-border rounded-lg shadow-sm hover:shadow-md transition-shadow p-6 cursor-pointer h-full">
-                    {/* Tutor Header */}
-                    <div className="flex items-start gap-4 mb-4">
-                      <div className="w-16 h-16 flex-shrink-0 bg-gradient-to-r from-pink-500 to-red-600 rounded-full flex items-center justify-center text-white font-bold text-xl">
-                        {tutor.name.charAt(0)}
-                      </div>
-                      <div className="flex-1">
-                        <h3 className="font-semibold text-foreground text-lg truncate">
-                          {tutor.name}
-                        </h3>
-                        <p className="text-sm text-muted-foreground truncate">
-                          {tutor.university}
-                        </p>
-                        <p className="text-sm text-muted-foreground truncate">
-                          {tutor.degree}
-                        </p>
-                      </div>
-                      <Badge
-                        variant={tutor.available ? 'default' : 'secondary'}
-                        className={
-                          tutor.available
-                            ? 'bg-green-100 text-green-800 hover:bg-green-200'
-                            : ''
-                        }
-                      >
-                        {tutor.available ? '可预约' : '忙碌中'}
-                      </Badge>
-                    </div>
-                    {/* Rating and Reviews */}
-                    <div className="flex items-center gap-2 mb-3">
-                      <div className="flex items-center gap-1">
-                        <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
-                        <span className="font-semibold">{tutor.rating}</span>
-                      </div>
-                      <span className="text-muted-foreground text-sm">
-                        ({tutor.reviews} 评价)
-                      </span>
-                      <span className="text-muted-foreground">•</span>
-                      <span className="text-muted-foreground text-sm">
-                        {tutor.experience}年经验
-                      </span>
-                    </div>
-
-                    {/* Specializations */}
-                    <div className="mb-4">
-                      <div className="flex flex-wrap gap-1">
-                        {tutor.specializations.slice(0, 3).map(spec => (
-                          <Badge
-                            key={spec}
-                            variant="secondary"
-                            className="text-xs"
-                          >
-                            {spec}
-                          </Badge>
-                        ))}
-                        {tutor.specializations.length > 3 && (
-                          <Badge variant="outline" className="text-xs">
-                            +{tutor.specializations.length - 3}
-                          </Badge>
-                        )}
-                      </div>
-                    </div>
-
-                    {/* Bio */}
-                    <p className="text-muted-foreground text-sm mb-4 line-clamp-2">
-                      {tutor.bio}
-                    </p>
-
-                    {/* Details */}
-                    <div className="space-y-2 mb-4">
-                      <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                        <MapPin className="w-4 h-4" />
-                        {tutor.location}
-                      </div>
-                      <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                        <Languages className="w-4 h-4" />
-                        {tutor.languages.join(', ')}
-                      </div>
-                      <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                        <Award className="w-4 h-4" />
-                        {tutor.achievements[0]}
-                      </div>
-                    </div>
-
-                    {/* Price and Action */}
-                    <div className="flex items-center justify-between pt-4 border-t">
-                      <div className="flex items-center gap-1">
-                        <span className="font-bold text-green-600">
-                          ${tutor.price}/小时
-                        </span>
-                      </div>
-                      <Button
-                        size="sm"
-                        disabled={!tutor.available}
-                        onClick={e => {
-                          e.preventDefault();
-                          e.stopPropagation();
-                          // TODO: Implement booking functionality
-                        }}
-                      >
-                        {tutor.available ? '立即预约' : '暂不可约'}
-                      </Button>
-                    </div>
-                  </div>
-                </Link>
-              ))}
-            </div>
-
-            {/* No Results */}
-            {filteredTutors.length === 0 && (
-              <div className="border border-border rounded-lg text-center py-12">
-                <div className="text-muted-foreground mb-2">
-                  <Search className="w-12 h-12 mx-auto" />
+            {loading ? (
+              <div className="flex items-center justify-center py-12">
+                <div className="text-center">
+                  <Loader2 className="w-8 h-8 animate-spin mx-auto mb-4 text-primary" />
+                  <p className="text-muted-foreground">加载导师列表中...</p>
                 </div>
-                <h3 className="text-lg font-medium text-foreground mb-2">
-                  未找到匹配的导师
-                </h3>
-                <p className="text-muted-foreground">
-                  请尝试调整搜索条件或筛选器
-                </p>
               </div>
+            ) : (
+              <>
+                {filteredTutors.length > 0 ? (
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    {filteredTutors.map(tutor => (
+                      <Link key={tutor.id} href={`/tutor/${tutor.id}`}>
+                        <div className="border border-border rounded-lg shadow-sm hover:shadow-md transition-shadow p-6 cursor-pointer h-full">
+                          {/* Tutor Header */}
+                          <div className="flex items-start gap-4 mb-4">
+                            <div className="w-16 h-16 flex-shrink-0 bg-gradient-to-r from-pink-500 to-red-600 rounded-full flex items-center justify-center text-white font-bold text-xl">
+                              {tutor.name.charAt(0)}
+                            </div>
+                            <div className="flex-1">
+                              <h3 className="font-semibold text-foreground text-lg truncate">
+                                {tutor.name}
+                              </h3>
+                              <p className="text-sm text-muted-foreground truncate">
+                                {tutor.university}
+                              </p>
+                              <p className="text-sm text-muted-foreground truncate">
+                                {tutor.degree}
+                              </p>
+                            </div>
+                            <Badge
+                              variant={
+                                tutor.available ? 'default' : 'secondary'
+                              }
+                              className={
+                                tutor.available
+                                  ? 'bg-green-100 text-green-800 hover:bg-green-200'
+                                  : ''
+                              }
+                            >
+                              {tutor.available ? '可预约' : '忙碌中'}
+                            </Badge>
+                          </div>
+                          {/* Rating and Reviews */}
+                          <div className="flex items-center gap-2 mb-3">
+                            <div className="flex items-center gap-1">
+                              <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
+                              <span className="font-semibold">
+                                {tutor.rating}
+                              </span>
+                            </div>
+                            <span className="text-muted-foreground text-sm">
+                              ({tutor.reviews} 评价)
+                            </span>
+                            <span className="text-muted-foreground">•</span>
+                            <span className="text-muted-foreground text-sm">
+                              {tutor.experience}年经验
+                            </span>
+                          </div>
+
+                          {/* Specializations */}
+                          <div className="mb-4">
+                            <div className="flex flex-wrap gap-1">
+                              {tutor.specializations.slice(0, 3).map(spec => (
+                                <Badge
+                                  key={spec}
+                                  variant="secondary"
+                                  className="text-xs"
+                                >
+                                  {spec}
+                                </Badge>
+                              ))}
+                              {tutor.specializations.length > 3 && (
+                                <Badge variant="outline" className="text-xs">
+                                  +{tutor.specializations.length - 3}
+                                </Badge>
+                              )}
+                            </div>
+                          </div>
+
+                          {/* Bio */}
+                          <p className="text-muted-foreground text-sm mb-4 line-clamp-2">
+                            {tutor.bio}
+                          </p>
+
+                          {/* Details */}
+                          <div className="space-y-2 mb-4">
+                            <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                              <MapPin className="w-4 h-4" />
+                              {tutor.location}
+                            </div>
+                            <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                              <Languages className="w-4 h-4" />
+                              {tutor.languages.join(', ')}
+                            </div>
+                            <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                              <Award className="w-4 h-4" />
+                              {tutor.achievements[0]}
+                            </div>
+                          </div>
+
+                          {/* Price and Action */}
+                          <div className="flex items-center justify-between pt-4 border-t">
+                            <div className="flex items-center gap-1">
+                              <span className="font-bold text-green-600">
+                                ${tutor.price}/小时
+                              </span>
+                            </div>
+                            <Button
+                              size="sm"
+                              disabled={!tutor.available}
+                              onClick={e => {
+                                e.preventDefault();
+                                e.stopPropagation();
+                                // TODO: Implement booking functionality
+                              }}
+                            >
+                              {tutor.available ? '立即预约' : '暂不可约'}
+                            </Button>
+                          </div>
+                        </div>
+                      </Link>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="border border-border rounded-lg text-center py-12">
+                    <div className="text-muted-foreground mb-2">
+                      <Search className="w-12 h-12 mx-auto" />
+                    </div>
+                    <h3 className="text-lg font-medium text-foreground mb-2">
+                      未找到匹配的导师
+                    </h3>
+                    <p className="text-muted-foreground">
+                      请尝试调整搜索条件或筛选器
+                    </p>
+                  </div>
+                )}
+              </>
             )}
           </div>
         </div>
