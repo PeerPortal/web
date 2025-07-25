@@ -12,6 +12,9 @@ import {
   Award,
   Loader2
 } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
+import { Alert } from '@/components/ui/alert';
 import SearchField from '@/components/search-field';
 import TutorFilterSidebar from '@/components/tutor-filter-sidebar';
 import { searchMentors, type MentorPublic } from '@/lib/api';
@@ -251,10 +254,10 @@ function TutorSearchContent() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-white flex items-center justify-center">
+      <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center">
-          <Loader2 className="w-8 h-8 animate-spin mx-auto mb-4 text-blue-600" />
-          <p className="text-gray-600">加载导师列表中...</p>
+          <Loader2 className="w-8 h-8 animate-spin mx-auto mb-4 text-primary" />
+          <p className="text-muted-foreground">加载导师列表中...</p>
         </div>
       </div>
     );
@@ -262,22 +265,19 @@ function TutorSearchContent() {
 
   if (error) {
     return (
-      <div className="min-h-screen bg-white flex items-center justify-center">
+      <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center">
-          <p className="text-red-600 mb-4">{error}</p>
-          <button
-            onClick={() => window.location.reload()}
-            className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
-          >
-            重试
-          </button>
+          <Alert className="mb-4 max-w-md">
+            <p className="text-destructive">{error}</p>
+          </Alert>
+          <Button onClick={() => window.location.reload()}>重试</Button>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-background">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Search Bar */}
         <div className="w-full mb-6">
@@ -311,118 +311,118 @@ function TutorSearchContent() {
           <div className="flex-1">
             {/* Results Count */}
             <div className="mb-4">
-              <p className="text-gray-600">
+              <p className="text-muted-foreground">
                 找到 {filteredTutors.length} 位导师
               </p>
             </div>
 
             {/* Tutors Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2  gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {filteredTutors.map(tutor => (
-                <Link
-                  key={tutor.id}
-                  href={`/tutor/${tutor.id}`}
-                  className="block border border-gray-200 rounded-lg shadow-sm hover:shadow-md transition-shadow p-6 hover:border-blue-300"
-                >
-                  {/* Tutor Header */}
-                  <div className="flex items-start gap-4 mb-4">
-                    <div className="w-16 h-16 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white font-bold text-xl">
-                      {tutor.name.charAt(0)}
+                <Link key={tutor.id} href={`/tutor/${tutor.id}`}>
+                  <div className="border border-border rounded-lg shadow-sm hover:shadow-md transition-shadow p-6 cursor-pointer h-full">
+                    {/* Tutor Header */}
+                    <div className="flex items-start gap-4 mb-4">
+                      <div className="w-16 h-16 flex-shrink-0 bg-gradient-to-r from-pink-500 to-red-600 rounded-full flex items-center justify-center text-white font-bold text-xl">
+                        {tutor.name.charAt(0)}
+                      </div>
+                      <div className="flex-1">
+                        <h3 className="font-semibold text-foreground text-lg truncate">
+                          {tutor.name}
+                        </h3>
+                        <p className="text-sm text-muted-foreground truncate">
+                          {tutor.university}
+                        </p>
+                        <p className="text-sm text-muted-foreground truncate">
+                          {tutor.degree}
+                        </p>
+                      </div>
+                      <Badge
+                        variant={tutor.available ? 'default' : 'secondary'}
+                        className={
+                          tutor.available
+                            ? 'bg-green-100 text-green-800 hover:bg-green-200'
+                            : ''
+                        }
+                      >
+                        {tutor.available ? '可预约' : '忙碌中'}
+                      </Badge>
                     </div>
-                    <div className="flex-1">
-                      <h3 className="font-semibold text-gray-900 text-lg">
-                        {tutor.name}
-                      </h3>
-                      <p className="text-sm text-gray-600">
-                        {tutor.university}
-                      </p>
-                      <p className="text-sm text-gray-500">{tutor.degree}</p>
-                    </div>
-                    <div
-                      className={`px-2 py-1 rounded-full text-xs font-medium ${tutor.available ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}
-                    >
-                      {tutor.available ? '可预约' : '忙碌中'}
-                    </div>
-                  </div>
-
-                  {/* Rating and Reviews */}
-                  <div className="flex items-center gap-2 mb-3">
-                    <div className="flex items-center gap-1">
-                      <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
-                      <span className="font-semibold">{tutor.rating}</span>
-                    </div>
-                    <span className="text-gray-500 text-sm">
-                      ({tutor.reviews} 评价)
-                    </span>
-                    <span className="text-gray-300">•</span>
-                    <span className="text-gray-600 text-sm">
-                      {tutor.experience}年经验
-                    </span>
-                  </div>
-
-                  {/* Specializations */}
-                  <div className="mb-4">
-                    <div className="flex flex-wrap gap-1">
-                      {tutor.specializations.slice(0, 3).map(spec => (
-                        <span
-                          key={spec}
-                          className="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded-full"
-                        >
-                          {spec}
-                        </span>
-                      ))}
-                      {tutor.specializations.length > 3 && (
-                        <span className="px-2 py-1 bg-gray-100 text-gray-600 text-xs rounded-full">
-                          +{tutor.specializations.length - 3}
-                        </span>
-                      )}
-                    </div>
-                  </div>
-
-                  {/* Bio */}
-                  <p className="text-gray-600 text-sm mb-4 line-clamp-2">
-                    {tutor.bio}
-                  </p>
-
-                  {/* Details */}
-                  <div className="space-y-2 mb-4">
-                    <div className="flex items-center gap-2 text-sm text-gray-600">
-                      <MapPin className="w-4 h-4" />
-                      {tutor.location}
-                    </div>
-                    <div className="flex items-center gap-2 text-sm text-gray-600">
-                      <Languages className="w-4 h-4" />
-                      {tutor.languages.join(', ')}
-                    </div>
-                    <div className="flex items-center gap-2 text-sm text-gray-600">
-                      <Award className="w-4 h-4" />
-                      {tutor.achievements[0]}
-                    </div>
-                  </div>
-
-                  {/* Price and Action */}
-                  <div className="flex items-center justify-between pt-4 border-t border-gray-100">
-                    <div className="flex items-center gap-1">
-                      <DollarSign className="w-4 h-4 text-green-600" />
-                      <span className="font-bold text-green-600">
-                        ${tutor.price}/小时
+                    {/* Rating and Reviews */}
+                    <div className="flex items-center gap-2 mb-3">
+                      <div className="flex items-center gap-1">
+                        <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
+                        <span className="font-semibold">{tutor.rating}</span>
+                      </div>
+                      <span className="text-muted-foreground text-sm">
+                        ({tutor.reviews} 评价)
+                      </span>
+                      <span className="text-muted-foreground">•</span>
+                      <span className="text-muted-foreground text-sm">
+                        {tutor.experience}年经验
                       </span>
                     </div>
-                    <button
-                      className={`px-4 py-2 rounded-lg font-medium text-sm transition-colors ${
-                        tutor.available
-                          ? 'bg-blue-600 text-white hover:bg-blue-700'
-                          : 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                      }`}
-                      disabled={!tutor.available}
-                      onClick={e => {
-                        e.preventDefault();
-                        e.stopPropagation();
-                        // TODO: Implement booking functionality
-                      }}
-                    >
-                      {tutor.available ? '立即预约' : '暂不可约'}
-                    </button>
+
+                    {/* Specializations */}
+                    <div className="mb-4">
+                      <div className="flex flex-wrap gap-1">
+                        {tutor.specializations.slice(0, 3).map(spec => (
+                          <Badge
+                            key={spec}
+                            variant="secondary"
+                            className="text-xs"
+                          >
+                            {spec}
+                          </Badge>
+                        ))}
+                        {tutor.specializations.length > 3 && (
+                          <Badge variant="outline" className="text-xs">
+                            +{tutor.specializations.length - 3}
+                          </Badge>
+                        )}
+                      </div>
+                    </div>
+
+                    {/* Bio */}
+                    <p className="text-muted-foreground text-sm mb-4 line-clamp-2">
+                      {tutor.bio}
+                    </p>
+
+                    {/* Details */}
+                    <div className="space-y-2 mb-4">
+                      <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                        <MapPin className="w-4 h-4" />
+                        {tutor.location}
+                      </div>
+                      <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                        <Languages className="w-4 h-4" />
+                        {tutor.languages.join(', ')}
+                      </div>
+                      <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                        <Award className="w-4 h-4" />
+                        {tutor.achievements[0]}
+                      </div>
+                    </div>
+
+                    {/* Price and Action */}
+                    <div className="flex items-center justify-between pt-4 border-t">
+                      <div className="flex items-center gap-1">
+                        <span className="font-bold text-green-600">
+                          ${tutor.price}/小时
+                        </span>
+                      </div>
+                      <Button
+                        size="sm"
+                        disabled={!tutor.available}
+                        onClick={e => {
+                          e.preventDefault();
+                          e.stopPropagation();
+                          // TODO: Implement booking functionality
+                        }}
+                      >
+                        {tutor.available ? '立即预约' : '暂不可约'}
+                      </Button>
+                    </div>
                   </div>
                 </Link>
               ))}
@@ -430,14 +430,16 @@ function TutorSearchContent() {
 
             {/* No Results */}
             {filteredTutors.length === 0 && (
-              <div className="text-center py-12">
-                <div className="text-gray-400 mb-2">
+              <div className="border border-border rounded-lg text-center py-12">
+                <div className="text-muted-foreground mb-2">
                   <Search className="w-12 h-12 mx-auto" />
                 </div>
-                <h3 className="text-lg font-medium text-gray-900 mb-2">
+                <h3 className="text-lg font-medium text-foreground mb-2">
                   未找到匹配的导师
                 </h3>
-                <p className="text-gray-600">请尝试调整搜索条件或筛选器</p>
+                <p className="text-muted-foreground">
+                  请尝试调整搜索条件或筛选器
+                </p>
               </div>
             )}
           </div>
@@ -451,8 +453,8 @@ export default function TutorSearch() {
   return (
     <Suspense
       fallback={
-        <div className="min-h-screen bg-white flex items-center justify-center">
-          加载中...
+        <div className="min-h-screen bg-background flex items-center justify-center">
+          <p className="text-muted-foreground">加载中...</p>
         </div>
       }
     >
