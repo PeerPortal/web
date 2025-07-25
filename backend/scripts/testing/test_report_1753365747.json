@@ -1,0 +1,39 @@
+{
+  "start_time": "2025-07-24T22:01:21.528965",
+  "end_time": "2025-07-24T22:02:27.516871",
+  "total_duration": 65.987906,
+  "summary": {
+    "total_suites": 4,
+    "passed_suites": 2,
+    "failed_suites": 2,
+    "total_tests": 0,
+    "passed_tests": 0,
+    "failed_tests": 0
+  },
+  "tests": {
+    "数据库测试": {
+      "success": false,
+      "duration": 19.184691905975342,
+      "error": "Supabase insert 错误: Expecting value: line 1 column 1 (char 0)\n",
+      "return_code": 1
+    },
+    "API功能测试": {
+      "success": false,
+      "duration": 20.027680158615112,
+      "error": "",
+      "return_code": 1
+    },
+    "传统-数据库完整性检查": {
+      "success": true,
+      "duration": 15.835510015487671,
+      "error": "",
+      "return_code": 0
+    },
+    "传统-传统API测试": {
+      "success": true,
+      "duration": 10.869481325149536,
+      "error": "",
+      "return_code": 0
+    }
+  }
+}

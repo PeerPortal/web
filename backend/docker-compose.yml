@@ -1,0 +1,21 @@
+# 启航引路人 - 留学双边信息平台 Docker Compose 配置
+# 使用 Supabase 云数据库
+
+services:
+  backend:
+    build: .
+    container_name: peerportal-backend
+    ports:
+      - "8000:8000"
+    environment:
+      - SUPABASE_URL=${SUPABASE_URL}
+      - SUPABASE_KEY=${SUPABASE_KEY}
+      - SUPABASE_JWT_SECRET=${SUPABASE_JWT_SECRET}
+      - SUPABASE_DB_PASSWORD=${SUPABASE_DB_PASSWORD}
+      - SECRET_KEY=${SECRET_KEY:-your-secret-key-here}
+      - DEBUG=${DEBUG:-true}
+    restart: unless-stopped
+
+networks:
+  default:
+    name: peerportal-network

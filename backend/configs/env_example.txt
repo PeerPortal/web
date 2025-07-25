@@ -1,0 +1,36 @@
+# 启航引路人后端环境变量配置示例
+# 复制此文件为 .env 并填入实际的配置值
+
+# 应用配置
+DEBUG=true
+SECRET_KEY=your-super-secret-key-change-in-production
+HOST=0.0.0.0
+PORT=8001
+
+# 数据库配置
+# 方式1: 直接提供 PostgreSQL 连接字符串
+DATABASE_URL=postgresql://username:password@host:port/database
+
+# 方式2: 使用 Supabase 配置（如果不提供 DATABASE_URL）
+SUPABASE_URL=https://your-project.supabase.co
+SUPABASE_KEY=your-supabase-anon-key
+SUPABASE_JWT_SECRET=your-supabase-jwt-secret
+SUPABASE_DB_PASSWORD=your-database-password
+
+# JWT 配置
+JWT_SECRET_KEY=your-jwt-secret-key
+JWT_ALGORITHM=HS256
+ACCESS_TOKEN_EXPIRE_MINUTES=30
+
+# AI Agent 配置
+OPENAI_API_KEY=your-openai-api-key
+TAVILY_API_KEY=your-tavily-api-key-optional
+ALGORITHM=HS256
+ACCESS_TOKEN_EXPIRE_MINUTES=60
+
+# CORS 配置
+ALLOWED_ORIGINS=["http://localhost:3000","http://localhost:8080","http://localhost:5173"]
+
+# 数据库连接池配置
+DB_POOL_MIN_SIZE=1
+DB_POOL_MAX_SIZE=10 
