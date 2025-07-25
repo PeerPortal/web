@@ -29,10 +29,7 @@ import { useAuthStore } from '@/store/auth-store';
 // Navigation links array to be used in both desktop and mobile menus
 const navigationLinks = [
   { href: '/tutor', label: '导师' },
-  { href: '/forum', label: '论坛' },
-  { href: '/ai-advisor', label: 'AI助手' },
-  { href: '/', label: '申请' },
-  { href: '/', label: '服务' }
+  { href: '/ai-advisor', label: 'AI 助手' }
 ];
 
 export default function Component() {
