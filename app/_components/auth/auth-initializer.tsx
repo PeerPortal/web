@@ -10,13 +10,16 @@ interface AuthInitializerProps {
 
 export function AuthInitializer({ children }: AuthInitializerProps) {
   const initializeAuth = useAuthStore(state => state.initializeAuth);
+  const initialized = useAuthStore(state => state.initialized);
 
   // Initialize token refresh monitoring
   useTokenRefresh();
 
   useEffect(() => {
-    initializeAuth();
-  }, [initializeAuth]);
+    if (!initialized) {
+      initializeAuth();
+    }
+  }, [initializeAuth, initialized]);
 
   return <>{children}</>;
 }

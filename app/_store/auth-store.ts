@@ -9,6 +9,7 @@ interface AuthState {
   token: string | null;
   loading: boolean;
   isAuthenticated: boolean;
+  initialized: boolean;
 
   // Actions
   login: (credentials: LoginRequest) => Promise<void>;
@@ -27,6 +28,7 @@ export const useAuthStore = create<AuthState>()(
       token: null,
       loading: true,
       isAuthenticated: false,
+      initialized: false,
 
       // Set loading state
       setLoading: (loading: boolean) => {
@@ -35,6 +37,13 @@ export const useAuthStore = create<AuthState>()(
 
       // Initialize authentication on app start
       initializeAuth: async () => {
+        const { initialized } = get();
+
+        // Skip if already initialized
+        if (initialized) {
+          return;
+        }
+
         set({ loading: true });
 
         const { token: storedToken, user: storedUser } = get();
@@ -44,8 +53,20 @@ export const useAuthStore = create<AuthState>()(
         const savedUser = storedUser || authUtils.getUser();
 
         if (token && savedUser && !authUtils.isTokenExpired(token)) {
+          // If we have valid stored data, use it without API call
+          if (storedToken && storedUser) {
+            set({
+              user: storedUser,
+              token: storedToken,
+              isAuthenticated: true,
+              loading: false,
+              initialized: true
+            });
+            return;
+          }
+
           try {
-            // Verify token is still valid by fetching current user
+            // Only verify token via API if we don't have stored data
             const currentUser = await apiClient.getCurrentUser(token);
 
             // Sync with localStorage
@@ -56,12 +77,14 @@ export const useAuthStore = create<AuthState>()(
               user: currentUser,
               token,
               isAuthenticated: true,
-              loading: false
+              loading: false,
+              initialized: true
             });
           } catch (error) {
             // Try to refresh token if available
             try {
               await get().refreshToken();
+              set({ initialized: true });
             } catch (refreshError) {
               // Both current token and refresh failed, clear everything
               authUtils.logout();
@@ -69,7 +92,8 @@ export const useAuthStore = create<AuthState>()(
                 user: null,
                 token: null,
                 isAuthenticated: false,
-                loading: false
+                loading: false,
+                initialized: true
               });
             }
           }
@@ -80,7 +104,8 @@ export const useAuthStore = create<AuthState>()(
             user: null,
             token: null,
             isAuthenticated: false,
-            loading: false
+            loading: false,
+            initialized: true
           });
         }
       },
@@ -105,7 +130,8 @@ export const useAuthStore = create<AuthState>()(
             user: userResponse,
             token: tokenResponse.access_token,
             isAuthenticated: true,
-            loading: false
+            loading: false,
+            initialized: true
           });
         } catch (error) {
           authUtils.logout();
@@ -113,7 +139,8 @@ export const useAuthStore = create<AuthState>()(
             user: null,
             token: null,
             isAuthenticated: false,
-            loading: false
+            loading: false,
+            initialized: true
           });
           throw error;
         }
@@ -144,7 +171,8 @@ export const useAuthStore = create<AuthState>()(
           user: null,
           token: null,
           isAuthenticated: false,
-          loading: false
+          loading: false,
+          initialized: true
         });
       },
 
@@ -172,7 +200,8 @@ export const useAuthStore = create<AuthState>()(
             user: userResponse,
             token: tokenResponse.access_token,
             isAuthenticated: true,
-            loading: false
+            loading: false,
+            initialized: true
           });
         } catch (error) {
           // Refresh failed, logout user
@@ -181,7 +210,8 @@ export const useAuthStore = create<AuthState>()(
             user: null,
             token: null,
             isAuthenticated: false,
-            loading: false
+            loading: false,
+            initialized: true
           });
           throw error;
         }
