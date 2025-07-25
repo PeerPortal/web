@@ -1,12 +1,43 @@
 'use client';
 
 import Image from 'next/image';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
 import SearchField from '@/components/search-field';
-import { Search, CheckCircle, Shield, Clock } from 'lucide-react';
+import { CheckCircle, Shield, Clock, ChevronRight } from 'lucide-react';
 
 export default function Homepage() {
+  const destinations = [
+    {
+      name: '北美洲',
+      properties: '122 位导师',
+      image: '/regions/north-america.jpg'
+    },
+    {
+      name: '欧洲',
+      properties: '98 位导师',
+      image: '/regions/europe.jpg'
+    },
+    {
+      name: '日本',
+      properties: '66 位导师',
+      image: '/regions/jp.jpg'
+    },
+    {
+      name: '英国',
+      properties: '221 位导师',
+      image: '/regions/uk.jpg'
+    },
+    {
+      name: '澳洲',
+      properties: '111 位导师',
+      image: '/regions/australia.jpg'
+    },
+    {
+      name: '香港',
+      properties: '45 位导师',
+      image: '/regions/hongkong.jpg'
+    }
+  ];
+
   return (
     <div className="min-h-screen bg-white">
       {/* Hero Section */}
@@ -53,6 +84,53 @@ export default function Homepage() {
                 24小时协助
               </span>
             </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Popular Areas Section */}
+      <section className="py-16 bg-gray-50 ">
+        <div className="w-full max-w-6xl mx-auto px-4">
+          <div className="mb-6">
+            <h2 className="text-2xl font-bold text-gray-900 mb-2">
+              热门留学区域
+            </h2>
+            <p className="text-gray-600 text-base">
+              探索全球最受欢迎的留学目的地
+            </p>
+          </div>
+
+          <div className="relative">
+            <div className="flex gap-4 overflow-x-auto scrollbar-hide pb-4">
+              {destinations.map((destination, index) => (
+                <div
+                  key={index}
+                  className="flex-shrink-0 w-64 cursor-pointer group"
+                >
+                  <div className="relative overflow-hidden rounded-lg mb-3">
+                    <Image
+                      src={destination.image}
+                      alt={destination.name}
+                      width={256}
+                      height={192}
+                      className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
+                    />
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-gray-900 text-lg mb-1">
+                      {destination.name}
+                    </h3>
+                    <p className="text-gray-600 text-sm">
+                      {destination.properties}
+                    </p>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            <button className="absolute right-0 top-1/2 -translate-y-1/2 bg-white rounded-full p-2 shadow-lg border border-gray-200 hover:shadow-xl transition-shadow">
+              <ChevronRight className="w-5 h-5 text-gray-600" />
+            </button>
           </div>
         </div>
       </section>
