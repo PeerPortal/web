@@ -21,6 +21,8 @@
     "baseUrl": "./app",
     "paths": {
       "@/components/*": ["_components/*"],
+      "@/context/*": ["_context/*"],
+      "@/store/*": ["_store/*"],
       "@/data/*": ["_data/*"],
       "@/lib/*": ["_lib/*"],
       "@/themes/*": ["_themes/*"],
