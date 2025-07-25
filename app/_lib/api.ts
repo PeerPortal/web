@@ -134,7 +134,7 @@ class ApiClient {
     return response;
   }
 
-  async getAICapabilities(): Promise<any> {
+  async getAICapabilities(): Promise<AICapabilitiesResponse> {
     const response = await fetch(
       `${this.baseUrl}/api/v1/planner/capabilities`,
       {
@@ -149,7 +149,7 @@ class ApiClient {
     return response.json();
   }
 
-  async checkAIHealth(): Promise<any> {
+  async checkAIHealth(): Promise<AIHealthResponse> {
     const response = await fetch(`${this.baseUrl}/api/v1/planner/health`, {
       method: 'GET'
     });
@@ -258,6 +258,18 @@ const apiRequest = async (
 };
 
 // Define types for API responses
+interface AICapabilitiesResponse {
+  capabilities: string[];
+  status: string;
+  version?: string;
+}
+
+interface AIHealthResponse {
+  status: string;
+  uptime?: number;
+  version?: string;
+}
+
 interface UserProfileResponse {
   id: number;
   username: string;

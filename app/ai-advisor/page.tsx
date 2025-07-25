@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import {
   Send,
@@ -42,7 +42,8 @@ interface StreamEvent {
   timestamp?: string;
 }
 
-export default function AIAdvisorPage() {
+// Component that handles search params
+function AIAdvisorContent() {
   const searchParams = useSearchParams();
   const [messages, setMessages] = useState<Message[]>([
     {
@@ -446,5 +447,23 @@ export default function AIAdvisorPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+// Main page component with Suspense wrapper
+export default function AIAdvisorPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="min-h-screen bg-gradient-to-br from-background via-background to-primary/5 flex items-center justify-center">
+          <div className="text-center">
+            <Bot className="h-12 w-12 text-primary mx-auto mb-4" />
+            <p className="text-lg text-muted-foreground">正在加载AI助手...</p>
+          </div>
+        </div>
+      }
+    >
+      <AIAdvisorContent />
+    </Suspense>
   );
 }
