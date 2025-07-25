@@ -19,10 +19,13 @@ class KnowledgeBaseManager:
     """知识库管理器"""
     
     def __init__(self):
-        self.embeddings = OpenAIEmbeddings(openai_api_key=settings.OPENAI_API_KEY)
+        self.embeddings = OpenAIEmbeddings(
+            openai_api_key=settings.OPENAI_API_KEY,
+            chunk_size=100  # 减小批处理大小，避免超过token限制
+        )
         self.text_splitter = RecursiveCharacterTextSplitter(
-            chunk_size=1000, 
-            chunk_overlap=200
+            chunk_size=500,  # 减小chunk大小
+            chunk_overlap=50  # 减小重叠
         )
     
     def save_uploaded_file(self, file_content: bytes, filename: str) -> str:
@@ -70,6 +73,11 @@ class KnowledgeBaseManager:
         splits = self.text_splitter.split_documents(documents)
         print(f"✂️ 文档分割完成，共 {len(splits)} 个文档块")
         
+        # 如果文档块太多，限制数量避免token超限
+        if len(splits) > 500:
+            print(f"⚠️ 文档块数量({len(splits)})过多，只处理前500个避免token超限")
+            splits = splits[:500]
+        
         # 4. 创建并持久化向量数据库
         print("🧠 正在创建向量数据库...")
         
@@ -77,11 +85,47 @@ class KnowledgeBaseManager:
         if os.path.exists(VECTOR_STORE_PATH):
             shutil.rmtree(VECTOR_STORE_PATH)
         
-        vectorstore = Chroma.from_documents(
-            documents=splits,
-            embedding=self.embeddings,
-            persist_directory=VECTOR_STORE_PATH
-        )
+        try:
+            # 批量处理，每次处理50个文档块
+            batch_size = 50
+            vectorstore = None
+            
+            for i in range(0, len(splits), batch_size):
+                batch = splits[i:i+batch_size]
+                print(f"  📦 处理第 {i//batch_size + 1} 批，共 {len(batch)} 个文档块")
+                
+                if vectorstore is None:
+                    # 第一批创建向量库
+                    vectorstore = Chroma.from_documents(
+                        documents=batch,
+                        embedding=self.embeddings,
+                        persist_directory=VECTOR_STORE_PATH,
+                        collection_name="knowledge_base"
+                    )
+                else:
+                    # 后续批次添加到现有向量库
+                    vectorstore.add_documents(batch)
+            
+        except Exception as e:
+            print(f"⚠️ ChromaDB创建失败: {e}")
+            # 降级处理：只使用留学申请成功案例.txt
+            txt_files = [doc for doc in documents if doc.metadata.get('source', '').endswith('.txt')]
+            if txt_files:
+                print("🔄 降级处理：只使用TXT文件重建知识库")
+                txt_splits = self.text_splitter.split_documents(txt_files)
+                try:
+                    os.makedirs(VECTOR_STORE_PATH, exist_ok=True)
+                    vectorstore = Chroma.from_documents(
+                        documents=txt_splits,
+                        embedding=self.embeddings,
+                        persist_directory=VECTOR_STORE_PATH,
+                        collection_name="knowledge_base"
+                    )
+                except Exception as e2:
+                    print(f"❌ 降级处理也失败: {e2}")
+                    return None
+            else:
+                return None
         
         print("✅ 向量数据库创建完成！")
         return vectorstore
@@ -94,10 +138,18 @@ class KnowledgeBaseManager:
             if vectorstore is None:
                 return None
         else:
-            vectorstore = Chroma(
-                persist_directory=VECTOR_STORE_PATH,
-                embedding_function=self.embeddings
-            )
+            try:
+                vectorstore = Chroma(
+                    persist_directory=VECTOR_STORE_PATH,
+                    embedding_function=self.embeddings,
+                    collection_name="knowledge_base"
+                )
+            except Exception as e:
+                print(f"⚠️ 加载向量数据库失败: {e}")
+                # 如果加载失败，尝试重新创建
+                vectorstore = self.load_and_embed_knowledge_base()
+                if vectorstore is None:
+                    return None
         
         return vectorstore.as_retriever(search_kwargs={"k": k})
     

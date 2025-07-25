@@ -6,9 +6,15 @@ import os
 from typing import Optional
 from langchain_openai import ChatOpenAI
 from langchain.agents import create_react_agent, AgentExecutor
-from langchain_community.tools.tavily_search import TavilySearchResults
 from langchain_community.tools.ddg_search import DuckDuckGoSearchRun
 from langchain.prompts import PromptTemplate
+
+# 新的Tavily导入
+try:
+    from langchain_tavily import TavilySearch as TavilySearchResults
+except ImportError:
+    # Fallback to old import if new package not available
+    from langchain_community.tools.tavily_search import TavilySearchResults
 
 # 导入配置和自定义工具
 from app.core.config import settings

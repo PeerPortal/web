@@ -1,23 +1,27 @@
 """
 高级AI留学规划师的API路由
 基于LangGraph实现的增强版智能咨询服务
+集成LangSmith监控和评估
 """
 from fastapi import APIRouter, HTTPException, UploadFile, File
 from fastapi.responses import StreamingResponse
 from pydantic import BaseModel, Field
-from typing import Optional, List
+from typing import Optional, List, Dict, Any
 import json
+import time
 import asyncio
 from datetime import datetime
 
 from app.agents.langgraph.agent_graph import get_advanced_agent
 from app.agents.langgraph.knowledge_base import knowledge_manager
+from app.core.langsmith_config import is_langsmith_enabled, study_abroad_tracer
 
 router = APIRouter(prefix="/advanced-planner", tags=["高级AI留学规划师"])
 
 class AdvancedPlannerRequest(BaseModel):
     """高级AI规划师请求模型"""
     input: str = Field(..., min_length=1, max_length=2000, description="用户的留学咨询问题")
+    user_id: Optional[str] = Field(default="anonymous", description="用户ID，用于LangSmith追踪")
     session_id: Optional[str] = Field(default="default", description="会话ID，用于维持对话上下文")
     chat_history: Optional[List[dict]] = Field(default=[], description="对话历史")
     stream: bool = Field(default=False, description="是否启用流式响应")
@@ -27,6 +31,8 @@ class AdvancedPlannerResponse(BaseModel):
     output: str = Field(..., description="AI的回答内容")
     session_id: str = Field(..., description="会话ID")
     timestamp: str = Field(..., description="响应时间戳")
+    metadata: Optional[Dict[str, Any]] = Field(default={}, description="响应元数据（执行时间、工具调用等）")
+    langsmith_enabled: bool = Field(default=False, description="LangSmith是否启用")
 
 class KnowledgeBaseStatus(BaseModel):
     """知识库状态模型"""
@@ -60,7 +66,7 @@ async def invoke_advanced_planner(request: AdvancedPlannerRequest):
         agent = get_agent()
         
         if request.stream:
-            # 流式响应
+            # 流式响应（暂时保持原有逻辑，未来可扩展LangSmith流式追踪）
             return StreamingResponse(
                 stream_generator(agent, request),
                 media_type="text/event-stream",
@@ -72,18 +78,50 @@ async def invoke_advanced_planner(request: AdvancedPlannerRequest):
             )
         else:
             # 非流式响应
+            start_time = time.time()
+            
             input_data = {
                 "input": request.input,
                 "session_id": request.session_id,
                 "chat_history": request.chat_history or []
             }
             
-            result = await agent.ainvoke(input_data)
+            # 检查是否启用LangSmith追踪
+            langsmith_enabled = is_langsmith_enabled()
+            
+            if langsmith_enabled:
+                # 使用LangSmith追踪执行Agent
+                async with study_abroad_tracer.trace_agent_run(
+                    agent_name="AI留学规划师",
+                    user_id=request.user_id,
+                    session_id=request.session_id,
+                    input_data=input_data
+                ) as trace_context:
+                    result = await agent.ainvoke(input_data)
+                    
+                    # 构建元数据
+                    metadata = {
+                        "execution_time": time.time() - start_time,
+                        "langsmith_run_id": trace_context.get("run_id") if trace_context else None,
+                        "user_id": request.user_id,
+                        "session_id": request.session_id
+                    }
+            else:
+                # 标准执行（无追踪）
+                result = await agent.ainvoke(input_data)
+                
+                metadata = {
+                    "execution_time": time.time() - start_time,
+                    "user_id": request.user_id,
+                    "session_id": request.session_id
+                }
             
             return AdvancedPlannerResponse(
                 output=result["output"],
                 session_id=result["session_id"],
-                timestamp=datetime.now().isoformat()
+                timestamp=datetime.now().isoformat(),
+                metadata=metadata,
+                langsmith_enabled=langsmith_enabled
             )
             
     except Exception as e:

@@ -4,8 +4,13 @@ LangGraph Agent工具集
 """
 from typing import List
 from langchain.tools import Tool
-from langchain_community.tools.tavily_search import TavilySearchResults
 from langchain_community.tools.ddg_search import DuckDuckGoSearchRun
+
+try:
+    from langchain_tavily import TavilySearch as TavilySearchResults
+except ImportError:
+    # Fallback to old import if new package not available
+    from langchain_community.tools.tavily_search import TavilySearchResults
 
 from app.core.config import settings
 from app.agents.tools.database_tools import (

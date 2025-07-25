@@ -37,6 +37,16 @@ class Settings(BaseSettings):
     OPENAI_API_KEY: str = Field(...)
     TAVILY_API_KEY: Optional[str] = Field(default=None)
     
+    # LangSmith 配置 - Agent 监控和评估
+    LANGCHAIN_TRACING_V2: Optional[bool] = Field(default=False)
+    LANGCHAIN_API_KEY: Optional[str] = Field(default=None)
+    LANGCHAIN_PROJECT: Optional[str] = Field(default="AI留学规划师-默认")
+    LANGCHAIN_ENDPOINT: Optional[str] = Field(default="https://api.smith.langchain.com")
+    
+    # Agent 性能配置
+    AGENT_MAX_ITERATIONS: int = Field(default=10)
+    AGENT_TIMEOUT_SECONDS: int = Field(default=300)
+    
     # CORS 配置
     ALLOWED_ORIGINS: list[str] = Field(
         default=["http://localhost:3000", "http://localhost:8080"]

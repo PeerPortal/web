@@ -34,14 +34,16 @@ python-multipart==0.0.19
 langchain==0.3.8
 langchain-openai==0.3.1
 langchain-community==0.3.8
-langchain-core==0.3.19
+langchain-core>=0.3.21,<0.4.0
+langchain-tavily==0.2.0
 langgraph==0.2.51
+langsmith>=0.4.0
 tavily-python==0.7.10
-duckduckgo-search==7.0.3
+duckduckgo-search==6.3.7
 
 # 知识库与向量存储
-chromadb==0.6.2
-unstructured[docx,pdf]==0.17.5
+chromadb==0.5.15
+# unstructured[docx,pdf]==0.11.8  # 暂时注释掉，有依赖冲突
 pypdf==5.2.0
 
 # Web界面
