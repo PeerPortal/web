@@ -35,7 +35,7 @@ export default function LoginPage() {
   return (
     <div className="flex min-h-[calc(100vh-4rem)] items-center justify-center px-4">
       <div className="w-full max-w-md space-y-6">
-        <div className="space-y-2 text-center">
+        <div className="space-y-2">
           <h1 className="text-2xl font-semibold tracking-tight">登录</h1>
           <p className="text-sm text-muted-foreground">
             输入您的用户名和密码登录您的账户
@@ -49,7 +49,7 @@ export default function LoginPage() {
             </div>
           )}
 
-          <div className="space-y-2">
+          <div className="space-y-2 flex flex-col">
             <Label htmlFor="username">用户名</Label>
             <Input
               id="username"
@@ -61,7 +61,7 @@ export default function LoginPage() {
             />
           </div>
 
-          <div className="space-y-2">
+          <div className="space-y-2 flex flex-col">
             <div className="flex items-center justify-between">
               <Label htmlFor="password">密码</Label>
               <Link

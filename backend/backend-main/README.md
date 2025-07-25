@@ -7,12 +7,14 @@
 ## 🌟 平台特色
 
 **为学弟学妹提供:**
+
 - 🔍 **精准匹配**: 基于目标学校、专业、申请阶段的智能推荐
 - 📝 **专业指导**: 文书修改、推荐信建议、面试辅导等服务
 - 💬 **实时沟通**: 与学长学姐直接交流经验分享
 - ⭐ **评价体系**: 透明的服务评价和质量保证
 
 **为学长学姐提供:**
+
 - 💰 **收入机会**: 通过分享经验获得合理回报
 - 📈 **信誉积累**: 建立专业指导者形象
 - 🎯 **灵活安排**: 自主设置服务时间和价格
@@ -21,6 +23,7 @@
 ## 🚀 快速开始
 
 ### 1. 环境准备
+
 ```bash
 # 创建虚拟环境
 python3 -m venv venv
@@ -32,12 +35,15 @@ pip install -r requirements.txt
 ```
 
 ### 2. 配置环境变量
+
 复制 `env_example.txt` 并创建 `.env` 文件：
+
 ```bash
 cp env_example.txt .env
 ```
 
 编辑 `.env` 文件：
+
 ```env
 SUPABASE_URL=https://your-project.supabase.co
 SUPABASE_KEY=your-supabase-anon-key
@@ -47,6 +53,7 @@ DEBUG=true
 ```
 
 ### 3. 数据库初始化
+
 ```bash
 # 在 Supabase SQL Editor 中执行 db_schema.sql
 # 运行数据库检查
@@ -54,6 +61,7 @@ python test/check_database_complete.py
 ```
 
 ### 4. 启动平台
+
 ```bash
 # 方式1: 使用启动脚本（推荐）
 ./start_server.sh
@@ -67,6 +75,7 @@ python -m uvicorn app.main:app --reload --host 0.0.0.0 --port 8001
 ## 🏗️ 技术架构
 
 ### 核心技术栈
+
 - **FastAPI 0.116.1**: 高性能Web框架，自动生成API文档
 - **PostgreSQL + Supabase**: 关系型数据库，支持实时功能
 - **asyncpg 0.30.0**: 高性能异步数据库驱动
@@ -74,6 +83,7 @@ python -m uvicorn app.main:app --reload --host 0.0.0.0 --port 8001
 - **JWT认证**: 无状态身份验证和授权
 
 ### 项目结构
+
 ```
 app/                          # 留学平台核心应用
 ├── api/                      # API层
@@ -114,6 +124,7 @@ app/                          # 留学平台核心应用
 ## 📊 数据库架构
 
 ### 21表完整数据模型
+
 ```
 📊 留学平台数据架构 (21表)
 ├── 👥 用户身份系统 (4表)
@@ -151,16 +162,19 @@ app/                          # 留学平台核心应用
 ## 🔗 API 端点总览
 
 ### 认证系统 `/api/v1/auth`
+
 - `POST /register` - 用户注册（支持学生邮箱验证）
 - `POST /login` - 用户登录
 - `POST /refresh` - 刷新访问令牌
 
 ### 用户管理 `/api/v1/users`
+
 - `GET /me` - 获取当前用户信息
 - `PUT /me` - 更新用户资料
 - `GET /{user_id}` - 获取用户基本信息
 
 ### 学长学姐端 `/api/v1/mentors`
+
 - `POST /profile` - 创建指导者资料
 - `GET /profile` - 获取自己的指导者资料
 - `PUT /profile` - 更新指导者资料
@@ -169,6 +183,7 @@ app/                          # 留学平台核心应用
 - `PUT /availability` - 设置可用时间
 
 ### 学弟学妹端 `/api/v1/students`
+
 - `POST /profile` - 创建申请者资料
 - `PUT /learning-needs` - 设置学习需求
 - `GET /matches` - 获取推荐指导者
@@ -176,24 +191,28 @@ app/                          # 留学平台核心应用
 - `POST /reviews` - 提交服务评价
 
 ### 智能匹配 `/api/v1/matching`
+
 - `POST /recommend` - 获取推荐指导者
 - `GET /filters` - 获取筛选条件
 - `POST /filter` - 高级筛选
 - `GET /history` - 查看匹配历史
 
 ### 指导服务 `/api/v1/services`
+
 - `GET /` - 浏览所有服务
 - `POST /` - 发布新服务
 - `GET /{service_id}` - 查看服务详情
 - `POST /{service_id}/purchase` - 购买服务
 
 ### 指导会话 `/api/v1/sessions`
+
 - `POST /` - 创建指导会话
 - `GET /{session_id}` - 查看会话详情
 - `POST /{session_id}/start` - 开始会话
 - `POST /{session_id}/feedback` - 提交反馈
 
 ### 评价反馈 `/api/v1/reviews`
+
 - `POST /service` - 服务评价
 - `POST /mentor` - 指导者评价
 - `GET /service/{service_id}` - 查看服务评价
@@ -202,6 +221,7 @@ app/                          # 留学平台核心应用
 ## 🧪 测试系统
 
 ### 运行完整测试
+
 ```bash
 # 运行所有测试
 python test/run_all_tests.py
@@ -216,6 +236,7 @@ python test/test_all_api.py
 ## 📱 API 使用示例
 
 ### 1. 学弟学妹注册并寻找指导者
+
 ```bash
 # 注册申请者账户
 curl -X POST "http://localhost:8001/api/v1/auth/register" \
@@ -256,6 +277,7 @@ curl -X POST "http://localhost:8001/api/v1/matching/recommend" \
 ```
 
 ### 2. 学长学姐注册并提供服务
+
 ```bash
 # 注册指导者账户
 curl -X POST "http://localhost:8001/api/v1/auth/register" \
@@ -298,6 +320,7 @@ curl -X POST "http://localhost:8001/api/v1/services" \
 ## 🔧 开发指南
 
 ### 添加新功能模块
+
 1. **定义数据模型**: 在 `app/schemas/` 中创建 Pydantic 模型
 2. **实现数据操作**: 在 `app/crud/` 中添加数据库操作函数
 3. **创建API路由**: 在 `app/api/routers/` 中定义API端点
@@ -305,6 +328,7 @@ curl -X POST "http://localhost:8001/api/v1/services" \
 5. **添加测试**: 创建相应的测试用例
 
 ### 角色权限控制
+
 ```python
 from app.api.deps import require_mentor_role, require_student_role
 
@@ -313,7 +337,7 @@ async def mentor_function(current_user = Depends(require_mentor_role())):
     # 仅限学长学姐访问的功能
     pass
 
-@router.post("/student-only-endpoint") 
+@router.post("/student-only-endpoint")
 async def student_function(current_user = Depends(require_student_role())):
     # 仅限学弟学妹访问的功能
     pass
@@ -339,6 +363,7 @@ async def student_function(current_user = Depends(require_student_role())):
 ## 🚀 生产部署
 
 ### Docker部署
+
 ```bash
 # 构建镜像
 docker build -t study-abroad-platform .
@@ -348,6 +373,7 @@ docker run -d -p 8001:8001 --env-file .env study-abroad-platform
 ```
 
 ### 环境配置
+
 ```env
 # 生产环境配置
 DEBUG=false
@@ -366,6 +392,7 @@ CORS_ORIGINS=https://yourdomain.com
 4. **端口冲突**: 更改启动端口或终止占用进程
 
 **获取支持:**
+
 - 查看详细日志输出
 - 运行健康检查: `curl http://localhost:8001/health`
 - 运行测试套件: `python test/run_all_tests.py`

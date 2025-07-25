@@ -78,7 +78,7 @@ export default function SignupPage() {
             </div>
           )}
 
-          <div className="space-y-2">
+          <div className="space-y-2 flex flex-col">
             <Label htmlFor="username">用户名</Label>
             <Input
               id="username"
@@ -90,7 +90,7 @@ export default function SignupPage() {
             />
           </div>
 
-          <div className="space-y-2">
+          <div className="space-y-2 flex flex-col">
             <Label htmlFor="email">邮箱</Label>
             <Input
               id="email"
@@ -103,7 +103,7 @@ export default function SignupPage() {
             />
           </div>
 
-          <div className="space-y-2">
+          <div className="space-y-2 flex flex-col">
             <Label htmlFor="password">密码</Label>
             <Input
               id="password"
@@ -116,7 +116,7 @@ export default function SignupPage() {
             />
           </div>
 
-          <div className="flex items-center space-x-2">
+          <div className="flex items-center space-x-2 py-2">
             <Checkbox
               id="terms"
               checked={agreedToTerms}
