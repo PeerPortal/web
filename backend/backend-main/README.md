@@ -1,28 +1,64 @@
-# 启航引路人 - 留学双边信息平台
+# 启航引路人 - AI留学规划师
 
-一个专业的留学申请指导平台，连接留学申请者（学弟学妹）与目标学校的在读生或毕业生（学长学姐），提供个性化的留学申请指导服务。
+一个基于FastAPI + LangGraph的智能留学咨询平台，融合AI对话、知识库学习、数据匹配等功能，提供个性化留学申请指导。
 
-**🎓 专业留学指导平台 | ⚡ 高性能后端架构 | 🎯 智能匹配算法**
+**🤖 AI智能对话 | 📚 知识库学习 | 🎯 精准匹配 | 🚀 高性能架构**
 
-## 🌟 平台特色
+## 🌟 核心功能
 
-**为学弟学妹提供:**
+### 🤖 AI留学规划师
 
-- 🔍 **精准匹配**: 基于目标学校、专业、申请阶段的智能推荐
-- 📝 **专业指导**: 文书修改、推荐信建议、面试辅导等服务
-- 💬 **实时沟通**: 与学长学姐直接交流经验分享
-- ⭐ **评价体系**: 透明的服务评价和质量保证
+- **智能对话**: 基于LangGraph的多轮对话AI系统
+- **知识库学习**: 支持PDF文档上传，AI自动学习专业知识
+- **实时搜索**: 集成网络搜索获取最新信息
+- **工具融合**: 数据库查询 + 网络搜索 + 知识库检索
 
-**为学长学姐提供:**
+### 🎯 智能匹配系统
 
-- 💰 **收入机会**: 通过分享经验获得合理回报
-- 📈 **信誉积累**: 建立专业指导者形象
-- 🎯 **灵活安排**: 自主设置服务时间和价格
-- 🏆 **价值实现**: 帮助学弟学妹实现留学梦想
+- **精准推荐**: 基于目标学校、专业、申请阶段的智能匹配
+- **引路人网络**: 连接在读生/毕业生与申请者
+- **服务推荐**: 个性化留学服务推荐
+- **评价体系**: 透明的服务评价和质量保证
 
-## 🚀 快速开始
+### 🌐 多端支持
 
-### 1. 环境准备
+- **REST API**: 完整的FastAPI后端服务
+- **Web界面**: Streamlit交互式界面
+- **文件上传**: 支持PDF知识库文档管理
+
+## � 项目结构
+
+```
+backend/
+├── app/                          # 应用核心代码
+│   ├── agents/                   # AI Agent相关
+│   │   ├── langgraph/           # LangGraph实现
+│   │   │   ├── agent_state.py   # Agent状态定义
+│   │   │   ├── agent_graph.py   # Agent核心逻辑
+│   │   │   ├── agent_tools.py   # 工具集合
+│   │   │   └── knowledge_base.py # 知识库管理
+│   │   ├── planner_agent.py     # 简单Agent实现
+│   │   └── tools/               # 工具实现
+│   ├── api/                     # API路由
+│   │   └── routers/             # API路由模块
+│   ├── core/                    # 核心配置
+│   ├── crud/                    # 数据库操作
+│   ├── schemas/                 # 数据模型
+│   ├── main.py                  # FastAPI应用入口
+│   └── streamlit_app.py         # Streamlit Web界面
+├── test/                        # 测试文件
+│   ├── agents/                  # Agent测试
+│   └── *.py                     # 其他功能测试
+├── scripts/                     # 工具脚本
+│   ├── database/                # 数据库相关脚本
+│   └── *.py                     # 调试和维护脚本
+├── docs/                        # 项目文档
+├── knowledge_base/              # 知识库文件存储
+├── vector_store/                # 向量数据库(ChromaDB)
+├── start_api.sh                 # FastAPI启动脚本
+├── start_streamlit.sh           # Streamlit启动脚本
+└── run_tests.sh                 # 测试运行脚本
+```
 
 ```bash
 # 创建虚拟环境
@@ -36,245 +72,324 @@ pip install -r requirements.txt
 
 ### 2. 配置环境变量
 
-复制 `env_example.txt` 并创建 `.env` 文件：
-
-```bash
-cp env_example.txt .env
-```
-
-编辑 `.env` 文件：
+复制 `configs/env_example.txt` 为 `.env` 并填入配置：
 
 ```env
+# OpenAI API Key (必需)
+OPENAI_API_KEY=sk-...
+
+# Tavily API Key (可选，用于网络搜索)
+TAVILY_API_KEY=tvly-...
+
+# Supabase数据库配置 (必需)
 SUPABASE_URL=https://your-project.supabase.co
 SUPABASE_KEY=your-supabase-anon-key
 SUPABASE_JWT_SECRET=your-jwt-secret
 DATABASE_URL=postgresql://postgres:[password]@db.[project].supabase.co:5432/postgres
+
+# 其他配置
 DEBUG=true
 ```
 
-### 3. 数据库初始化
+### 3. 启动服务
 
 ```bash
-# 在 Supabase SQL Editor 中执行 db_schema.sql
-# 运行数据库检查
+# 方式1: 启动FastAPI后端服务
+./start_api.sh
+# 访问 http://localhost:8001/docs
+
+# 方式2: 启动Streamlit Web界面
+./start_streamlit.sh
+# 访问 http://localhost:8503
+
+# 方式3: 同时启动两个服务
+./start_api.sh &
+./start_streamlit.sh
+```
+
+### 4. 运行测试
+
+```bash
+# 运行完整测试套件
+./run_tests.sh
+
+# 或单独运行测试
+python test/agents/test_simple_agent.py
 python test/check_database_complete.py
 ```
 
-### 4. 启动平台
+## 🛠️ 技术栈
 
-```bash
-# 方式1: 使用启动脚本（推荐）
-./start_server.sh
+| 组件           | 技术              | 版本    | 作用            |
+| -------------- | ----------------- | ------- | --------------- |
+| **后端框架**   | FastAPI           | 0.116.1 | RESTful API服务 |
+| **智能体核心** | LangGraph         | 0.2.51  | AI工作流编排    |
+| **大语言模型** | OpenAI GPT        | 4o-mini | 智能对话和推理  |
+| **知识库**     | ChromaDB          | 0.6.2   | 向量数据库      |
+| **文件处理**   | unstructured      | 0.17.5  | PDF/DOC解析     |
+| **Web界面**    | Streamlit         | 1.41.1  | 交互式前端      |
+| **数据库**     | Supabase          | 2.17.0  | 后端数据存储    |
+| **网络搜索**   | Tavily/DuckDuckGo | latest  | 实时信息检索    |
 
-# 方式2: 手动启动
-python -m uvicorn app.main:app --reload --host 0.0.0.0 --port 8001
+## 📊 API接口
 
-# 服务运行在 http://localhost:8001
+### AI智能体API
+
+#### 基础版Agent
+
+- `GET /api/v1/ai/planner/health` - 健康检查
+- `POST /api/v1/ai/planner/invoke` - 基础AI咨询
+
+#### 高级版Agent (推荐)
+
+- `GET /api/v1/ai/advanced-planner/health` - 健康检查
+- `POST /api/v1/ai/advanced-planner/invoke` - 高级AI咨询
+- `POST /api/v1/ai/advanced-planner/upload-documents` - 上传知识库文档
+- `GET /api/v1/ai/advanced-planner/knowledge-base/status` - 知识库状态
+
+### 平台核心API
+
+#### 用户认证 (/auth)
+
+- `POST /auth/register` - 用户注册
+- `POST /auth/login` - 用户登录
+- `POST /auth/refresh` - 刷新Token
+
+#### 学长学姐管理 (/mentors)
+
+- `GET /mentors` - 获取指导者列表
+- `POST /mentors` - 创建指导者档案
+- `GET /mentors/{id}` - 获取指导者详情
+
+#### 智能匹配 (/matching)
+
+- `POST /matching/recommend` - 获取智能推荐
+- `POST /matching/create` - 创建匹配关系
+
+#### 服务管理 (/services)
+
+- `GET /services` - 获取服务列表
+- `POST /services` - 创建新服务
+
+### API示例
+
+```python
+# AI咨询示例
+import requests
+
+response = requests.post(
+    "http://localhost:8001/api/v1/ai/advanced-planner/invoke",
+    json={
+        "message": "我想申请美国计算机科学硕士，有什么建议？",
+        "user_id": "user123"
+    }
+)
 ```
 
-## 🏗️ 技术架构
-
-### 核心技术栈
-
-- **FastAPI 0.116.1**: 高性能Web框架，自动生成API文档
-- **PostgreSQL + Supabase**: 关系型数据库，支持实时功能
-- **asyncpg 0.30.0**: 高性能异步数据库驱动
-- **Pydantic V2**: 严格的数据验证和序列化
-- **JWT认证**: 无状态身份验证和授权
-
-### 项目结构
-
-```
-app/                          # 留学平台核心应用
-├── api/                      # API层
-│   ├── deps.py              # 认证依赖和数据库连接
-│   └── routers/             # 路由模块
-│       ├── auth_router.py      # 用户认证API
-│       ├── user_router.py      # 用户管理API
-│       ├── mentor_router.py    # 学长学姐API
-│       ├── student_router.py   # 学弟学妹API
-│       ├── matching_router.py  # 智能匹配API
-│       ├── service_router.py   # 指导服务API
-│       ├── session_router.py   # 指导会话API
-│       ├── review_router.py    # 评价反馈API
-│       └── message_router.py   # 消息系统API
-├── core/                    # 核心配置
-│   ├── config.py           # 环境配置管理
-│   └── db.py               # 数据库连接池
-├── crud/                   # 数据库操作层
-│   ├── crud_user.py        # 用户数据操作
-│   ├── crud_mentor.py      # 指导者数据操作
-│   ├── crud_student.py     # 申请者数据操作
-│   ├── crud_service.py     # 服务数据操作
-│   ├── crud_matching.py    # 匹配算法数据操作
-│   ├── crud_session.py     # 会话数据操作
-│   └── crud_review.py      # 评价数据操作
-├── schemas/                # Pydantic数据模型
-│   ├── user_schema.py      # 用户模型
-│   ├── mentor_schema.py    # 指导者模型
-│   ├── student_schema.py   # 申请者模型
-│   ├── service_schema.py   # 服务模型
-│   ├── matching_schema.py  # 匹配模型
-│   ├── session_schema.py   # 会话模型
-│   ├── review_schema.py    # 评价模型
-│   └── token_schema.py     # JWT认证模型
-└── main.py                 # FastAPI应用主入口
-```
-
-## 📊 数据库架构
-
-### 21表完整数据模型
-
-```
-📊 留学平台数据架构 (21表)
-├── 👥 用户身份系统 (4表)
-│   ├── users              # 用户基础信息
-│   ├── profiles           # 详细个人资料
-│   ├── friends            # 用户关系网络
-│   └── messages           # 实时消息系统
-│
-├── 🎓 留学指导系统 (5表)
-│   ├── mentor_matches            # 学长学姐匹配记录
-│   ├── mentorship_relationships  # 指导关系管理
-│   ├── mentorship_reviews        # 指导服务评价
-│   ├── mentorship_sessions       # 指导会话记录
-│   └── mentorship_transactions   # 指导服务交易
 │
 ├── 🛍️ 服务交易系统 (3表)
-│   ├── services           # 指导服务发布
-│   ├── orders             # 服务订单管理
-│   └── reviews            # 服务评价系统
-│
-├── 🛠️ 专业技能系统 (3表)
-│   ├── skill_categories   # 申请方向分类
-│   ├── skills             # 具体专业技能
-│   └── user_skills        # 用户专业能力映射
-│
-└── 💎 用户扩展系统 (6表)
-    ├── user_availability        # 指导时间安排
-    ├── user_credit_logs         # 平台积分记录
-    ├── user_learning_needs      # 申请者学习需求
-    ├── user_reputation_stats    # 指导者信誉统计
-    ├── user_unavailable_periods # 不可用时间管理
-    └── user_wallets             # 用户钱包系统
+│ ├── services # 指导服务发布
+
+## 🔧 开发指南
+
+### 添加新的AI工具
+
+1. 在 `app/agents/tools/` 下创建工具文件：
+
+```python
+# app/agents/tools/my_tool.py
+from langchain_core.tools import tool
+
+@tool
+def my_custom_tool(query: str) -> str:
+    """My custom tool description."""
+    # 工具逻辑实现
+    return "result"
 ```
 
-## 🔗 API 端点总览
+2. 在 `app/agents/langgraph/agent_tools.py` 中注册工具：
 
-### 认证系统 `/api/v1/auth`
+```python
+from app.agents.tools.my_tool import my_custom_tool
 
-- `POST /register` - 用户注册（支持学生邮箱验证）
-- `POST /login` - 用户登录
-- `POST /refresh` - 刷新访问令牌
+tools = [
+    # 现有工具...
+    my_custom_tool,
+]
+```
 
-### 用户管理 `/api/v1/users`
+3. 重启服务测试新工具
 
-- `GET /me` - 获取当前用户信息
-- `PUT /me` - 更新用户资料
-- `GET /{user_id}` - 获取用户基本信息
+### 扩展知识库
 
-### 学长学姐端 `/api/v1/mentors`
+1. **上传文档方式**：
+   - 通过Streamlit界面上传PDF文档
+   - 直接将文档放入 `knowledge_base/` 目录
+   - 使用API接口上传文档
 
-- `POST /profile` - 创建指导者资料
-- `GET /profile` - 获取自己的指导者资料
-- `PUT /profile` - 更新指导者资料
-- `GET /{mentor_id}` - 查看指导者详情
-- `GET /` - 搜索指导者
-- `PUT /availability` - 设置可用时间
+2. **知识库重建**：
 
-### 学弟学妹端 `/api/v1/students`
+```python
+# 通过API重建知识库
+POST /api/v1/ai/advanced-planner/upload-documents
+```
 
-- `POST /profile` - 创建申请者资料
-- `PUT /learning-needs` - 设置学习需求
-- `GET /matches` - 获取推荐指导者
-- `GET /orders` - 查看服务订单
-- `POST /reviews` - 提交服务评价
+3. **查看知识库状态**：
 
-### 智能匹配 `/api/v1/matching`
+```python
+# 检查知识库状态
+GET /api/v1/ai/advanced-planner/knowledge-base/status
+```
 
-- `POST /recommend` - 获取推荐指导者
-- `GET /filters` - 获取筛选条件
-- `POST /filter` - 高级筛选
-- `GET /history` - 查看匹配历史
+### 自定义Agent行为
 
-### 指导服务 `/api/v1/services`
+修改 `app/agents/langgraph/agent_graph.py` 中的系统提示词：
 
-- `GET /` - 浏览所有服务
-- `POST /` - 发布新服务
-- `GET /{service_id}` - 查看服务详情
-- `POST /{service_id}/purchase` - 购买服务
+```python
+system_prompt = """
+你是启航引路人的AI留学规划师。
 
-### 指导会话 `/api/v1/sessions`
+核心能力：
+1. 留学申请规划和建议
+2. 学校和专业推荐
+3. 申请材料指导
+4. 面试准备建议
 
-- `POST /` - 创建指导会话
-- `GET /{session_id}` - 查看会话详情
-- `POST /{session_id}/start` - 开始会话
-- `POST /{session_id}/feedback` - 提交反馈
+# 在这里添加你的自定义指导原则
+"""
+```
 
-### 评价反馈 `/api/v1/reviews`
+### 数据库操作
 
-- `POST /service` - 服务评价
-- `POST /mentor` - 指导者评价
-- `GET /service/{service_id}` - 查看服务评价
-- `GET /mentor/{mentor_id}` - 查看指导者评价
+1. **添加新的CRUD操作**：
 
+```python
+# app/crud/crud_new_model.py
+from app.crud.base import CRUDBase
+from app.schemas.new_model_schema import NewModelCreate, NewModelUpdate
+
+crud_new_model = CRUDBase[NewModel, NewModelCreate, NewModelUpdate](NewModel)
+```
+
+2. **创建新的API路由**：
+
+````python
+# app/api/routers/new_router.py
+from fastapi import APIRouter, Depends
+from app.crud.crud_new_model import crud_new_model
+
+router = APIRouter()
+
+@router.post("/")
+async def create_item(item: NewModelCreate, db: AsyncSession = Depends(get_db)):
+    return await crud_new_model.create(db, obj_in=item)
 ## 🧪 测试系统
 
-### 运行完整测试
+### 运行完整测试套件
 
 ```bash
 # 运行所有测试
-python test/run_all_tests.py
+./run_tests.sh
 
-# 测试数据库连接
-python test/check_database_complete.py
+# 或分别运行测试
+python test/run_all_tests.py           # 所有功能测试
+python test/agents/test_simple_agent.py # 简单Agent测试
+python test/agents/test_advanced_agent.py # 高级Agent测试
+python test/check_database_complete.py  # 数据库测试
+````
 
-# 测试API功能
-python test/test_all_api.py
-```
+### 测试覆盖
 
-## 📱 API 使用示例
+- ✅ **Agent功能测试**: 简单Agent (6/6通过)
+- ✅ **数据库连接测试**: Supabase连接和表结构验证
+- ✅ **API接口测试**: 所有路由和认证测试
+- ✅ **知识库测试**: 文档上传和检索功能
+- ✅ **匹配算法测试**: 智能推荐算法验证
 
-### 1. 学弟学妹注册并寻找指导者
+## 🤝 贡献指南
+
+### 参与开发
+
+1. **Fork项目并创建分支**：
 
 ```bash
-# 注册申请者账户
-curl -X POST "http://localhost:8001/api/v1/auth/register" \
-     -H "Content-Type: application/json" \
-     -d '{
-       "username": "student2024",
-       "email": "student@university.edu",
-       "password": "securepass",
-       "role": "student"
-     }'
-
-# 登录获取token
-curl -X POST "http://localhost:8001/api/v1/auth/login" \
-     -H "Content-Type: application/x-www-form-urlencoded" \
-     -d "username=student2024&password=securepass"
-
-# 创建申请者资料
-curl -X POST "http://localhost:8001/api/v1/students/profile" \
-     -H "Authorization: Bearer YOUR_TOKEN" \
-     -H "Content-Type: application/json" \
-     -d '{
-       "current_education": "本科大四",
-       "target_degree": "master",
-       "target_universities": ["Stanford University", "MIT"],
-       "target_majors": ["Computer Science", "AI"],
-       "application_timeline": "2024秋季申请"
-     }'
-
-# 获取推荐指导者
-curl -X POST "http://localhost:8001/api/v1/matching/recommend" \
-     -H "Authorization: Bearer YOUR_TOKEN" \
-     -H "Content-Type: application/json" \
-     -d '{
-       "target_universities": ["Stanford University"],
-       "target_majors": ["Computer Science"],
-       "degree_level": "master"
-     }'
+git clone https://github.com/PeerPortal/backend.git
+cd backend
+git checkout -b feature/AmazingFeature
 ```
+
+2. **设置开发环境**：
+
+```bash
+python -m venv venv
+source venv/bin/activate
+pip install -r requirements.txt
+```
+
+3. **进行开发并测试**：
+
+```bash
+# 运行测试确保功能正常
+./run_tests.sh
+
+# 检查代码格式
+black app/ test/
+flake8 app/ test/
+```
+
+4. **提交更改**：
+
+```bash
+git add .
+git commit -m 'Add some AmazingFeature'
+git push origin feature/AmazingFeature
+```
+
+5. **创建Pull Request**
+
+### 开发规范
+
+- 🐍 **Python代码**: 遵循PEP 8规范，使用type hints
+- 📝 **API文档**: 所有接口必须有完整的docstring和示例
+- 🧪 **测试驱动**: 新功能必须包含相应的测试用例
+- 📊 **数据库**: 使用Alembic管理数据库迁移
+- 🔐 **安全**: 所有敏感操作必须有适当的权限验证
+
+## 📄 许可证
+
+本项目采用 MIT 许可证 - 查看 [LICENSE](./LICENSE) 文件了解详情。
+
+## 🆘 支持与联系
+
+### 获取帮助
+
+- 📧 **邮箱支持**: support@peerpotal.com
+- 📱 **微信群**: 扫描二维码加入开发者群
+- 🐛 **Bug报告**: [GitHub Issues](https://github.com/PeerPortal/backend/issues)
+- 📖 **技术文档**: 查看 `docs/` 目录获取详细文档
+
+### 社区
+
+- 💬 **开发者讨论**: [GitHub Discussions](https://github.com/PeerPortal/backend/discussions)
+- 🎯 **功能请求**: [Feature Requests](https://github.com/PeerPortal/backend/issues/new?template=feature_request.md)
+- 📚 **知识分享**: [Wiki页面](https://github.com/PeerPortal/backend/wiki)
+
+---
+
+## 🌟 项目愿景
+
+**启航引路人**致力于通过AI技术和社区力量，让每一个留学梦想都能得到专业、个性化的指导。我们相信：
+
+- 🎓 **知识共享**: 每个成功的留学经历都应该成为后来者的明灯
+- 🤖 **AI赋能**: 人工智能能够让个性化指导更加精准和高效
+- 🌍 **连接世界**: 留学不仅是学术提升，更是文化交流的桥梁
+- 💡 **持续创新**: 不断优化技术和服务，提供最佳用户体验
+
+**让留学申请更智能，让梦想触手可及！** 🚀✨
+
+---
+
+_© 2024 启航引路人团队. All rights reserved._
 
 ### 2. 学长学姐注册并提供服务
 

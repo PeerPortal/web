@@ -127,9 +127,12 @@ class MentorCRUD:
                 table=self.table,
                 columns="*",
                 filters=filters,
-                limit=limit,
-                offset=offset
+                limit=limit
             )
+            
+            # 手动处理offset（如果需要）
+            if offset > 0 and response:
+                response = response[offset:]
             
             return response or []
             

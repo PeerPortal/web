@@ -1,6 +1,6 @@
 'use client';
 
-import { useMemo, Suspense } from 'react';
+import { useMemo, Suspense, useState, useEffect } from 'react';
 import { useQueryState } from 'nuqs';
 import Link from 'next/link';
 import {
@@ -9,11 +9,12 @@ import {
   MapPin,
   DollarSign,
   Languages,
-  Award
+  Award,
+  Loader2
 } from 'lucide-react';
-import tutorsData from '@/data/tutors.json';
 import SearchField from '@/components/search-field';
 import TutorFilterSidebar from '@/components/tutor-filter-sidebar';
+import { searchMentors, type MentorPublic } from '@/lib/api';
 
 interface Tutor {
   id: number;
@@ -66,7 +67,57 @@ function TutorSearchContent() {
     }
   });
 
-  const tutors: Tutor[] = tutorsData;
+  const [mentors, setMentors] = useState<MentorPublic[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  // Fetch mentors from backend
+  useEffect(() => {
+    const fetchMentors = async () => {
+      setLoading(true);
+      setError(null);
+      try {
+        const data = await searchMentors({
+          limit: 50,
+          offset: 0
+        });
+        setMentors(data);
+      } catch (err) {
+        setError('Failed to load mentors. Please try again later.');
+        console.error('Error fetching mentors:', err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchMentors();
+  }, []);
+
+  // Transform backend data to match frontend Tutor interface
+  const tutors: Tutor[] = useMemo(() => {
+    return mentors.map(
+      (mentor): Tutor => ({
+        id: mentor.mentor_id || mentor.id,
+        name: mentor.title || `Mentor ${mentor.mentor_id || mentor.id}`,
+        avatar: '',
+        university: 'Unknown University',
+        degree: 'Unknown Degree',
+        major: 'Unknown Major',
+        specializations: mentor.description ? [mentor.description] : [],
+        experience: Math.floor((mentor.sessions_completed || 0) / 10),
+        rating: mentor.rating || 4.5,
+        reviews: mentor.sessions_completed || 0,
+        price: mentor.hourly_rate || 100,
+        location: 'Online',
+        bio:
+          mentor.description ||
+          'Experienced mentor ready to help you achieve your goals.',
+        languages: ['English', 'Chinese'],
+        achievements: [`${mentor.sessions_completed || 0} sessions completed`],
+        available: true
+      })
+    );
+  }, [mentors]);
 
   // Get unique values for filters
   const allMajors = Array.from(
@@ -113,6 +164,7 @@ function TutorSearchContent() {
       );
     });
   }, [
+    tutors,
     searchTerm,
     selectedMajors,
     selectedUniversities,
@@ -131,6 +183,33 @@ function TutorSearchContent() {
   const handleLanguagesChange = (languages: string[]) => {
     setSelectedLanguages(languages);
   };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-white flex items-center justify-center">
+        <div className="text-center">
+          <Loader2 className="w-8 h-8 animate-spin mx-auto mb-4 text-blue-600" />
+          <p className="text-gray-600">加载导师列表中...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-screen bg-white flex items-center justify-center">
+        <div className="text-center">
+          <p className="text-red-600 mb-4">{error}</p>
+          <button
+            onClick={() => window.location.reload()}
+            className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+          >
+            重试
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-white">

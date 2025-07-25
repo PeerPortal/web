@@ -14,15 +14,74 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
-import tutorsData from '@/data/tutors.json';
+import { searchMentors, type MentorPublic } from '@/lib/api';
 
 interface PageProps {
   params: Promise<{ id: string }>;
 }
 
+interface TutorData {
+  id: number;
+  name: string;
+  avatar: string;
+  university: string;
+  degree: string;
+  major: string;
+  specializations: string[];
+  experience: number;
+  rating: number;
+  reviews: number;
+  price: number;
+  location: string;
+  bio: string;
+  languages: string[];
+  achievements: string[];
+  available: boolean;
+}
+
+async function getTutorData(id: string): Promise<TutorData | null> {
+  try {
+    // Since we don't have a getMentorById endpoint, we'll fetch all mentors and find the one we need
+    // In a real application, you might want to implement a better solution
+    const mentors = await searchMentors({ limit: 100 });
+    const mentor = mentors.find(
+      m => m.mentor_id === parseInt(id) || m.id === parseInt(id)
+    );
+
+    if (!mentor) {
+      return null;
+    }
+
+    // Transform backend data to match frontend interface
+    return {
+      id: mentor.mentor_id || mentor.id,
+      name: mentor.title || `Mentor ${mentor.mentor_id || mentor.id}`,
+      avatar: '',
+      university: 'Unknown University',
+      degree: 'Unknown Degree',
+      major: 'Unknown Major',
+      specializations: mentor.description ? [mentor.description] : [],
+      experience: Math.floor((mentor.sessions_completed || 0) / 10),
+      rating: mentor.rating || 4.5,
+      reviews: mentor.sessions_completed || 0,
+      price: mentor.hourly_rate || 100,
+      location: 'Online',
+      bio:
+        mentor.description ||
+        'Experienced mentor ready to help you achieve your goals.',
+      languages: ['English', 'Chinese'],
+      achievements: [`${mentor.sessions_completed || 0} sessions completed`],
+      available: true
+    };
+  } catch (error) {
+    console.error('Failed to fetch tutor data:', error);
+    return null;
+  }
+}
+
 export default async function TutorDetailPage({ params }: PageProps) {
   const { id } = await params;
-  const tutor = tutorsData.find(t => t.id === parseInt(id));
+  const tutor = await getTutorData(id);
 
   if (!tutor) {
     notFound();
@@ -44,12 +103,9 @@ export default async function TutorDetailPage({ params }: PageProps) {
             <CardHeader>
               <div className="flex items-start gap-6">
                 <div className="relative h-32 w-32 shrink-0">
-                  <Image
-                    src={tutor.avatar}
-                    alt={tutor.name}
-                    fill
-                    className="rounded-lg object-cover"
-                  />
+                  <div className="h-32 w-32 bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg flex items-center justify-center text-white font-bold text-3xl">
+                    {tutor.name.charAt(0)}
+                  </div>
                   {tutor.available && (
                     <div className="absolute -top-2 -right-2 h-4 w-4 bg-green-500 rounded-full border-2 border-white" />
                   )}

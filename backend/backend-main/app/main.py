@@ -69,6 +69,9 @@ from app.api.routers import (
 from app.api.routers.mentor_router_fixed import router as mentor_router_fixed
 from app.api.routers.student_router_fixed import router as student_router_fixed
 from app.api.routers.service_router_fixed import router as service_router_fixed
+# AI留学规划师路由
+from app.api.routers.planner_router import router as planner_router
+from app.api.routers.advanced_planner_router import router as advanced_planner_router
 
 # 用户认证和管理
 app.include_router(auth_router.router, prefix="/api/v1/auth", tags=["认证系统"])
@@ -88,6 +91,10 @@ app.include_router(review_router.router, prefix="/api/v1/reviews", tags=["评价
 
 # 消息系统
 app.include_router(message_router.router, prefix="/api/v1/messages", tags=["消息系统"])
+
+# AI留学规划师
+app.include_router(planner_router, prefix="/api/v1/ai", tags=["AI留学规划师"])
+app.include_router(advanced_planner_router, prefix="/api/v1/ai", tags=["高级AI留学规划师"])
 
 @app.get("/", summary="平台首页", description="留学双边信息平台API首页")
 async def read_root():

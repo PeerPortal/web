@@ -33,6 +33,10 @@ class Settings(BaseSettings):
     ALGORITHM: str = Field(default="HS256")
     ACCESS_TOKEN_EXPIRE_MINUTES: int = Field(default=60)
     
+    # AI Agent 配置
+    OPENAI_API_KEY: str = Field(...)
+    TAVILY_API_KEY: Optional[str] = Field(default=None)
+    
     # CORS 配置
     ALLOWED_ORIGINS: list[str] = Field(
         default=["http://localhost:3000", "http://localhost:8080"]

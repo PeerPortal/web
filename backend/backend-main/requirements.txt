@@ -30,6 +30,23 @@ requests==2.32.4
 # 文件上传支持
 python-multipart==0.0.19
 
+# AI Agent相关
+langchain==0.3.8
+langchain-openai==0.3.1
+langchain-community==0.3.8
+langchain-core==0.3.19
+langgraph==0.2.51
+tavily-python==0.7.10
+duckduckgo-search==7.0.3
+
+# 知识库与向量存储
+chromadb==0.6.2
+unstructured[docx,pdf]==0.17.5
+pypdf==5.2.0
+
+# Web界面
+streamlit==1.41.1
+
 # 开发与测试
 pytest==8.3.4
 pytest-asyncio==0.25.0
