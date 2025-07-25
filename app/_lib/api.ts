@@ -109,6 +109,51 @@ class ApiClient {
 
     return response.json();
   }
+
+  // AI Agent Methods
+  async sendChatMessage(message: string, sessionId?: string): Promise<Response> {
+    const response = await fetch(`${this.baseUrl}/api/v1/planner/invoke`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        input: message,
+        session_id: sessionId,
+        stream: true
+      })
+    });
+
+    if (!response.ok) {
+      throw new Error('Failed to send chat message');
+    }
+
+    return response;
+  }
+
+  async getAICapabilities(): Promise<any> {
+    const response = await fetch(`${this.baseUrl}/api/v1/planner/capabilities`, {
+      method: 'GET'
+    });
+
+    if (!response.ok) {
+      throw new Error('Failed to get AI capabilities');
+    }
+
+    return response.json();
+  }
+
+  async checkAIHealth(): Promise<any> {
+    const response = await fetch(`${this.baseUrl}/api/v1/planner/health`, {
+      method: 'GET'
+    });
+
+    if (!response.ok) {
+      throw new Error('AI service is not available');
+    }
+
+    return response.json();
+  }
 }
 
 // Helper function to get auth token

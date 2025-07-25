@@ -30,6 +30,7 @@ import { useAuthStore } from '@/store/auth-store';
 const navigationLinks = [
   { href: '/tutor', label: '导师' },
   { href: '/forum', label: '论坛' },
+  { href: '/ai-advisor', label: 'AI助手' },
   { href: '/', label: '申请' },
   { href: '/', label: '服务' }
 ];

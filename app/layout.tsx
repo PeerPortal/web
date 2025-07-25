@@ -5,6 +5,7 @@ import Navbar from '@/components/base/navbar';
 import Footer from '@/components/base/footer';
 import { NuqsAdapter } from 'nuqs/adapters/next/app';
 import { AuthInitializer } from '@/components/auth/auth-initializer';
+import ChatWidget from '@/components/ui/chat-widget';
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -35,6 +36,7 @@ export default function RootLayout({
           <Navbar />
           <NuqsAdapter>{children}</NuqsAdapter>
           <Footer />
+          <ChatWidget />
         </AuthInitializer>
       </body>
     </html>
