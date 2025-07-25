@@ -6,6 +6,7 @@ import { authUtils } from '@/lib/auth';
 interface AuthState {
   // State
   user: User | null;
+  token: string | null;
   loading: boolean;
   isAuthenticated: boolean;
 
@@ -15,6 +16,7 @@ interface AuthState {
   logout: () => void;
   initializeAuth: () => Promise<void>;
   setLoading: (loading: boolean) => void;
+  refreshToken: () => Promise<void>;
 }
 
 export const useAuthStore = create<AuthState>()(
@@ -22,6 +24,7 @@ export const useAuthStore = create<AuthState>()(
     (set, get) => ({
       // Initial state
       user: null,
+      token: null,
       loading: true,
       isAuthenticated: false,
 
@@ -34,32 +37,48 @@ export const useAuthStore = create<AuthState>()(
       initializeAuth: async () => {
         set({ loading: true });
 
-        const token = authUtils.getToken();
-        const savedUser = authUtils.getUser();
+        const { token: storedToken, user: storedUser } = get();
+
+        // Use stored data from Zustand first, fallback to localStorage
+        const token = storedToken || authUtils.getToken();
+        const savedUser = storedUser || authUtils.getUser();
 
         if (token && savedUser && !authUtils.isTokenExpired(token)) {
           try {
             // Verify token is still valid by fetching current user
             const currentUser = await apiClient.getCurrentUser(token);
+
+            // Sync with localStorage
+            authUtils.setToken(token);
+            authUtils.setUser(currentUser);
+
             set({
               user: currentUser,
+              token,
               isAuthenticated: true,
               loading: false
             });
           } catch (error) {
-            // Token is invalid, clear storage
-            authUtils.logout();
-            set({
-              user: null,
-              isAuthenticated: false,
-              loading: false
-            });
+            // Try to refresh token if available
+            try {
+              await get().refreshToken();
+            } catch (refreshError) {
+              // Both current token and refresh failed, clear everything
+              authUtils.logout();
+              set({
+                user: null,
+                token: null,
+                isAuthenticated: false,
+                loading: false
+              });
+            }
           }
         } else {
           // Clear invalid/expired data
           authUtils.logout();
           set({
             user: null,
+            token: null,
             isAuthenticated: false,
             loading: false
           });
@@ -72,16 +91,19 @@ export const useAuthStore = create<AuthState>()(
 
         try {
           const tokenResponse = await apiClient.login(credentials);
-          authUtils.setToken(tokenResponse.access_token);
 
           // Get user info after successful login
           const userResponse = await apiClient.getCurrentUser(
             tokenResponse.access_token
           );
+
+          // Sync with localStorage
+          authUtils.setToken(tokenResponse.access_token);
           authUtils.setUser(userResponse);
 
           set({
             user: userResponse,
+            token: tokenResponse.access_token,
             isAuthenticated: true,
             loading: false
           });
@@ -89,6 +111,7 @@ export const useAuthStore = create<AuthState>()(
           authUtils.logout();
           set({
             user: null,
+            token: null,
             isAuthenticated: false,
             loading: false
           });
@@ -119,17 +142,58 @@ export const useAuthStore = create<AuthState>()(
         authUtils.logout();
         set({
           user: null,
+          token: null,
           isAuthenticated: false,
           loading: false
         });
+      },
+
+      // Refresh token action
+      refreshToken: async () => {
+        const { token } = get();
+
+        if (!token) {
+          throw new Error('No token available for refresh');
+        }
+
+        try {
+          const tokenResponse = await apiClient.refreshToken(token);
+
+          // Get updated user info
+          const userResponse = await apiClient.getCurrentUser(
+            tokenResponse.access_token
+          );
+
+          // Sync with localStorage
+          authUtils.setToken(tokenResponse.access_token);
+          authUtils.setUser(userResponse);
+
+          set({
+            user: userResponse,
+            token: tokenResponse.access_token,
+            isAuthenticated: true,
+            loading: false
+          });
+        } catch (error) {
+          // Refresh failed, logout user
+          authUtils.logout();
+          set({
+            user: null,
+            token: null,
+            isAuthenticated: false,
+            loading: false
+          });
+          throw error;
+        }
       }
     }),
     {
       name: 'auth-storage', // unique name for localStorage key
       storage: createJSONStorage(() => localStorage),
-      // Only persist user and isAuthenticated, not loading state
+      // Persist user, token and isAuthenticated, not loading state
       partialize: state => ({
         user: state.user,
+        token: state.token,
         isAuthenticated: state.isAuthenticated
       })
     }

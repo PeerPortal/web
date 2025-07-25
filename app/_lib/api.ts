@@ -114,7 +114,96 @@ class ApiClient {
 // Helper function to get auth token
 const getAuthToken = (): string => {
   if (typeof window === 'undefined') return '';
+
+  // Try to get from Zustand store first
+  try {
+    const authStorage = localStorage.getItem('auth-storage');
+    if (authStorage) {
+      const parsedAuth = JSON.parse(authStorage);
+      if (parsedAuth?.state?.token) {
+        return parsedAuth.state.token;
+      }
+    }
+  } catch (error) {
+    console.warn('Failed to parse auth storage:', error);
+  }
+
+  // Fallback to old localStorage key
   return localStorage.getItem('auth_token') || '';
+};
+
+// API request wrapper with automatic token refresh
+const apiRequest = async (
+  url: string,
+  options: RequestInit = {}
+): Promise<Response> => {
+  const token = getAuthToken();
+
+  // Add auth header if token exists
+  const headers = {
+    'Content-Type': 'application/json',
+    ...options.headers,
+    ...(token && { Authorization: `Bearer ${token}` })
+  };
+
+  const response = await fetch(url, {
+    ...options,
+    headers
+  });
+
+  // If token expired (401), try to refresh
+  if (response.status === 401 && token) {
+    try {
+      // Try to get refresh function from auth store
+      if (typeof window !== 'undefined') {
+        const authStorage = localStorage.getItem('auth-storage');
+        if (authStorage) {
+          const parsedAuth = JSON.parse(authStorage);
+          if (parsedAuth?.state?.token) {
+            // Attempt to refresh token
+            const refreshResponse = await fetch(
+              `${API_BASE_URL}/api/v1/auth/refresh`,
+              {
+                method: 'POST',
+                headers: {
+                  Authorization: `Bearer ${parsedAuth.state.token}`
+                }
+              }
+            );
+
+            if (refreshResponse.ok) {
+              const tokenData = await refreshResponse.json();
+
+              // Update localStorage directly since we can't access Zustand here
+              const updatedAuth = {
+                ...parsedAuth,
+                state: {
+                  ...parsedAuth.state,
+                  token: tokenData.access_token
+                }
+              };
+              localStorage.setItem('auth-storage', JSON.stringify(updatedAuth));
+
+              // Retry original request with new token
+              const newHeaders = {
+                ...headers,
+                Authorization: `Bearer ${tokenData.access_token}`
+              };
+
+              return fetch(url, {
+                ...options,
+                headers: newHeaders
+              });
+            }
+          }
+        }
+      }
+    } catch (refreshError) {
+      console.warn('Token refresh failed:', refreshError);
+    }
+  }
+
+  return response;
 };
 
 // Define types for API responses
@@ -143,13 +232,7 @@ interface SessionStatistics {
 
 // Profile and user data functions
 export const getUserProfile = async (): Promise<UserProfileResponse> => {
-  const token = getAuthToken();
-  const response = await fetch(`${API_BASE_URL}/api/v1/users/me`, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-      'Content-Type': 'application/json'
-    }
-  });
+  const response = await apiRequest(`${API_BASE_URL}/api/v1/users/me`);
 
   if (!response.ok) {
     throw new Error('Failed to fetch user profile');
@@ -163,19 +246,12 @@ export const getUserSessions = async (params?: {
   limit?: number;
   offset?: number;
 }): Promise<unknown[]> => {
-  const token = getAuthToken();
   const queryParams = new URLSearchParams();
   if (params?.limit) queryParams.append('limit', params.limit.toString());
   if (params?.offset) queryParams.append('offset', params.offset.toString());
 
-  const response = await fetch(
-    `${API_BASE_URL}/api/v1/sessions?${queryParams}`,
-    {
-      headers: {
-        Authorization: `Bearer ${token}`,
-        'Content-Type': 'application/json'
-      }
-    }
+  const response = await apiRequest(
+    `${API_BASE_URL}/api/v1/sessions?${queryParams}`
   );
 
   if (!response.ok) {
@@ -186,13 +262,9 @@ export const getUserSessions = async (params?: {
 };
 
 export const getSessionStatistics = async (): Promise<SessionStatistics> => {
-  const token = getAuthToken();
-  const response = await fetch(`${API_BASE_URL}/api/v1/sessions/statistics`, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-      'Content-Type': 'application/json'
-    }
-  });
+  const response = await apiRequest(
+    `${API_BASE_URL}/api/v1/sessions/statistics`
+  );
 
   if (!response.ok) {
     throw new Error('Failed to fetch session statistics');
@@ -203,13 +275,7 @@ export const getSessionStatistics = async (): Promise<SessionStatistics> => {
 
 // Student/Mentor specific data
 export const getStudentProfile = async (): Promise<unknown> => {
-  const token = getAuthToken();
-  const response = await fetch(`${API_BASE_URL}/api/v1/students/profile`, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-      'Content-Type': 'application/json'
-    }
-  });
+  const response = await apiRequest(`${API_BASE_URL}/api/v1/students/profile`);
 
   if (!response.ok) {
     throw new Error('Failed to fetch student profile');
@@ -223,19 +289,12 @@ export const getUserOrders = async (params?: {
   limit?: number;
   offset?: number;
 }): Promise<unknown[]> => {
-  const token = getAuthToken();
   const queryParams = new URLSearchParams();
   if (params?.limit) queryParams.append('limit', params.limit.toString());
   if (params?.offset) queryParams.append('offset', params.offset.toString());
 
-  const response = await fetch(
-    `${API_BASE_URL}/api/v1/services/orders/my-orders?${queryParams}`,
-    {
-      headers: {
-        Authorization: `Bearer ${token}`,
-        'Content-Type': 'application/json'
-      }
-    }
+  const response = await apiRequest(
+    `${API_BASE_URL}/api/v1/services/orders/my-orders?${queryParams}`
   );
 
   if (!response.ok) {
@@ -250,19 +309,12 @@ export const getUserReviews = async (params?: {
   limit?: number;
   offset?: number;
 }): Promise<unknown[]> => {
-  const token = getAuthToken();
   const queryParams = new URLSearchParams();
   if (params?.limit) queryParams.append('limit', params.limit.toString());
   if (params?.offset) queryParams.append('offset', params.offset.toString());
 
-  const response = await fetch(
-    `${API_BASE_URL}/api/v1/reviews/my-reviews?${queryParams}`,
-    {
-      headers: {
-        Authorization: `Bearer ${token}`,
-        'Content-Type': 'application/json'
-      }
-    }
+  const response = await apiRequest(
+    `${API_BASE_URL}/api/v1/reviews/my-reviews?${queryParams}`
   );
 
   if (!response.ok) {
@@ -359,13 +411,7 @@ export const searchMentors = async (params?: {
 };
 
 export const getMentorProfile = async (): Promise<MentorProfile> => {
-  const token = getAuthToken();
-  const response = await fetch(`${API_BASE_URL}/api/v1/mentors/profile`, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-      'Content-Type': 'application/json'
-    }
-  });
+  const response = await apiRequest(`${API_BASE_URL}/api/v1/mentors/profile`);
 
   if (!response.ok) {
     throw new Error('Failed to fetch mentor profile');
@@ -381,13 +427,8 @@ export const createMentorProfile = async (profileData: {
   hourly_rate?: number;
   session_duration_minutes?: number;
 }): Promise<MentorProfile> => {
-  const token = getAuthToken();
-  const response = await fetch(`${API_BASE_URL}/api/v1/mentors/profile`, {
+  const response = await apiRequest(`${API_BASE_URL}/api/v1/mentors/profile`, {
     method: 'POST',
-    headers: {
-      Authorization: `Bearer ${token}`,
-      'Content-Type': 'application/json'
-    },
     body: JSON.stringify(profileData)
   });
 
@@ -405,13 +446,8 @@ export const updateMentorProfile = async (profileData: {
   hourly_rate?: number;
   session_duration_minutes?: number;
 }): Promise<MentorProfile> => {
-  const token = getAuthToken();
-  const response = await fetch(`${API_BASE_URL}/api/v1/mentors/profile`, {
+  const response = await apiRequest(`${API_BASE_URL}/api/v1/mentors/profile`, {
     method: 'PUT',
-    headers: {
-      Authorization: `Bearer ${token}`,
-      'Content-Type': 'application/json'
-    },
     body: JSON.stringify(profileData)
   });
 
@@ -423,13 +459,8 @@ export const updateMentorProfile = async (profileData: {
 };
 
 export const deleteMentorProfile = async (): Promise<{ message: string }> => {
-  const token = getAuthToken();
-  const response = await fetch(`${API_BASE_URL}/api/v1/mentors/profile`, {
-    method: 'DELETE',
-    headers: {
-      Authorization: `Bearer ${token}`,
-      'Content-Type': 'application/json'
-    }
+  const response = await apiRequest(`${API_BASE_URL}/api/v1/mentors/profile`, {
+    method: 'DELETE'
   });
 
   if (!response.ok) {
@@ -444,19 +475,12 @@ export const getUserMessages = async (params?: {
   limit?: number;
   offset?: number;
 }): Promise<unknown[]> => {
-  const token = getAuthToken();
   const queryParams = new URLSearchParams();
   if (params?.limit) queryParams.append('limit', params.limit.toString());
   if (params?.offset) queryParams.append('offset', params.offset.toString());
 
-  const response = await fetch(
-    `${API_BASE_URL}/api/v1/messages?${queryParams}`,
-    {
-      headers: {
-        Authorization: `Bearer ${token}`,
-        'Content-Type': 'application/json'
-      }
-    }
+  const response = await apiRequest(
+    `${API_BASE_URL}/api/v1/messages?${queryParams}`
   );
 
   if (!response.ok) {
@@ -469,18 +493,11 @@ export const getUserMessages = async (params?: {
 export const getUserConversations = async (params?: {
   limit?: number;
 }): Promise<unknown[]> => {
-  const token = getAuthToken();
   const queryParams = new URLSearchParams();
   if (params?.limit) queryParams.append('limit', params.limit.toString());
 
-  const response = await fetch(
-    `${API_BASE_URL}/api/v1/messages/conversations?${queryParams}`,
-    {
-      headers: {
-        Authorization: `Bearer ${token}`,
-        'Content-Type': 'application/json'
-      }
-    }
+  const response = await apiRequest(
+    `${API_BASE_URL}/api/v1/messages/conversations?${queryParams}`
   );
 
   if (!response.ok) {
@@ -494,13 +511,8 @@ export const getUserConversations = async (params?: {
 export const updateUserProfile = async (
   profileData: Record<string, unknown> | ProfileUpdateData
 ): Promise<User> => {
-  const token = getAuthToken();
-  const response = await fetch(`${API_BASE_URL}/api/v1/users/me`, {
+  const response = await apiRequest(`${API_BASE_URL}/api/v1/users/me`, {
     method: 'PUT',
-    headers: {
-      Authorization: `Bearer ${token}`,
-      'Content-Type': 'application/json'
-    },
     body: JSON.stringify(profileData)
   });
 
@@ -515,13 +527,8 @@ export const updateUserProfile = async (
 export const updateUserBasicProfile = async (
   profileData: Record<string, unknown>
 ): Promise<UserProfileResponse> => {
-  const token = getAuthToken();
-  const response = await fetch(`${API_BASE_URL}/api/v1/users/me/basic`, {
+  const response = await apiRequest(`${API_BASE_URL}/api/v1/users/me/basic`, {
     method: 'PUT',
-    headers: {
-      Authorization: `Bearer ${token}`,
-      'Content-Type': 'application/json'
-    },
     body: JSON.stringify(profileData)
   });
 

@@ -1,5 +1,3 @@
-
-
 ### **技术文档：高级AI留学规划师 (Powered by LangGraph & RAG)**
 
 #### **项目概述**
@@ -8,18 +6,18 @@
 
 **核心技术栈:**
 
-| 组件 | 技术 | 作用 |
-| :--- | :--- | :--- |
-| **智能体核心** | **LangGraph** | 构建健壮、可控的智能体工作流（ReAct循环）。 |
-| **大语言模型** | OpenAI GPT-4 | 负责推理、决策和生成。 |
-| **Web搜索工具** | Tavily AI | 提供专为AI优化的实时网络搜索能力。 |
-| **文件处理** | `unstructured`, `pypdf` | 解析用户上传的PDF、DOC等文件内容。 |
-| **知识库/长期记忆** | **ChromaDB** + OpenAI Embeddings | 将文件内容向量化后存入ChromaDB，实现长期记忆和RAG检索。 |
-| **短期记忆** | LangChain Memory | 在单次会话中维持上下文。 |
-| **Web界面** | **Streamlit** | 快速搭建一个支持文件上传和实时对话的交互式Web UI。 |
-| **后端服务** | **FastAPI** | （可选集成）将Agent逻辑封装成API，供更复杂的系统调用。本教程将Streamlit作为主服务。 |
+| 组件                | 技术                             | 作用                                                                                |
+| :------------------ | :------------------------------- | :---------------------------------------------------------------------------------- |
+| **智能体核心**      | **LangGraph**                    | 构建健壮、可控的智能体工作流（ReAct循环）。                                         |
+| **大语言模型**      | OpenAI GPT-4                     | 负责推理、决策和生成。                                                              |
+| **Web搜索工具**     | Tavily AI                        | 提供专为AI优化的实时网络搜索能力。                                                  |
+| **文件处理**        | `unstructured`, `pypdf`          | 解析用户上传的PDF、DOC等文件内容。                                                  |
+| **知识库/长期记忆** | **ChromaDB** + OpenAI Embeddings | 将文件内容向量化后存入ChromaDB，实现长期记忆和RAG检索。                             |
+| **短期记忆**        | LangChain Memory                 | 在单次会话中维持上下文。                                                            |
+| **Web界面**         | **Streamlit**                    | 快速搭建一个支持文件上传和实时对话的交互式Web UI。                                  |
+| **后端服务**        | **FastAPI**                      | （可选集成）将Agent逻辑封装成API，供更复杂的系统调用。本教程将Streamlit作为主服务。 |
 
------
+---
 
 ### **第一步：项目设置与环境准备**
 
@@ -83,7 +81,7 @@
     TAVILY_API_KEY = os.getenv("TAVILY_API_KEY")
     ```
 
------
+---
 
 ### **第二步：构建知识库与记忆系统 (RAG + ChromaDB)**
 
@@ -131,7 +129,7 @@
         """获取现有的向量数据库检索器。"""
         if not os.path.exists(VECTOR_STORE_PATH):
             return load_and_embed_knowledge_base().as_retriever()
-        
+
         vectorstore = Chroma(
             persist_directory=VECTOR_STORE_PATH,
             embedding_function=OpenAIEmbeddings()
@@ -159,12 +157,12 @@
         retriever = get_retriever()
         if retriever is None:
             return ["知识库为空，无法查询。"]
-        
+
         docs = retriever.invoke(query)
         return [doc.page_content for doc in docs]
     ```
 
------
+---
 
 ### **第三步：定义Agent的工具集与核心逻辑 (LangGraph)**
 
@@ -275,7 +273,7 @@
     agent_graph = graph.compile()
     ```
 
------
+---
 
 ### **第四步：构建交互式Web界面 (`app.py`)**
 
@@ -311,7 +309,7 @@ with st.sidebar:
                 for file in uploaded_files:
                     with open(os.path.join(save_path, file.name), "wb") as f:
                         f.write(file.getbuffer())
-                
+
                 # 构建向量数据库
                 load_and_embed_knowledge_base()
                 st.success("知识库构建完成！")
@@ -341,18 +339,18 @@ if user_prompt:
             # 使用流式输出来实时显示Agent的思考过程
             response_container = st.empty()
             full_response = ""
-            
+
             # 调用 LangGraph
             events = agent_graph.stream({
                 "input": user_prompt,
                 "chat_history": st.session_state.chat_history,
                 "intermediate_steps": []
             })
-            
+
             for event in events:
                 # 打印所有事件，方便调试
-                # print(event) 
-                
+                # print(event)
+
                 if "agent" in event:
                     outcome = event["agent"].get("agent_outcome")
                     if outcome:
@@ -366,12 +364,12 @@ if user_prompt:
                                 tool_args = tool_call['args']
                                 full_response += f"正在调用工具: `{tool_name}`\n参数: `{tool_args}`\n\n"
                                 response_container.markdown(full_response)
-            
+
     st.session_state.chat_history.append(AIMessage(content=full_response))
 
 ```
 
------
+---
 
 ### **第五步：运行你的高级Agent**
 
@@ -382,12 +380,12 @@ if user_prompt:
     streamlit run app.py
     ```
 4.  浏览器会自动打开一个Web界面。
-      * **第一步：** 在左侧边栏上传你的PDF/DOC文件（如：名校申请成功案例、各项目介绍、文书写作指南等）。
-      * **第二步：** 点击“构建/更新知识库”按钮，等待处理完成。
-      * **第三步：** 在主对话框中开始与“启航AI”对话。
+    - **第一步：** 在左侧边栏上传你的PDF/DOC文件（如：名校申请成功案例、各项目介绍、文书写作指南等）。
+    - **第二步：** 点击“构建/更新知识库”按钮，等待处理完成。
+    - **第三步：** 在主对话框中开始与“启航AI”对话。
 
 **测试问题示例：**
 
-  * “根据知识库里的成功案例，申请CMU的CS项目，简历上应该突出哪些方面？” (会调用知识库)
-  * “最近的US News计算机科学专业排名是怎样的？” (会调用网络搜索)
-  * “我上一条问题问的是什么？” (测试短期记忆)
+- “根据知识库里的成功案例，申请CMU的CS项目，简历上应该突出哪些方面？” (会调用知识库)
+- “最近的US News计算机科学专业排名是怎样的？” (会调用网络搜索)
+- “我上一条问题问的是什么？” (测试短期记忆)
