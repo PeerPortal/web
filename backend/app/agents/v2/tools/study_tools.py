@@ -181,7 +181,7 @@ async def find_services_tool(category: str = None, max_price: int = None) -> str
 @tool
 async def get_platform_stats_tool() -> str:
     """
-    获取PeerPortal平台的统计信息。
+    获取OfferIn平台的统计信息。
     
     提供平台的引路人数量、服务统计、用户分布等信息，
     帮助用户了解平台的规模和服务能力。
@@ -231,7 +231,7 @@ async def get_platform_stats_tool() -> str:
         else:
             category_stats = "暂无服务分类统计"
         
-        result = f"""📊 **PeerPortal 启航引路人平台数据概览**
+        result = f"""📊 **OfferIn 学长帮平台数据概览**
 
 👥 **用户社区**:
    🎓 引路人（学长学姐）: **{mentor_count}** 位
@@ -393,7 +393,7 @@ def _get_mock_services_data(category: str = None, max_price: int = None) -> str:
 
 def _get_mock_platform_stats() -> str:
     """返回模拟的平台统计数据"""
-    return """📊 **PeerPortal 启航引路人平台数据概览** (模拟数据)
+    return """📊 **OfferIn 学长帮平台数据概览** (模拟数据)
 
 👥 **用户社区**:
    🎓 引路人（学长学姐）: **150** 位

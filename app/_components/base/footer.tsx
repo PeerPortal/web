@@ -33,7 +33,7 @@ export default function Footer() {
             <div className="space-y-4">
               <Link href="/" className="flex items-center gap-2">
                 <Logo size={32} />
-                <span className="text-xl font-bold">PeerPortal</span>
+                <span className="text-xl font-bold">OfferIn</span>
               </Link>
               <p className="text-muted-foreground text-sm">
                 留学申请一站式平台，为您的留学之路提供专业指导与支持。
@@ -96,7 +96,7 @@ export default function Footer() {
               <div className="space-y-2 pt-2">
                 <div className="flex items-center gap-2 text-sm text-muted-foreground">
                   <Mail size={16} />
-                  <span>contact@peerportal.com</span>
+                  <span>contact@OfferIn.com</span>
                 </div>
                 <div className="flex items-center gap-2 text-sm text-muted-foreground">
                   <Phone size={16} />
@@ -111,7 +111,7 @@ export default function Footer() {
         <div className="border-t py-6">
           <div className="flex flex-col items-center justify-between gap-4 md:flex-row">
             <p className="text-sm text-muted-foreground">
-              © 2024 PeerPortal. 保留所有权利。
+              © 2024 OfferIn. 保留所有权利。
             </p>
             <div className="flex items-center gap-4">
               <Link

@@ -103,8 +103,12 @@ export default function Component() {
             </Popover>
             {/* Main nav */}
             <div className="flex items-center gap-6">
-              <Link href="/" className="text-primary hover:text-primary/90">
-                <Logo size={28} />
+              <Link
+                href="/"
+                className="text-primary hover:text-primary/90 flex flex-row items-center gap-2"
+              >
+                <Logo size={32} />
+                <span className="text-xl font-bold">学长帮</span>
               </Link>
               {/* Navigation menu */}
               <NavigationMenu className="max-md:hidden">

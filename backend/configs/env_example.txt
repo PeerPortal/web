@@ -1,5 +1,5 @@
 # ================================================================
-# PeerPortal AI智能体系统 v2.0 环境变量配置示例
+# OfferIn AI智能体系统 v2.0 环境变量配置示例
 # ================================================================
 # 
 # 📋 配置指南:
@@ -100,8 +100,8 @@ MEMORY_DECAY_DAYS=30                          # 长期记忆衰减周期(天)
 # MILVUS_PASSWORD=password                     # 可选认证
 
 # === MongoDB文档数据库配置 (记忆摘要存储) ===
-# MONGODB_URL=mongodb://localhost:27017/peerportal
-# MONGODB_URL=mongodb+srv://user:pass@cluster.mongodb.net/peerportal  # Atlas云服务
+# MONGODB_URL=mongodb://localhost:27017/OfferIn
+# MONGODB_URL=mongodb+srv://user:pass@cluster.mongodb.net/OfferIn  # Atlas云服务
 
 # === Elasticsearch搜索引擎配置 (关键词检索) ===
 # ELASTICSEARCH_URL=http://localhost:9200
@@ -119,7 +119,7 @@ MEMORY_DECAY_DAYS=30                          # 长期记忆衰减周期(天)
 # LangSmith配置 (AI Agent监控和评估)
 LANGCHAIN_TRACING_V2=true
 LANGCHAIN_API_KEY=lsv2_your_langsmith_api_key_here
-LANGCHAIN_PROJECT=PeerPortal-v2-开发环境
+LANGCHAIN_PROJECT=OfferIn-v2-开发环境
 LANGCHAIN_ENDPOINT=https://api.smith.langchain.com
 
 # ================================================================

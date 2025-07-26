@@ -1,5 +1,5 @@
 """
-PeerPortal 新增功能综合测试脚本
+OfferIn 新增功能综合测试脚本
 测试论坛系统、消息系统、文件上传、AI路由等新功能
 """
 import asyncio

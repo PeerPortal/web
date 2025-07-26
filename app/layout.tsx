@@ -19,8 +19,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: 'PeerPortal',
-  description: 'PeerPortal 留学 - 留学申请一站式平台',
+  title: 'OfferIn',
+  description: 'OfferIn 留学 - 留学申请一站式平台',
   icons: {
     icon: '/icon.png'
   }

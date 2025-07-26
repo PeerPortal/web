@@ -1,7 +1,7 @@
 #!/bin/bash
 # 启动脚本：启动FastAPI服务器
 
-echo "🚀 启动启航引路人后端服务..."
+echo "🚀 启动学长帮后端服务..."
 
 # 检查虚拟环境
 if [ ! -d "venv" ]; then
