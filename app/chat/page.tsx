@@ -437,8 +437,7 @@ export default function TutorChatPage() {
                           </p>
                         )}
                       </div>
-                      {conversation.unreadCount &&
-                      conversation.unreadCount > 0 ? (
+                      {conversation.unreadCount && conversation.unreadCount > 0 ? (
                         <Badge variant="destructive" className="rounded-full">
                           {conversation.unreadCount}
                         </Badge>
