@@ -41,21 +41,21 @@ interface Conversation {
   isOnline?: boolean;
 }
 
-// Default tutors data
+// Default tutors data from tutors.json
 const defaultTutors: Conversation[] = [
   {
     tutorId: 1,
-    tutorName: '李教授',
-    tutorAvatar: '/placeholder.svg?height=40&width=40',
-    lastMessage: '欢迎来咨询申请相关问题！',
-    lastMessageTime: new Date(Date.now() - 1000 * 60 * 30), // 30 minutes ago
+    tutorName: 'Dr. Sarah Chen',
+    tutorAvatar: '/avatars/sarah-chen.jpg',
+    lastMessage: '我专注于 STEM 领域申请。',
+    lastMessageTime: new Date(Date.now() - 1000 * 60 * 31), // 31 minutes ago
     unreadCount: 2,
     isOnline: true
   },
   {
     tutorId: 2,
-    tutorName: '王老师',
-    tutorAvatar: '/placeholder.svg?height=40&width=40',
+    tutorName: 'Prof. Michael Johnson',
+    tutorAvatar: '/avatars/michael-johnson.jpg',
     lastMessage: '有什么可以帮助你的吗？',
     lastMessageTime: new Date(Date.now() - 1000 * 60 * 60 * 2), // 2 hours ago
     unreadCount: 0,
@@ -63,8 +63,8 @@ const defaultTutors: Conversation[] = [
   },
   {
     tutorId: 3,
-    tutorName: '张导师',
-    tutorAvatar: '/placeholder.svg?height=40&width=40',
+    tutorName: 'Dr. Emily Rodriguez',
+    tutorAvatar: '/avatars/emily-rodriguez.jpg',
     lastMessage: '申请材料已经准备好了吗？',
     lastMessageTime: new Date(Date.now() - 1000 * 60 * 60 * 24), // 1 day ago
     unreadCount: 1,
@@ -72,8 +72,8 @@ const defaultTutors: Conversation[] = [
   },
   {
     tutorId: 4,
-    tutorName: '陈顾问',
-    tutorAvatar: '/placeholder.svg?height=40&width=40',
+    tutorName: 'Dr. James Thompson',
+    tutorAvatar: '/avatars/james-thompson.jpg',
     lastMessage: '推荐信的事情我来帮你处理',
     lastMessageTime: new Date(Date.now() - 1000 * 60 * 60 * 24 * 2), // 2 days ago
     unreadCount: 0,
@@ -438,11 +438,11 @@ export default function TutorChatPage() {
                         )}
                       </div>
                       {conversation.unreadCount &&
-                        conversation.unreadCount > 0 && (
-                          <Badge variant="destructive" className="rounded-full">
-                            {conversation.unreadCount}
-                          </Badge>
-                        )}
+                      conversation.unreadCount > 0 ? (
+                        <Badge variant="destructive" className="rounded-full">
+                          {conversation.unreadCount}
+                        </Badge>
+                      ) : null}
                     </div>
                   ))}
                 </div>
@@ -500,7 +500,7 @@ export default function TutorChatPage() {
                                   : 'bg-muted rounded-bl-none'
                               }`}
                             >
-                              <p>{message.content}</p>
+                              <p>{message.content || ''}</p>
                               <div
                                 className={`text-xs mt-1 ${
                                   message.sender === 'user'
