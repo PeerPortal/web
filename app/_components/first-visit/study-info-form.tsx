@@ -4,13 +4,6 @@ import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle
-} from '@/components/ui/card';
 import { ArrowLeft } from 'lucide-react';
 import type { UserType, StudyInfo } from '@/hooks/use-first-visit';
 
@@ -54,61 +47,58 @@ export function StudyInfoForm({
         返回
       </Button>
 
-      <Card>
-        <CardHeader>
-          <CardTitle className="text-2xl">{title}</CardTitle>
-          <CardDescription>{description}</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <form onSubmit={handleSubmit} className="space-y-6">
-            <div className="space-y-2">
-              <Label htmlFor="region">
-                {userType === 'studying' ? '留学地区' : '意向留学地区'}
-              </Label>
-              <Input
-                id="region"
-                type="text"
-                placeholder="例如：美国、英国、加拿大等"
-                value={region}
-                onChange={e => setRegion(e.target.value)}
-                required
-              />
-            </div>
+      <div>
+        <h2 className="text-2xl font-semibold mb-2">{title}</h2>
+        <p className="text-gray-600 mb-6">{description}</p>
 
-            <div className="space-y-2">
-              <Label htmlFor="school">
-                {userType === 'studying' ? '就读学校' : '意向学校'}
-              </Label>
-              <Input
-                id="school"
-                type="text"
-                placeholder="例如：哈佛大学、剑桥大学等"
-                value={school}
-                onChange={e => setSchool(e.target.value)}
-                required
-              />
-            </div>
+        <form onSubmit={handleSubmit} className="space-y-6">
+          <div className="space-y-1 flex flex-col">
+            <Label htmlFor="region" className="pb-2">
+              {userType === 'studying' ? '留学地区' : '意向留学地区'}
+            </Label>
+            <Input
+              id="region"
+              type="text"
+              placeholder="例如：美国、英国、加拿大等"
+              value={region}
+              onChange={e => setRegion(e.target.value)}
+              required
+            />
+          </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="major">
-                {userType === 'studying' ? '就读专业' : '意向专业'}
-              </Label>
-              <Input
-                id="major"
-                type="text"
-                placeholder="例如：计算机科学、商业管理等"
-                value={major}
-                onChange={e => setMajor(e.target.value)}
-                required
-              />
-            </div>
+          <div className="space-y-1 flex flex-col">
+            <Label htmlFor="school" className="pb-2">
+              {userType === 'studying' ? '就读学校' : '意向学校'}
+            </Label>
+            <Input
+              id="school"
+              type="text"
+              placeholder="例如：哈佛大学、剑桥大学等"
+              value={school}
+              onChange={e => setSchool(e.target.value)}
+              required
+            />
+          </div>
 
-            <Button type="submit" className="w-full" size="lg">
-              开始使用 AdMIT
-            </Button>
-          </form>
-        </CardContent>
-      </Card>
+          <div className="space-y-1 flex flex-col">
+            <Label htmlFor="major">
+              {userType === 'studying' ? '就读专业' : '意向专业'}
+            </Label>
+            <Input
+              id="major"
+              type="text"
+              placeholder="例如：计算机科学、商业管理等"
+              value={major}
+              onChange={e => setMajor(e.target.value)}
+              required
+            />
+          </div>
+
+          <Button type="submit" className="w-full" size="lg">
+            开始使用 AdMIT
+          </Button>
+        </form>
+      </div>
     </div>
   );
 }
