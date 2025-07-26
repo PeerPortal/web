@@ -86,7 +86,9 @@ export function EditProfileDialog({
     }));
   };
 
-  const handleAvatarUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleAvatarUpload = async (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
     const file = event.target.files?.[0];
     if (!file) return;
 
@@ -178,20 +180,19 @@ export function EditProfileDialog({
                 <div className="flex items-center gap-4">
                   <div className="relative">
                     <div className="w-20 h-20 rounded-full overflow-hidden bg-gray-100 border-2 border-gray-200">
-                      {formData.avatar_url ? (
+                      {formData.avatar_url &&
+                      !formData.avatar_url.includes('example.com') ? (
                         <Image
-                          src={formData.avatar_url.startsWith('/static') 
-                            ? `https://web-4w0h.onrender.com${formData.avatar_url}` 
-                            : formData.avatar_url
+                          src={
+                            formData.avatar_url.startsWith('/static')
+                              ? `https://web-4w0h.onrender.com${formData.avatar_url}`
+                              : formData.avatar_url
                           }
                           alt="Avatar"
                           width={80}
                           height={80}
                           className="w-full h-full object-cover"
-                          onError={(e) => {
-                            const target = e.target as HTMLImageElement;
-                            target.src = '/api/placeholder/80/80';
-                          }}
+                          unoptimized
                         />
                       ) : (
                         <div className="w-full h-full flex items-center justify-center text-gray-400">
@@ -225,7 +226,7 @@ export function EditProfileDialog({
                     </p>
                   </div>
                 </div>
-                
+
                 {/* Hidden File Input */}
                 <input
                   type="file"
@@ -234,7 +235,7 @@ export function EditProfileDialog({
                   accept="image/jpeg,image/png,image/gif,image/webp"
                   className="hidden"
                 />
-                
+
                 {/* Manual URL Input (Alternative) */}
                 <div className="border-t pt-4">
                   <Label htmlFor="avatar_url" className="text-sm text-gray-600">
@@ -244,8 +245,10 @@ export function EditProfileDialog({
                     id="avatar_url"
                     type="url"
                     value={formData.avatar_url}
-                    onChange={e => handleInputChange('avatar_url', e.target.value)}
-                    placeholder="https://example.com/avatar.jpg"
+                    onChange={e =>
+                      handleInputChange('avatar_url', e.target.value)
+                    }
+                    placeholder="输入图片链接或点击上方上传"
                     className="mt-1"
                   />
                 </div>

@@ -107,7 +107,9 @@ export default function ProfilePage() {
     try {
       await updateUserProfile({ avatar_url: newAvatarUrl });
       // Update local state immediately for instant feedback
-      setProfileData(prev => prev ? { ...prev, avatar_url: newAvatarUrl } : null);
+      setProfileData(prev =>
+        prev ? { ...prev, avatar_url: newAvatarUrl } : null
+      );
       // Refresh profile data to ensure consistency
       await fetchUserData();
     } catch (error) {

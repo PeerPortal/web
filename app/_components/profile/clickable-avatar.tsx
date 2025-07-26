@@ -42,7 +42,9 @@ export function ClickableAvatar({
     }
   };
 
-  const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileUpload = async (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
     const file = event.target.files?.[0];
     if (!file) return;
 
@@ -62,10 +64,10 @@ export function ClickableAvatar({
     setIsUploading(true);
     try {
       const result = await uploadUserAvatar(file);
-      const newAvatarUrl = result.avatar_url.startsWith('/static') 
-        ? `https://web-4w0h.onrender.com${result.avatar_url}` 
+      const newAvatarUrl = result.avatar_url.startsWith('/static')
+        ? `https://web-4w0h.onrender.com${result.avatar_url}`
         : result.avatar_url;
-      
+
       setCurrentSrc(newAvatarUrl);
       onAvatarUpdate?.(result.avatar_url);
     } catch (error) {
@@ -80,16 +82,18 @@ export function ClickableAvatar({
     }
   };
 
-  const avatarSrc = currentSrc?.startsWith('/static') 
-    ? `https://web-4w0h.onrender.com${currentSrc}` 
+  const avatarSrc = currentSrc?.startsWith('/static')
+    ? `https://web-4w0h.onrender.com${currentSrc}`
     : currentSrc;
 
   return (
     <div className="relative">
-      <Avatar 
+      <Avatar
         className={cn(
           sizeClasses[size],
-          showUploadOverlay && onAvatarUpdate && 'cursor-pointer hover:opacity-80 transition-opacity',
+          showUploadOverlay &&
+            onAvatarUpdate &&
+            'cursor-pointer hover:opacity-80 transition-opacity',
           className
         )}
         onClick={handleAvatarClick}
@@ -100,7 +104,7 @@ export function ClickableAvatar({
 
       {/* Upload overlay */}
       {showUploadOverlay && onAvatarUpdate && (
-        <div 
+        <div
           className={cn(
             'absolute inset-0 flex items-center justify-center bg-black bg-opacity-0 hover:bg-opacity-50 transition-all rounded-full cursor-pointer',
             isUploading && 'bg-opacity-50'
