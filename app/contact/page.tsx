@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
+import Link from 'next/link';
 import {
   Card,
   CardContent,
@@ -122,12 +123,12 @@ export default function ContactPage() {
                 <CardTitle>快速链接</CardTitle>
               </CardHeader>
               <CardContent className="space-y-2">
-                <a
+                <Link
                   href="/tutor"
                   className="block text-sm text-muted-foreground hover:text-primary"
                 >
                   浏览导师 →
-                </a>
+                </Link>
                 <a
                   href="/ai-advisor"
                   className="block text-sm text-muted-foreground hover:text-primary"
