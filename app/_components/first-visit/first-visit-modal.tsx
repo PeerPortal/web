@@ -8,7 +8,8 @@ import { useFirstVisit } from '@/hooks/use-first-visit';
 import type { UserType, StudyInfo } from '@/hooks/use-first-visit';
 
 export function FirstVisitModal() {
-  const { isFirstVisit, saveStudyInfo } = useFirstVisit();
+  const { isFirstVisit, saveStudyInfo, showAfterRegistration } =
+    useFirstVisit();
   const [isOpen, setIsOpen] = useState(false);
   const [step, setStep] = useState<'userType' | 'studyInfo'>('userType');
   const [selectedUserType, setSelectedUserType] = useState<UserType | null>(
@@ -16,10 +17,11 @@ export function FirstVisitModal() {
   );
 
   useEffect(() => {
-    if (isFirstVisit === true) {
+    // Only show modal if it's first visit AND after registration
+    if (isFirstVisit === true && showAfterRegistration) {
       setIsOpen(true);
     }
-  }, [isFirstVisit]);
+  }, [isFirstVisit, showAfterRegistration]);
 
   const handleUserTypeSelect = (type: UserType) => {
     setSelectedUserType(type);

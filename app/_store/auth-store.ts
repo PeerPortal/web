@@ -158,6 +158,9 @@ export const useAuthStore = create<AuthState>()(
             username: userData.username,
             password: userData.password
           });
+
+          // Set flag to show first visit modal after registration
+          localStorage.setItem('showFirstVisitAfterRegistration', 'true');
         } catch (error) {
           set({ loading: false });
           throw error;
