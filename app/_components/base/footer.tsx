@@ -17,7 +17,7 @@ const footerLinks = {
   ],
   company: [
     { href: '/', label: '关于我们' },
-    { href: '/', label: '联系我们' },
+    { href: '/contact', label: '联系我们' },
     { href: '/', label: '隐私政策' },
     { href: '/', label: '服务条款' }
   ]

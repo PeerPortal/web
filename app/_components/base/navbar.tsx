@@ -130,12 +130,14 @@ export default function Component() {
           {/* Right side */}
           <div className="flex items-center gap-4">
             <div className="flex items-center gap-2">
-              <Button
-                variant="outline"
-                className="hidden sm:inline-flex rounded-full bg-transparent"
-              >
-                联系我们
-              </Button>
+              <Link href="/contact">
+                <Button
+                  variant="outline"
+                  className="hidden sm:inline-flex rounded-full bg-transparent"
+                >
+                  联系我们
+                </Button>
+              </Link>
 
               {/* Authentication UI */}
               {loading ? (
