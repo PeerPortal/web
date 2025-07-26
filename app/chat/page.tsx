@@ -344,12 +344,12 @@ export default function TutorChatPage() {
 
   return (
     <div className="container max-w-6xl mx-auto px-4 py-8 h-[calc(100vh-100px)]">
-      <Card className="h-full p-0">
+      <Card className="h-full p-0 border-blue-200 border-2 shadow-lg">
         <div className="flex h-full">
           {/* Conversations List */}
           <div className="w-full md:w-1/3 h-full flex flex-col">
             <CardHeader className="py-0">
-              <CardTitle className="text-lg pt-4">导师对话</CardTitle>
+              <CardTitle className="text-lg pt-4 bg-gradient-to-r from-blue-600 to-sky-600 bg-clip-text text-transparent">导师对话</CardTitle>
               <div className="relative">
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
                 <Input
@@ -369,12 +369,12 @@ export default function TutorChatPage() {
               <ScrollArea className="h-full">
                 {/* Search Results */}
                 {searchResults.length > 0 && (
-                  <div className="p-4 border-b">
-                    <p className="text-sm text-gray-500 mb-2">搜索结果</p>
+                  <div className="p-4 border-b-2 border-blue-200">
+                    <p className="text-sm text-blue-600 font-medium mb-2">搜索结果</p>
                     {searchResults.map(tutor => (
                       <div
                         key={tutor.id}
-                        className="flex items-center gap-3 p-3 hover:bg-gray-50 cursor-pointer rounded-lg"
+                        className="flex items-center gap-3 p-3 hover:bg-blue-50 cursor-pointer rounded-lg transition-colors"
                         onClick={() => startConversationWithTutor(tutor)}
                       >
                         <Avatar>
@@ -386,7 +386,7 @@ export default function TutorChatPage() {
                             {tutor.description}
                           </p>
                         </div>
-                        <Badge variant="secondary">开始对话</Badge>
+                        <Badge className="bg-gradient-to-r from-blue-500 to-sky-500 text-white border-0">开始对话</Badge>
                       </div>
                     ))}
                   </div>
@@ -402,9 +402,9 @@ export default function TutorChatPage() {
                   {conversations.map(conversation => (
                     <div
                       key={conversation.tutorId}
-                      className={`flex items-center gap-3 p-3 mx-3 hover:bg-gray-50 cursor-pointer rounded-lg ${
+                      className={`flex items-center gap-3 p-3 mx-3 hover:bg-blue-50 cursor-pointer rounded-lg transition-colors ${
                         selectedTutor?.tutorId === conversation.tutorId
-                          ? 'bg-gray-100'
+                          ? 'bg-gradient-to-r from-blue-100 to-sky-100 shadow-sm'
                           : ''
                       }`}
                       onClick={() => selectConversation(conversation)}
@@ -417,7 +417,7 @@ export default function TutorChatPage() {
                           </AvatarFallback>
                         </Avatar>
                         {conversation.isOnline && (
-                          <Circle className="absolute bottom-0 right-0 h-3 w-3 fill-green-500 text-green-500" />
+                          <Circle className="absolute bottom-0 right-0 h-3 w-3 fill-emerald-500 text-emerald-500 animate-pulse" />
                         )}
                       </div>
                       <div className="flex-1 min-w-0">
@@ -438,7 +438,7 @@ export default function TutorChatPage() {
                         )}
                       </div>
                       {conversation.unreadCount && conversation.unreadCount > 0 ? (
-                        <Badge variant="destructive" className="rounded-full">
+                        <Badge className="bg-gradient-to-r from-red-500 to-pink-500 text-white border-0 rounded-full">
                           {conversation.unreadCount}
                         </Badge>
                       ) : null}
@@ -450,13 +450,13 @@ export default function TutorChatPage() {
           </div>
 
           {/* Vertical Separator */}
-          <Separator orientation="vertical" className="hidden md:block" />
+          <Separator orientation="vertical" className="hidden md:block w-0.5 bg-blue-200" />
 
           {/* Chat Area */}
           <div className="flex-1 h-full flex flex-col">
             {selectedTutor ? (
               <>
-                <div className="flex items-center p-4 border-b">
+                <div className="flex items-center p-4 border-b-2 border-blue-200 bg-gradient-to-r from-blue-50 to-sky-50">
                   <Avatar className="h-10 w-10 mr-3">
                     <AvatarImage src={selectedTutor.tutorAvatar} />
                     <AvatarFallback>
@@ -465,8 +465,10 @@ export default function TutorChatPage() {
                   </Avatar>
                   <div>
                     <h2 className="font-semibold">{selectedTutor.tutorName}</h2>
-                    <p className="text-xs text-muted-foreground">
-                      {selectedTutor.isOnline ? '在线' : '离线'}
+                    <p className={`text-xs font-medium ${
+                      selectedTutor.isOnline ? 'text-emerald-600' : 'text-gray-500'
+                    }`}>
+                      {selectedTutor.isOnline ? '🟢 在线' : '⚫ 离线'}
                     </p>
                   </div>
                 </div>
@@ -493,10 +495,10 @@ export default function TutorChatPage() {
                             }`}
                           >
                             <div
-                              className={`max-w-[80%] rounded-2xl px-4 py-2 ${
+                              className={`max-w-[80%] rounded-2xl px-4 py-2 shadow-sm ${
                                 message.sender === 'user'
-                                  ? 'bg-primary text-primary-foreground rounded-br-none'
-                                  : 'bg-muted rounded-bl-none'
+                                  ? 'bg-gradient-to-r from-blue-500 to-sky-500 text-white rounded-br-none'
+                                  : 'bg-gradient-to-r from-gray-100 to-gray-200 text-gray-800 rounded-bl-none'
                               }`}
                             >
                               <p>{message.content || ''}</p>
@@ -518,7 +520,7 @@ export default function TutorChatPage() {
 
                         {isTyping && (
                           <div className="flex justify-start">
-                            <div className="bg-muted rounded-2xl rounded-bl-none px-4 py-2">
+                            <div className="bg-gradient-to-r from-gray-100 to-gray-200 rounded-2xl rounded-bl-none px-4 py-2">
                               <div className="flex space-x-1">
                                 <div
                                   className="w-2 h-2 rounded-full bg-muted-foreground/50 animate-bounce"
@@ -542,7 +544,7 @@ export default function TutorChatPage() {
                   </ScrollArea>
                 </CardContent>
 
-                <div className="p-4 border-t">
+                <div className="p-4 border-t-2 border-blue-200">
                   <div className="flex items-center gap-2">
                     <Button
                       variant="outline"
@@ -582,7 +584,7 @@ export default function TutorChatPage() {
                     <Button
                       onClick={sendMessage}
                       size="icon"
-                      className="rounded-full"
+                      className="rounded-full bg-gradient-to-r from-blue-500 to-sky-500 hover:from-blue-600 hover:to-sky-600 text-white border-0"
                       disabled={inputMessage.trim() === ''}
                     >
                       <Send className="h-5 w-5" />
