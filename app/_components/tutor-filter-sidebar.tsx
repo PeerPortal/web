@@ -21,7 +21,7 @@ interface Tutor {
   price: number;
   location: string;
   bio: string;
-  languages: string[];
+  serviceTypes: string[];
   achievements: string[];
   available: boolean;
 }
@@ -29,33 +29,31 @@ interface Tutor {
 interface TutorFilterSidebarProps {
   allMajors: string[];
   allUniversities: string[];
-  allLanguages: string[];
+  allServiceTypes: string[];
   selectedMajors: string[];
   selectedUniversities: string[];
-  selectedLanguages: string[];
+  selectedServiceTypes: string[];
   priceRange: [number, number];
   onMajorsChange: (majors: string[]) => void;
   onUniversitiesChange: (universities: string[]) => void;
-  onLanguagesChange: (languages: string[]) => void;
+  onServiceTypesChange: (serviceTypes: string[]) => void;
   onPriceChange: (price: [number, number]) => void;
   tutors: Tutor[];
-  filteredTutorCount: number;
 }
 
 export default function TutorFilterSidebar({
   allMajors,
   allUniversities,
-  allLanguages,
+  allServiceTypes,
   selectedMajors,
   selectedUniversities,
-  selectedLanguages,
+  selectedServiceTypes,
   priceRange,
   onMajorsChange,
   onUniversitiesChange,
-  onLanguagesChange,
+  onServiceTypesChange,
   onPriceChange,
-  tutors,
-  filteredTutorCount
+  tutors
 }: TutorFilterSidebarProps) {
   const id = useId();
 
@@ -134,22 +132,22 @@ export default function TutorFilterSidebar({
           />
         </div>
 
-        {/* Language Filter */}
+        {/* Service Type Filter */}
         <div className="mb-6">
-          <h3 className="font-medium text-gray-900 mb-3">授课语言</h3>
+          <h3 className="font-medium text-gray-900 mb-3">服务类型</h3>
           <MultipleSelector
-            defaultOptions={allLanguages.map(language => ({
-              value: language,
-              label: language
+            defaultOptions={allServiceTypes.map(service => ({
+              value: service,
+              label: service
             }))}
-            value={selectedLanguages.map(language => ({
-              value: language,
-              label: language
+            value={selectedServiceTypes.map(service => ({
+              value: service,
+              label: service
             }))}
-            placeholder="选择授课语言"
+            placeholder="选择服务类型"
             hidePlaceholderWhenSelected
             onChange={(options: Option[]) =>
-              onLanguagesChange(options.map((opt: Option) => opt.value))
+              onServiceTypesChange(options.map((opt: Option) => opt.value))
             }
             emptyIndicator={<p className="text-center text-sm">未找到结果</p>}
           />

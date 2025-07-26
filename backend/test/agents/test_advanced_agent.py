@@ -9,7 +9,7 @@ import sys
 import os
 
 # 确保项目根目录在Python路径中
-sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 from app.agents.langgraph.agent_graph import get_advanced_agent
 from app.agents.langgraph.knowledge_base import knowledge_manager

@@ -1,6 +1,5 @@
 'use client';
 
-import { useRouter } from 'next/navigation';
 import React from 'react';
 
 interface AuthHeaderProps {
@@ -16,8 +15,6 @@ function AuthHeader({
   actionText,
   actionPath
 }: AuthHeaderProps) {
-  const router = useRouter();
-
   return (
     <div className="gap-1">
       <h3 className="text-2xl font-bold text-gray-900 mb-2">{title}</h3>

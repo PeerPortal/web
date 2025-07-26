@@ -9,7 +9,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
-import { apiClient, searchMentors, type MentorPublic } from '@/lib/api';
+import { searchMentors, type MentorPublic } from '@/lib/api';
 import { useAuthStore } from '@/store/auth-store';
 import { useRouter } from 'next/navigation';
 import { API_CONFIG, getFullUrl } from '@/lib/api-config';

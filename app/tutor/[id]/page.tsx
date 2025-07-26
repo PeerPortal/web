@@ -14,7 +14,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
-import { searchMentors, type MentorPublic } from '@/lib/api';
+import tutorsData from '@/data/tutors.json';
 import {
   Timeline,
   TimelineContent,
@@ -25,58 +25,6 @@ import {
   TimelineSeparator,
   TimelineTitle
 } from '_components/ui/timeline';
-
-// 解析导师标题，提取大学和专业信息
-function parseMentorTitle(title: string): {
-  university: string;
-  major: string;
-  degree: string;
-} {
-  // 标题格式："北京大学 计算机科学 导师" 或 "斯坦福 计算机科学 导师" 或 "雅思口语专家"
-  const parts = title.split(' ').filter(part => part.trim() !== '');
-
-  let university = 'Unknown University';
-  let major = 'Unknown Major';
-  let degree = 'Unknown Degree';
-
-  if (parts.length >= 3 && parts[2] === '导师') {
-    // 格式: "大学 专业 导师"
-    university = parts[0];
-    major = parts[1];
-  } else if (parts.length >= 2) {
-    // 其他格式，尝试推断
-    if (
-      parts[0].includes('大学') ||
-      parts[0].includes('Stanford') ||
-      parts[0].includes('斯坦福')
-    ) {
-      university = parts[0];
-      if (parts[1] !== '导师') {
-        major = parts[1];
-      }
-    } else {
-      // 可能是专业名称，如"雅思口语专家"
-      major = parts.join(' ');
-    }
-  } else if (parts.length === 1) {
-    // 单个词，当作专业处理
-    major = parts[0];
-  }
-
-  // 简单的学位推断
-  if (university.includes('大学')) {
-    degree = 'Bachelor';
-  } else if (
-    university.toLowerCase().includes('stanford') ||
-    university.includes('斯坦福')
-  ) {
-    degree = 'Master';
-  } else if (major.includes('专家')) {
-    degree = 'Expert';
-  }
-
-  return { university, major, degree };
-}
 
 interface PageProps {
   params: Promise<{ id: string }>;
@@ -109,79 +57,41 @@ interface TutorData {
 
 async function getTutorData(id: string): Promise<TutorData | null> {
   try {
-    // Since we don't have a getMentorById endpoint, we'll fetch all mentors and find the one we need
-    // In a real application, you might want to implement a better solution
-    const mentors = await searchMentors({ limit: 100 });
-    const mentor = mentors.find(
-      m => m.mentor_id === parseInt(id) || m.id === parseInt(id)
-    );
+    // Find tutor from mock data
+    const tutor = tutorsData.find(t => t.id === parseInt(id));
 
-    if (!mentor) {
+    if (!tutor) {
       return null;
     }
 
-    // Transform backend data to match frontend interface
-    const { university, major, degree } = parseMentorTitle(mentor.title);
-
-    // 生成模拟的教育经历数据
+    // Generate education data if not present
     const education = [];
 
-    // 根据导师的大学信息生成教育经历
-    if (
-      university.includes('大学') ||
-      university.toLowerCase().includes('university')
-    ) {
-      education.push({
-        id: 1,
-        date: '2015-2019',
-        title: `${degree} - ${university}`,
-        description: `主修 ${major}，获得优秀毕业生称号`
-      });
-    }
+    // Add undergraduate education
+    education.push({
+      id: 1,
+      date: '2015-2019',
+      title: `${tutor.degree} - ${tutor.university}`,
+      description: `Major in ${tutor.major}, graduated with honors`
+    });
 
-    // 如果是斯坦福等名校，添加研究生经历
-    if (
-      university.toLowerCase().includes('stanford') ||
-      university.includes('斯坦福')
-    ) {
+    // Add graduate education for advanced degrees
+    if (tutor.degree.includes('PhD') || tutor.degree.includes('Master')) {
       education.push({
         id: 2,
-        date: '2019-2021',
-        title: `Master's Degree - ${university}`,
-        description: `专攻 ${major} 方向，参与多个研究项目`
+        date: '2019-2023',
+        title: `Graduate Studies - ${tutor.university}`,
+        description: `Advanced research in ${tutor.major}, published multiple papers`
       });
     }
 
-    // 如果没有教育经历，添加默认的
-    if (education.length === 0) {
-      education.push({
-        id: 1,
-        date: '2018-2022',
-        title: '本科学位',
-        description: `${major} 专业，成绩优异`
-      });
-    }
+    // Add default languages if not present
+    const languages = ['English', 'Mandarin'];
 
     return {
-      id: mentor.mentor_id || mentor.id,
-      name: mentor.title || `Mentor ${mentor.mentor_id || mentor.id}`,
-      avatar: '',
-      university,
-      degree,
-      major,
-      specializations: mentor.description ? [mentor.description] : [],
-      experience: Math.floor((mentor.sessions_completed || 0) / 10),
-      rating: mentor.rating || 4.5,
-      reviews: mentor.sessions_completed || 0,
-      price: mentor.hourly_rate || 100,
-      location: 'Online',
-      bio:
-        mentor.description ||
-        'Experienced mentor ready to help you achieve your goals.',
-      languages: ['English', 'Chinese'],
-      achievements: [`${mentor.sessions_completed || 0} sessions completed`],
-      available: true,
-      education
+      ...tutor,
+      education,
+      languages
     };
   } catch (error) {
     console.error('Failed to fetch tutor data:', error);

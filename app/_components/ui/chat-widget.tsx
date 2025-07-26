@@ -15,7 +15,7 @@ export default function ChatWidget({
 }: ChatWidgetProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [message, setMessage] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading] = useState(false);
 
   const handleSendMessage = async () => {
     if (!message.trim() || isLoading) return;

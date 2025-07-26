@@ -1,43 +1,175 @@
-# 启航引路人后端环境变量配置示例
-# 复制此文件为 .env 并填入实际的配置值
+# ================================================================
+# PeerPortal AI智能体系统 v2.0 环境变量配置示例
+# ================================================================
+# 
+# 📋 配置指南:
+#   🟢 基础配置: 只需要 OpenAI API 即可运行 (开发测试)
+#   🟡 增强配置: + Redis 缓存系统 (生产环境推荐)
+#   🔴 完整配置: + 知识库系统 (企业级部署)
+#
+# 🚀 快速开始:
+#   1. 复制此文件为 .env
+#   2. 设置 OPENAI_API_KEY (必需)
+#   3. 根据需求选择配置级别
+#   4. 运行: python test_v2_config.py 验证配置
+#
+# ================================================================
 
-# 应用配置
-DEBUG=true
+# ================================================================
+# 🔧 应用基础配置 (必需)
+# ================================================================
+
+# 应用运行配置
+DEBUG=true                                    # 调试模式 (生产环境改为false)
 SECRET_KEY=your-super-secret-key-change-in-production
-HOST=0.0.0.0
-PORT=8001
+HOST=0.0.0.0                                 # 监听地址
+PORT=8000                                     # 服务端口
 
-# 数据库配置
+# JWT认证配置
+JWT_SECRET_KEY=your-jwt-secret-key
+JWT_ALGORITHM=HS256
+ACCESS_TOKEN_EXPIRE_MINUTES=60
+
+# CORS跨域配置
+ALLOWED_ORIGINS=["http://localhost:3000","http://localhost:8080","http://localhost:5173"]
+
+# ================================================================
+# 🗄️ 数据库配置 (二选一)
+# ================================================================
+
 # 方式1: 直接提供 PostgreSQL 连接字符串
-DATABASE_URL=postgresql://username:password@host:port/database
+# DATABASE_URL=postgresql://username:password@host:port/database
 
-# 方式2: 使用 Supabase 配置（如果不提供 DATABASE_URL）
+# 方式2: 使用 Supabase 配置 (推荐)
 SUPABASE_URL=https://your-project.supabase.co
 SUPABASE_KEY=your-supabase-anon-key
 SUPABASE_JWT_SECRET=your-supabase-jwt-secret
 SUPABASE_DB_PASSWORD=your-database-password
 
-# JWT 配置
-JWT_SECRET_KEY=your-jwt-secret-key
-JWT_ALGORITHM=HS256
-ACCESS_TOKEN_EXPIRE_MINUTES=30
-
-# AI与大语言模型配置
-OPENAI_API_KEY=sk-your-openai-api-key-here
-# 可选的搜索服务API Key
-TAVILY_API_KEY=tvly-your-tavily-api-key-optional
-
-# LangSmith 配置 (用于Agent监控和评估)
-LANGCHAIN_TRACING_V2=true
-LANGCHAIN_API_KEY=lsv2_your_langsmith_api_key_here
-LANGCHAIN_PROJECT=AI留学规划师-开发环境
-LANGCHAIN_ENDPOINT=https://api.smith.langchain.com
-ALGORITHM=HS256
-ACCESS_TOKEN_EXPIRE_MINUTES=60
-
-# CORS 配置
-ALLOWED_ORIGINS=["http://localhost:3000","http://localhost:8080","http://localhost:5173"]
-
 # 数据库连接池配置
 DB_POOL_MIN_SIZE=1
-DB_POOL_MAX_SIZE=10 
+DB_POOL_MAX_SIZE=10
+
+# ================================================================
+# 🤖 AI智能体配置 v2.0 (必需)
+# ================================================================
+
+# OpenAI API配置 (必需 - 核心AI功能)
+OPENAI_API_KEY=sk-your-openai-api-key-here
+
+# 可选的搜索服务
+TAVILY_API_KEY=tvly-your-tavily-api-key-optional
+
+# AI模型配置 (可选 - 有默认值)
+DEFAULT_MODEL=gpt-4o-mini                     # 默认LLM模型
+DEFAULT_EMBEDDING_MODEL=text-embedding-ada-002 # 默认嵌入模型
+
+# Agent性能配置 (可选)
+AGENT_MAX_ITERATIONS=10                       # 最大思考轮数
+AGENT_TIMEOUT_SECONDS=300                     # 超时时间(秒)
+
+# ================================================================
+# 🟡 增强配置 - 记忆系统 (推荐)
+# ================================================================
+# 
+# 🎯 启用条件: 生产环境、需要跨会话记忆
+# 📦 安装依赖: pip install redis[hiredis]
+# 🚀 性能提升: 大幅提升记忆系统性能和稳定性
+
+# Redis缓存配置 (短期记忆)
+REDIS_URL=redis://localhost:6379
+# REDIS_URL=redis://username:password@host:6379  # 带认证
+# REDIS_URL=rediss://host:6380                   # SSL连接
+
+# 记忆系统配置 (可选)
+MEMORY_SESSION_TTL=86400                      # 会话记忆保持时间(秒，24小时)
+MEMORY_DECAY_DAYS=30                          # 长期记忆衰减周期(天)
+
+# ================================================================
+# 🔴 完整配置 - 企业级知识库系统 (可选)
+# ================================================================
+#
+# 🎯 启用条件: 企业级部署、大规模文档处理、高级RAG功能
+# 📦 安装依赖: pip install pymilvus motor elasticsearch
+# ⚡ 高级功能: 智能记忆、文档上传、混合检索
+
+# === Milvus向量数据库配置 (长期记忆 + RAG) ===
+# MILVUS_HOST=localhost
+# MILVUS_PORT=19530
+# MILVUS_USER=username                         # 可选认证
+# MILVUS_PASSWORD=password                     # 可选认证
+
+# === MongoDB文档数据库配置 (记忆摘要存储) ===
+# MONGODB_URL=mongodb://localhost:27017/peerportal
+# MONGODB_URL=mongodb+srv://user:pass@cluster.mongodb.net/peerportal  # Atlas云服务
+
+# === Elasticsearch搜索引擎配置 (关键词检索) ===
+# ELASTICSEARCH_URL=http://localhost:9200
+# ELASTICSEARCH_URL=https://user:pass@host:9200  # 带认证
+
+# === RAG系统配置 (可选) ===
+# RAG_CHUNK_SIZE=1000                          # 文档分块大小
+# RAG_CHUNK_OVERLAP=200                        # 分块重叠长度
+# RAG_TOP_K=5                                  # 默认检索数量
+
+# ================================================================
+# 📊 AI监控与调试配置 (可选)
+# ================================================================
+
+# LangSmith配置 (AI Agent监控和评估)
+LANGCHAIN_TRACING_V2=true
+LANGCHAIN_API_KEY=lsv2_your_langsmith_api_key_here
+LANGCHAIN_PROJECT=PeerPortal-v2-开发环境
+LANGCHAIN_ENDPOINT=https://api.smith.langchain.com
+
+# ================================================================
+# 🎯 配置场景示例
+# ================================================================
+
+# 场景1: 🟢 开发测试 (最小配置)
+# ----------------
+# OPENAI_API_KEY=sk-xxx
+# DEBUG=true
+# SECRET_KEY=dev-secret
+
+# 场景2: 🟡 生产环境 (推荐配置)
+# ----------------
+# OPENAI_API_KEY=sk-xxx
+# REDIS_URL=redis://localhost:6379
+# DEBUG=false
+# SECRET_KEY=production-secret-key
+
+# 场景3: 🔴 企业级部署 (完整配置)
+# ----------------
+# OPENAI_API_KEY=sk-xxx
+# REDIS_URL=redis://redis-cluster:6379
+# MILVUS_HOST=milvus-cluster
+# MONGODB_URL=mongodb+srv://cluster.mongodb.net/prod
+# ELASTICSEARCH_URL=https://elastic-cluster:9200
+# DEBUG=false
+
+# ================================================================
+# 💡 配置技巧与注意事项
+# ================================================================
+#
+# 1. 🔒 安全性:
+#    - 生产环境务必修改所有密钥
+#    - 使用强随机密钥: openssl rand -hex 32
+#    - 不要在代码中硬编码敏感信息
+#
+# 2. 🚀 性能优化:
+#    - 生产环境设置 DEBUG=false
+#    - 根据并发调整连接池大小
+#    - 使用Redis提升记忆系统性能
+#
+# 3. 📊 监控建议:
+#    - 启用LangSmith监控AI性能
+#    - 设置合理的超时和重试策略
+#    - 定期检查配置状态
+#
+# 4. 🧪 测试验证:
+#    - 配置完成后运行: python test_v2_config.py
+#    - 查看配置状态和功能验证
+#    - 确认所有组件正常工作
+#
+# ================================================================

@@ -1,0 +1,41 @@
+2025-07-26 21:20:50,415 - app.agents.v2.core_infrastructure.oss.storage_manager - INFO - StorageManager initialized with base_path: uploads
+2025-07-26 21:20:50,567 - app.agents.v2.ai_foundation.agents.agent_factory - INFO - 已注册工具: database_search
+2025-07-26 21:20:50,567 - app.agents.v2.ai_foundation.agents.agent_factory - INFO - 已注册工具: web_search
+INFO:     Started server process [53570]
+INFO:     Waiting for application startup.
+2025-07-26 21:20:50,614 - app.core.db - INFO - 初始化数据库连接池...
+2025-07-26 21:20:50,614 - app.core.db - ERROR - 数据库连接池创建失败: cannot access local variable 'settings' where it is not associated with a value
+2025-07-26 21:20:50,614 - app.core.db - INFO - 回退到 Supabase REST API
+2025-07-26 21:20:50,614 - app.core.db - INFO - 🤖 正在初始化AI智能体系统 v2.0...
+2025-07-26 21:20:50,614 - app.core.db - INFO - 📦 导入v2配置模块成功
+2025-07-26 21:20:50,614 - app.core.db - INFO - 🔑 API密钥已配置: 是
+2025-07-26 21:20:50,614 - app.agents.v2.config - WARNING - redis package not installed, using local memory for caching
+2025-07-26 21:20:50,732 - app.agents.v2.ai_foundation.llm.providers.openai_provider - INFO - OpenAI client initialized successfully
+2025-07-26 21:20:50,743 - app.agents.v2.ai_foundation.llm.providers.openai_provider - INFO - OpenAI client initialized successfully
+2025-07-26 21:20:50,756 - app.agents.v2.ai_foundation.llm.providers.openai_provider - INFO - OpenAI client initialized successfully
+2025-07-26 21:20:50,756 - app.agents.v2.ai_foundation.llm.manager - INFO - 已初始化 3 个模型
+2025-07-26 21:20:50,768 - app.agents.v2.ai_foundation.llm.providers.openai_provider - INFO - OpenAI embedding client initialized successfully
+2025-07-26 21:20:50,779 - app.agents.v2.ai_foundation.llm.providers.openai_provider - INFO - OpenAI embedding client initialized successfully
+2025-07-26 21:20:50,791 - app.agents.v2.ai_foundation.llm.providers.openai_provider - INFO - OpenAI embedding client initialized successfully
+2025-07-26 21:20:50,791 - app.agents.v2.config - INFO - ✅ PeerPortal AI智能体架构v2.0初始化完成
+2025-07-26 21:20:50,791 - app.core.db - INFO - 🎯 v2初始化结果: True
+2025-07-26 21:20:50,791 - app.core.db - INFO - 📊 配置状态: {'is_initialized': True, 'config_loaded': True, 'debug_mode': True, 'external_services': {'redis': True, 'milvus': False, 'mongodb': False, 'elasticsearch': False}}
+2025-07-26 21:20:50,791 - app.core.db - INFO - ✅ AI智能体系统 v2.0 初始化成功
+2025-07-26 21:20:50,791 - app.core.db - INFO - 🎯 专注功能: 留学规划与咨询
+2025-07-26 21:20:50,791 - app.core.db - INFO - 🤖 可用智能体: 留学规划师, 留学咨询师
+INFO:     Application startup complete.
+ERROR:    [Errno 48] error while attempting to bind on address ('0.0.0.0', 8000): address already in use
+INFO:     Waiting for application shutdown.
+2025-07-26 21:20:50,793 - app.core.db - INFO - Supabase 客户端已关闭
+INFO:     Application shutdown complete.
+
+🎯 PeerPortal AI智能体架构v2.0 配置摘要
+==================================================
+🤖 LLM模型: 3个
+📊 嵌入模型: 3个
+💾 Redis缓存: ❌ 使用本地内存
+🔍 Milvus向量库: ❌ 使用模拟存储
+📄 MongoDB文档库: ❌ 使用模拟存储
+🔎 Elasticsearch搜索: ❌ 使用模拟搜索
+🐛 调试模式: ✅ 开启
+==================================================

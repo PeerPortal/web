@@ -10,7 +10,8 @@ export const API_CONFIG = {
 
     USERS: {
       ME: '/api/v1/users/me',
-      ME_BASIC: '/api/v1/users/me/basic'
+      ME_BASIC: '/api/v1/users/me/basic',
+      AVATAR: '/api/v1/users/me/avatar'
     },
 
     PLANNER: {

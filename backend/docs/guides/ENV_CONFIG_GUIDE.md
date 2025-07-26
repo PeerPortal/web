@@ -3,7 +3,6 @@
 ## 快速开始
 
 1. **复制配置文件**：
-
    ```bash
    # 项目已为您创建了基础的 .env 文件
    # 您只需要修改其中的 Supabase 配置即可
@@ -42,6 +41,7 @@ SUPABASE_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
    ```
    左侧菜单 → Settings → API
    ```
+   
 4. **复制以下信息**：
    - **Project URL** → 对应 `SUPABASE_URL`
    - **anon public** → 对应 `SUPABASE_KEY`
@@ -101,9 +101,7 @@ python start_new_app.py
 ## 🚨 常见问题解决
 
 ### 问题 1: ValidationError: SUPABASE_URL field required
-
 **解决方案**：
-
 ```bash
 # 确保 .env 文件中有以下配置
 SUPABASE_URL=https://your-project-id.supabase.co
@@ -111,18 +109,14 @@ SUPABASE_KEY=your-anon-key
 ```
 
 ### 问题 2: Extra inputs are not permitted
-
 **解决方案**：
-
 ```bash
 # 检查 .env 文件中是否有拼写错误的字段名
 # 移除或注释掉不需要的字段
 ```
 
 ### 问题 3: 数据库连接失败
-
 **解决方案**：
-
 ```bash
 # 1. 确认 Supabase 项目正常运行
 # 2. 检查网络连接
@@ -145,7 +139,6 @@ SUPABASE_KEY=your-anon-key
 ## 🎯 不同环境配置
 
 ### 开发环境 (.env.development)
-
 ```bash
 DEBUG=true
 PORT=8001
@@ -153,7 +146,6 @@ SUPABASE_URL=https://your-dev-project.supabase.co
 ```
 
 ### 生产环境 (.env.production)
-
 ```bash
 DEBUG=false
 PORT=8000
@@ -166,13 +158,11 @@ SUPABASE_URL=https://your-prod-project.supabase.co
 如果配置过程中遇到问题：
 
 1. **检查 Supabase 状态**：
-
    ```bash
    python test/check_database.py
    ```
 
 2. **查看应用日志**：
-
    ```bash
    python start_new_app.py
    # 查看启动时的日志信息
@@ -185,4 +175,4 @@ SUPABASE_URL=https://your-prod-project.supabase.co
 
 ---
 
-✅ **配置完成后，您就可以正常使用新架构的所有功能了！**
+✅ **配置完成后，您就可以正常使用新架构的所有功能了！** 

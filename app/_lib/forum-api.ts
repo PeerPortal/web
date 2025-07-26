@@ -1,8 +1,6 @@
 // Forum API client - similar pattern to existing api.ts
 import { API_CONFIG, getFullUrl } from './api-config';
 
-const API_BASE_URL = API_CONFIG.BASE_URL;
-
 // Helper function to get auth token
 const getAuthToken = (): string => {
   if (typeof window === 'undefined') return '';
