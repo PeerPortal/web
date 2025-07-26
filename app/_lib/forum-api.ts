@@ -1,5 +1,7 @@
 // Forum API client - similar pattern to existing api.ts
-const API_BASE_URL = 'http://localhost:8000';
+import { API_CONFIG, getFullUrl } from './api-config';
+
+const API_BASE_URL = API_CONFIG.BASE_URL;
 
 // Helper function to get auth token
 const getAuthToken = (): string => {
@@ -10,7 +12,7 @@ const getAuthToken = (): string => {
 // Generic API request helper
 const apiRequest = async (endpoint: string, options: RequestInit = {}) => {
   const token = getAuthToken();
-  const url = `${API_BASE_URL}${endpoint}`;
+  const url = getFullUrl(endpoint);
 
   const config: RequestInit = {
     headers: {
@@ -115,7 +117,7 @@ class ForumAPI {
   // 获取论坛分类
   async getCategories(): Promise<ForumCategory[]> {
     try {
-      const data = await apiRequest('/api/v1/forum/categories');
+      const data = await apiRequest(API_CONFIG.ENDPOINTS.FORUM.CATEGORIES);
       return data;
     } catch (error) {
       console.error('获取论坛分类失败:', error);
@@ -177,7 +179,9 @@ class ForumAPI {
         }
       });
 
-      const data = await apiRequest(`/api/v1/forum/posts?${params.toString()}`);
+      const data = await apiRequest(
+        `${API_CONFIG.ENDPOINTS.FORUM.POSTS}?${params.toString()}`
+      );
       return data;
     } catch (error) {
       console.error('获取帖子列表失败:', error);
@@ -188,7 +192,9 @@ class ForumAPI {
   // 获取单个帖子详情
   async getPost(postId: number): Promise<ForumPost> {
     try {
-      const data = await apiRequest(`/api/v1/forum/posts/${postId}`);
+      const data = await apiRequest(
+        API_CONFIG.ENDPOINTS.FORUM.POST_BY_ID(postId)
+      );
       return data;
     } catch (error) {
       console.error('获取帖子详情失败:', error);
@@ -199,7 +205,7 @@ class ForumAPI {
   // 创建新帖子
   async createPost(data: CreatePostData): Promise<ForumPost> {
     try {
-      const result = await apiRequest('/api/v1/forum/posts', {
+      const result = await apiRequest(API_CONFIG.ENDPOINTS.FORUM.POSTS, {
         method: 'POST',
         body: JSON.stringify(data)
       });
@@ -216,10 +222,13 @@ class ForumAPI {
     data: Partial<CreatePostData>
   ): Promise<ForumPost> {
     try {
-      const result = await apiRequest(`/api/v1/forum/posts/${postId}`, {
-        method: 'PUT',
-        body: JSON.stringify(data)
-      });
+      const result = await apiRequest(
+        API_CONFIG.ENDPOINTS.FORUM.POST_BY_ID(postId),
+        {
+          method: 'PUT',
+          body: JSON.stringify(data)
+        }
+      );
       return result;
     } catch (error) {
       console.error('更新帖子失败:', error);
@@ -230,7 +239,7 @@ class ForumAPI {
   // 删除帖子
   async deletePost(postId: number): Promise<void> {
     try {
-      await apiRequest(`/api/v1/forum/posts/${postId}`, {
+      await apiRequest(API_CONFIG.ENDPOINTS.FORUM.POST_BY_ID(postId), {
         method: 'DELETE'
       });
     } catch (error) {
@@ -244,9 +253,12 @@ class ForumAPI {
     postId: number
   ): Promise<{ is_liked: boolean; likes_count: number }> {
     try {
-      const result = await apiRequest(`/api/v1/forum/posts/${postId}/like`, {
-        method: 'POST'
-      });
+      const result = await apiRequest(
+        API_CONFIG.ENDPOINTS.FORUM.POST_LIKE(postId),
+        {
+          method: 'POST'
+        }
+      );
       return result;
     } catch (error) {
       console.error('点赞操作失败:', error);
@@ -262,7 +274,7 @@ class ForumAPI {
   ): Promise<{ replies: ForumReply[]; total: number }> {
     try {
       const data = await apiRequest(
-        `/api/v1/forum/posts/${postId}/replies?limit=${limit}&offset=${offset}`
+        `${API_CONFIG.ENDPOINTS.FORUM.POST_REPLIES(postId)}?limit=${limit}&offset=${offset}`
       );
       return data;
     } catch (error) {
@@ -277,10 +289,13 @@ class ForumAPI {
     data: CreateReplyData
   ): Promise<ForumReply> {
     try {
-      const result = await apiRequest(`/api/v1/forum/posts/${postId}/replies`, {
-        method: 'POST',
-        body: JSON.stringify(data)
-      });
+      const result = await apiRequest(
+        API_CONFIG.ENDPOINTS.FORUM.POST_REPLIES(postId),
+        {
+          method: 'POST',
+          body: JSON.stringify(data)
+        }
+      );
       return result;
     } catch (error) {
       console.error('创建回复失败:', error);
@@ -291,10 +306,13 @@ class ForumAPI {
   // 更新回复
   async updateReply(replyId: number, content: string): Promise<ForumReply> {
     try {
-      const result = await apiRequest(`/api/v1/forum/replies/${replyId}`, {
-        method: 'PUT',
-        body: JSON.stringify({ content })
-      });
+      const result = await apiRequest(
+        API_CONFIG.ENDPOINTS.FORUM.REPLY_BY_ID(replyId),
+        {
+          method: 'PUT',
+          body: JSON.stringify({ content })
+        }
+      );
       return result;
     } catch (error) {
       console.error('更新回复失败:', error);
@@ -305,7 +323,7 @@ class ForumAPI {
   // 删除回复
   async deleteReply(replyId: number): Promise<void> {
     try {
-      await apiRequest(`/api/v1/forum/replies/${replyId}`, {
+      await apiRequest(API_CONFIG.ENDPOINTS.FORUM.REPLY_BY_ID(replyId), {
         method: 'DELETE'
       });
     } catch (error) {
@@ -319,9 +337,12 @@ class ForumAPI {
     replyId: number
   ): Promise<{ is_liked: boolean; likes_count: number }> {
     try {
-      const result = await apiRequest(`/api/v1/forum/replies/${replyId}/like`, {
-        method: 'POST'
-      });
+      const result = await apiRequest(
+        API_CONFIG.ENDPOINTS.FORUM.REPLY_LIKE(replyId),
+        {
+          method: 'POST'
+        }
+      );
       return result;
     } catch (error) {
       console.error('点赞回复失败:', error);
@@ -332,7 +353,7 @@ class ForumAPI {
   // 增加帖子浏览量
   async incrementPostViews(postId: number): Promise<void> {
     try {
-      await apiRequest(`/api/v1/forum/posts/${postId}/view`, {
+      await apiRequest(API_CONFIG.ENDPOINTS.FORUM.POST_VIEW(postId), {
         method: 'POST'
       });
     } catch (error) {
@@ -344,7 +365,7 @@ class ForumAPI {
   // 举报帖子
   async reportPost(postId: number, reason: string): Promise<void> {
     try {
-      await apiRequest(`/api/v1/forum/posts/${postId}/report`, {
+      await apiRequest(API_CONFIG.ENDPOINTS.FORUM.POST_REPORT(postId), {
         method: 'POST',
         body: JSON.stringify({ reason })
       });
@@ -357,7 +378,7 @@ class ForumAPI {
   // 举报回复
   async reportReply(replyId: number, reason: string): Promise<void> {
     try {
-      await apiRequest(`/api/v1/forum/replies/${replyId}/report`, {
+      await apiRequest(API_CONFIG.ENDPOINTS.FORUM.REPLY_REPORT(replyId), {
         method: 'POST',
         body: JSON.stringify({ reason })
       });
@@ -402,7 +423,7 @@ class ForumAPI {
   ): Promise<{ posts: ForumPost[]; total: number }> {
     try {
       const data = await apiRequest(
-        `/api/v1/forum/my-posts?limit=${limit}&offset=${offset}`
+        `${API_CONFIG.ENDPOINTS.FORUM.MY_POSTS}?limit=${limit}&offset=${offset}`
       );
       return data;
     } catch (error) {
@@ -418,7 +439,7 @@ class ForumAPI {
   ): Promise<{ replies: ForumReply[]; total: number }> {
     try {
       const data = await apiRequest(
-        `/api/v1/forum/my-replies?limit=${limit}&offset=${offset}`
+        `${API_CONFIG.ENDPOINTS.FORUM.MY_REPLIES}?limit=${limit}&offset=${offset}`
       );
       return data;
     } catch (error) {
@@ -433,7 +454,7 @@ class ForumAPI {
   ): Promise<{ tag: string; count: number }[]> {
     try {
       const data = await apiRequest(
-        `/api/v1/forum/tags/popular?limit=${limit}`
+        `${API_CONFIG.ENDPOINTS.FORUM.POPULAR_TAGS}?limit=${limit}`
       );
       return data;
     } catch (error) {

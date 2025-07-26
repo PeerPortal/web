@@ -12,6 +12,7 @@ import { Separator } from '@/components/ui/separator';
 import { apiClient, searchMentors, type MentorPublic } from '@/lib/api';
 import { useAuthStore } from '@/store/auth-store';
 import { useRouter } from 'next/navigation';
+import { API_CONFIG, getFullUrl } from '@/lib/api-config';
 
 interface Message {
   id: string;
@@ -70,7 +71,7 @@ export default function TutorChatPage() {
     try {
       // Load existing conversations from API
       const response = await fetch(
-        'http://localhost:8000/api/v1/messages/conversations',
+        getFullUrl(API_CONFIG.ENDPOINTS.MESSAGES.CONVERSATIONS),
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -117,7 +118,7 @@ export default function TutorChatPage() {
     try {
       setIsLoading(true);
       const response = await fetch(
-        `http://localhost:8000/api/v1/messages/conversations/${tutorId}`,
+        getFullUrl(API_CONFIG.ENDPOINTS.MESSAGES.CONVERSATION_BY_ID(tutorId)),
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -205,18 +206,21 @@ export default function TutorChatPage() {
     setInputMessage('');
 
     try {
-      const response = await fetch('http://localhost:8000/api/v1/messages', {
-        method: 'POST',
-        headers: {
-          Authorization: `Bearer ${token}`,
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          recipient_id: selectedTutor.tutorId,
-          content: inputMessage,
-          conversation_id: selectedTutor.tutorId
-        })
-      });
+      const response = await fetch(
+        getFullUrl(API_CONFIG.ENDPOINTS.MESSAGES.LIST),
+        {
+          method: 'POST',
+          headers: {
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            recipient_id: selectedTutor.tutorId,
+            content: inputMessage,
+            conversation_id: selectedTutor.tutorId
+          })
+        }
+      );
 
       if (!response.ok) {
         console.error('Failed to send message');

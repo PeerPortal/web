@@ -1,5 +1,7 @@
 // API client for backend communication
-const API_BASE_URL = 'http://localhost:8000';
+import { API_CONFIG, getFullUrl } from './api-config';
+
+const API_BASE_URL = API_CONFIG.BASE_URL;
 
 interface LoginRequest {
   username: string;
@@ -47,10 +49,13 @@ class ApiClient {
     formData.append('username', credentials.username);
     formData.append('password', credentials.password);
 
-    const response = await fetch(`${this.baseUrl}/api/v1/auth/login`, {
-      method: 'POST',
-      body: formData
-    });
+    const response = await fetch(
+      `${this.baseUrl}${API_CONFIG.ENDPOINTS.AUTH.LOGIN}`,
+      {
+        method: 'POST',
+        body: formData
+      }
+    );
 
     if (!response.ok) {
       const error: ApiError = await response.json();
@@ -61,13 +66,16 @@ class ApiClient {
   }
 
   async register(userData: RegisterRequest): Promise<User> {
-    const response = await fetch(`${this.baseUrl}/api/v1/auth/register`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(userData)
-    });
+    const response = await fetch(
+      `${this.baseUrl}${API_CONFIG.ENDPOINTS.AUTH.REGISTER}`,
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(userData)
+      }
+    );
 
     if (!response.ok) {
       const error: ApiError = await response.json();
@@ -78,13 +86,16 @@ class ApiClient {
   }
 
   async getCurrentUser(token: string): Promise<User> {
-    const response = await fetch(`${this.baseUrl}/api/v1/users/me`, {
-      method: 'GET',
-      headers: {
-        Authorization: `Bearer ${token}`,
-        'Content-Type': 'application/json'
+    const response = await fetch(
+      `${this.baseUrl}${API_CONFIG.ENDPOINTS.USERS.ME}`,
+      {
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }
       }
-    });
+    );
 
     if (!response.ok) {
       const error: ApiError = await response.json();
@@ -95,12 +106,15 @@ class ApiClient {
   }
 
   async refreshToken(token: string): Promise<LoginResponse> {
-    const response = await fetch(`${this.baseUrl}/api/v1/auth/refresh`, {
-      method: 'POST',
-      headers: {
-        Authorization: `Bearer ${token}`
+    const response = await fetch(
+      `${this.baseUrl}${API_CONFIG.ENDPOINTS.AUTH.REFRESH}`,
+      {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
       }
-    });
+    );
 
     if (!response.ok) {
       const error: ApiError = await response.json();
@@ -115,17 +129,20 @@ class ApiClient {
     message: string,
     sessionId?: string
   ): Promise<Response> {
-    const response = await fetch(`${this.baseUrl}/api/v1/planner/invoke`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        input: message,
-        session_id: sessionId,
-        stream: true
-      })
-    });
+    const response = await fetch(
+      `${this.baseUrl}${API_CONFIG.ENDPOINTS.PLANNER.INVOKE}`,
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          input: message,
+          session_id: sessionId,
+          stream: true
+        })
+      }
+    );
 
     if (!response.ok) {
       throw new Error('Failed to send chat message');
@@ -136,7 +153,7 @@ class ApiClient {
 
   async getAICapabilities(): Promise<AICapabilitiesResponse> {
     const response = await fetch(
-      `${this.baseUrl}/api/v1/planner/capabilities`,
+      `${this.baseUrl}${API_CONFIG.ENDPOINTS.PLANNER.CAPABILITIES}`,
       {
         method: 'GET'
       }
@@ -150,9 +167,12 @@ class ApiClient {
   }
 
   async checkAIHealth(): Promise<AIHealthResponse> {
-    const response = await fetch(`${this.baseUrl}/api/v1/planner/health`, {
-      method: 'GET'
-    });
+    const response = await fetch(
+      `${this.baseUrl}${API_CONFIG.ENDPOINTS.PLANNER.HEALTH}`,
+      {
+        method: 'GET'
+      }
+    );
 
     if (!response.ok) {
       throw new Error('AI service is not available');
@@ -213,7 +233,7 @@ const apiRequest = async (
           if (parsedAuth?.state?.token) {
             // Attempt to refresh token
             const refreshResponse = await fetch(
-              `${API_BASE_URL}/api/v1/auth/refresh`,
+              getFullUrl(API_CONFIG.ENDPOINTS.AUTH.REFRESH),
               {
                 method: 'POST',
                 headers: {
@@ -295,7 +315,7 @@ interface SessionStatistics {
 
 // Profile and user data functions
 export const getUserProfile = async (): Promise<UserProfileResponse> => {
-  const response = await apiRequest(`${API_BASE_URL}/api/v1/users/me`);
+  const response = await apiRequest(getFullUrl(API_CONFIG.ENDPOINTS.USERS.ME));
 
   if (!response.ok) {
     throw new Error('Failed to fetch user profile');
@@ -314,7 +334,7 @@ export const getUserSessions = async (params?: {
   if (params?.offset) queryParams.append('offset', params.offset.toString());
 
   const response = await apiRequest(
-    `${API_BASE_URL}/api/v1/sessions?${queryParams}`
+    getFullUrl(`${API_CONFIG.ENDPOINTS.SESSIONS.LIST}?${queryParams}`)
   );
 
   if (!response.ok) {
@@ -326,7 +346,7 @@ export const getUserSessions = async (params?: {
 
 export const getSessionStatistics = async (): Promise<SessionStatistics> => {
   const response = await apiRequest(
-    `${API_BASE_URL}/api/v1/sessions/statistics`
+    getFullUrl(API_CONFIG.ENDPOINTS.SESSIONS.STATISTICS)
   );
 
   if (!response.ok) {
@@ -338,7 +358,9 @@ export const getSessionStatistics = async (): Promise<SessionStatistics> => {
 
 // Student/Mentor specific data
 export const getStudentProfile = async (): Promise<unknown> => {
-  const response = await apiRequest(`${API_BASE_URL}/api/v1/students/profile`);
+  const response = await apiRequest(
+    getFullUrl(API_CONFIG.ENDPOINTS.STUDENTS.PROFILE)
+  );
 
   if (!response.ok) {
     throw new Error('Failed to fetch student profile');
@@ -357,7 +379,9 @@ export const getUserOrders = async (params?: {
   if (params?.offset) queryParams.append('offset', params.offset.toString());
 
   const response = await apiRequest(
-    `${API_BASE_URL}/api/v1/services/orders/my-orders?${queryParams}`
+    getFullUrl(
+      `${API_CONFIG.ENDPOINTS.SERVICES.ORDERS.MY_ORDERS}?${queryParams}`
+    )
   );
 
   if (!response.ok) {
@@ -377,7 +401,7 @@ export const getUserReviews = async (params?: {
   if (params?.offset) queryParams.append('offset', params.offset.toString());
 
   const response = await apiRequest(
-    `${API_BASE_URL}/api/v1/reviews/my-reviews?${queryParams}`
+    getFullUrl(`${API_CONFIG.ENDPOINTS.REVIEWS.MY_REVIEWS}?${queryParams}`)
   );
 
   if (!response.ok) {
@@ -458,7 +482,7 @@ export const searchMentors = async (params?: {
   if (params?.offset) queryParams.append('offset', params.offset.toString());
 
   const response = await fetch(
-    `${API_BASE_URL}/api/v1/mentors/search?${queryParams}`,
+    getFullUrl(`${API_CONFIG.ENDPOINTS.MENTORS.SEARCH}?${queryParams}`),
     {
       headers: {
         'Content-Type': 'application/json'
@@ -474,7 +498,9 @@ export const searchMentors = async (params?: {
 };
 
 export const getMentorProfile = async (): Promise<MentorProfile> => {
-  const response = await apiRequest(`${API_BASE_URL}/api/v1/mentors/profile`);
+  const response = await apiRequest(
+    getFullUrl(API_CONFIG.ENDPOINTS.MENTORS.PROFILE)
+  );
 
   if (!response.ok) {
     throw new Error('Failed to fetch mentor profile');
@@ -490,10 +516,13 @@ export const createMentorProfile = async (profileData: {
   hourly_rate?: number;
   session_duration_minutes?: number;
 }): Promise<MentorProfile> => {
-  const response = await apiRequest(`${API_BASE_URL}/api/v1/mentors/profile`, {
-    method: 'POST',
-    body: JSON.stringify(profileData)
-  });
+  const response = await apiRequest(
+    getFullUrl(API_CONFIG.ENDPOINTS.MENTORS.PROFILE),
+    {
+      method: 'POST',
+      body: JSON.stringify(profileData)
+    }
+  );
 
   if (!response.ok) {
     throw new Error('Failed to create mentor profile');
@@ -509,10 +538,13 @@ export const updateMentorProfile = async (profileData: {
   hourly_rate?: number;
   session_duration_minutes?: number;
 }): Promise<MentorProfile> => {
-  const response = await apiRequest(`${API_BASE_URL}/api/v1/mentors/profile`, {
-    method: 'PUT',
-    body: JSON.stringify(profileData)
-  });
+  const response = await apiRequest(
+    getFullUrl(API_CONFIG.ENDPOINTS.MENTORS.PROFILE),
+    {
+      method: 'PUT',
+      body: JSON.stringify(profileData)
+    }
+  );
 
   if (!response.ok) {
     throw new Error('Failed to update mentor profile');
@@ -522,9 +554,12 @@ export const updateMentorProfile = async (profileData: {
 };
 
 export const deleteMentorProfile = async (): Promise<{ message: string }> => {
-  const response = await apiRequest(`${API_BASE_URL}/api/v1/mentors/profile`, {
-    method: 'DELETE'
-  });
+  const response = await apiRequest(
+    getFullUrl(API_CONFIG.ENDPOINTS.MENTORS.PROFILE),
+    {
+      method: 'DELETE'
+    }
+  );
 
   if (!response.ok) {
     throw new Error('Failed to delete mentor profile');
@@ -543,7 +578,7 @@ export const getUserMessages = async (params?: {
   if (params?.offset) queryParams.append('offset', params.offset.toString());
 
   const response = await apiRequest(
-    `${API_BASE_URL}/api/v1/messages?${queryParams}`
+    getFullUrl(`${API_CONFIG.ENDPOINTS.MESSAGES.LIST}?${queryParams}`)
   );
 
   if (!response.ok) {
@@ -560,7 +595,7 @@ export const getUserConversations = async (params?: {
   if (params?.limit) queryParams.append('limit', params.limit.toString());
 
   const response = await apiRequest(
-    `${API_BASE_URL}/api/v1/messages/conversations?${queryParams}`
+    getFullUrl(`${API_CONFIG.ENDPOINTS.MESSAGES.CONVERSATIONS}?${queryParams}`)
   );
 
   if (!response.ok) {
@@ -574,7 +609,7 @@ export const getUserConversations = async (params?: {
 export const updateUserProfile = async (
   profileData: Record<string, unknown> | ProfileUpdateData
 ): Promise<User> => {
-  const response = await apiRequest(`${API_BASE_URL}/api/v1/users/me`, {
+  const response = await apiRequest(getFullUrl(API_CONFIG.ENDPOINTS.USERS.ME), {
     method: 'PUT',
     body: JSON.stringify(profileData)
   });
@@ -590,10 +625,13 @@ export const updateUserProfile = async (
 export const updateUserBasicProfile = async (
   profileData: Record<string, unknown>
 ): Promise<UserProfileResponse> => {
-  const response = await apiRequest(`${API_BASE_URL}/api/v1/users/me/basic`, {
-    method: 'PUT',
-    body: JSON.stringify(profileData)
-  });
+  const response = await apiRequest(
+    getFullUrl(API_CONFIG.ENDPOINTS.USERS.ME_BASIC),
+    {
+      method: 'PUT',
+      body: JSON.stringify(profileData)
+    }
+  );
 
   if (!response.ok) {
     throw new Error('Failed to update user profile');
