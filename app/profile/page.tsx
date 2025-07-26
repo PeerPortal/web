@@ -49,11 +49,19 @@ export default function ProfilePage() {
   }, [isAuthenticated, loading, router]);
 
   const fetchUserData = useCallback(async () => {
-    if (!isAuthenticated || !user) return;
+    // Wait for auth initialization and check if user is authenticated
+    if (loading) return; // Still loading auth state
+    if (!isAuthenticated || !user) {
+      console.log('User not authenticated, skipping data fetch');
+      setDataLoading(false);
+      return;
+    }
 
     try {
       setDataLoading(true);
       setDataError(null);
+
+      console.log('Fetching user data for authenticated user:', user.username);
 
       const [profile, sessions, stats] = await Promise.allSettled([
         getUserProfile(),
@@ -63,22 +71,30 @@ export default function ProfilePage() {
 
       if (profile.status === 'fulfilled') {
         setProfileData(profile.value);
+      } else {
+        console.error('Profile fetch failed:', profile.reason);
       }
+      
       if (sessions.status === 'fulfilled') {
         setSessionsData(sessions.value);
+      } else {
+        console.error('Sessions fetch failed:', sessions.reason);
       }
+      
       if (stats.status === 'fulfilled') {
         setStatsData(stats.value);
+      } else {
+        console.error('Stats fetch failed:', stats.reason);
       }
 
-      // Check for any errors
-      const errors = [profile, sessions, stats]
+      // Check for critical errors (profile is most important)
+      const criticalErrors = [profile]
         .filter(result => result.status === 'rejected')
         .map(result => (result as PromiseRejectedResult).reason);
 
-      if (errors.length > 0) {
-        console.error('Some data failed to load:', errors);
-        setDataError('部分数据加载失败，请刷新页面重试');
+      if (criticalErrors.length > 0) {
+        console.error('Critical data failed to load:', criticalErrors);
+        setDataError('用户信息加载失败，请检查登录状态');
       }
     } catch (error) {
       console.error('Failed to fetch user data:', error);
@@ -86,11 +102,11 @@ export default function ProfilePage() {
     } finally {
       setDataLoading(false);
     }
-  }, [isAuthenticated, user]);
+  }, [isAuthenticated, user, loading]);
 
   useEffect(() => {
     fetchUserData();
-  }, [isAuthenticated, user, fetchUserData]);
+  }, [fetchUserData]);
 
   const handleProfileUpdate = async (updatedData: ProfileUpdateData) => {
     try {

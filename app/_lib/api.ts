@@ -315,13 +315,28 @@ interface SessionStatistics {
 
 // Profile and user data functions
 export const getUserProfile = async (): Promise<UserProfileResponse> => {
-  const response = await apiRequest(getFullUrl(API_CONFIG.ENDPOINTS.USERS.ME));
+  try {
+    // Check if user is authenticated
+    const token = getAuthToken();
+    if (!token) {
+      throw new Error('User not authenticated');
+    }
 
-  if (!response.ok) {
-    throw new Error('Failed to fetch user profile');
+    const response = await apiRequest(getFullUrl(API_CONFIG.ENDPOINTS.USERS.ME));
+
+    if (!response.ok) {
+      // Handle authentication errors
+      if (response.status === 401) {
+        throw new Error('Authentication failed');
+      }
+      throw new Error('Failed to fetch user profile');
+    }
+
+    return response.json();
+  } catch (error) {
+    console.error('Error fetching user profile:', error);
+    throw error; // Re-throw because profile is critical
   }
-
-  return response.json();
 };
 
 // Session and activity functions
@@ -329,23 +344,52 @@ export const getUserSessions = async (params?: {
   limit?: number;
   offset?: number;
 }): Promise<unknown[]> => {
-  const queryParams = new URLSearchParams();
-  if (params?.limit) queryParams.append('limit', params.limit.toString());
-  if (params?.offset) queryParams.append('offset', params.offset.toString());
+  try {
+    // Check if user is authenticated
+    const token = getAuthToken();
+    if (!token) {
+      console.warn('User not authenticated, returning empty sessions list');
+      return [];
+    }
 
-  const response = await apiRequest(
-    getFullUrl(`${API_CONFIG.ENDPOINTS.SESSIONS.LIST}?${queryParams}`)
-  );
+    const queryParams = new URLSearchParams();
+    if (params?.limit) queryParams.append('limit', params.limit.toString());
+    if (params?.offset) queryParams.append('offset', params.offset.toString());
 
-  if (!response.ok) {
-    throw new Error('Failed to fetch user sessions');
+    const response = await apiRequest(
+      getFullUrl(`${API_CONFIG.ENDPOINTS.SESSIONS.LIST}?${queryParams}`)
+    );
+
+    if (!response.ok) {
+      // Handle authentication errors
+      if (response.status === 401) {
+        console.warn('Authentication failed, returning empty sessions list');
+        return [];
+      }
+      throw new Error('Failed to fetch user sessions');
+    }
+
+    return response.json();
+  } catch (error) {
+    console.error('Error fetching user sessions:', error);
+    return [];
   }
-
-  return response.json();
 };
 
 export const getSessionStatistics = async (): Promise<SessionStatistics> => {
   try {
+    // Check if user is authenticated
+    const token = getAuthToken();
+    if (!token) {
+      console.warn('User not authenticated, returning default statistics');
+      return {
+        total_sessions: 0,
+        total_hours: 0,
+        average_rating: 0,
+        completed_applications: 0
+      };
+    }
+
     // Try to get user's role from auth store
     let userRole = 'student'; // default role
     if (typeof window !== 'undefined') {
@@ -366,6 +410,17 @@ export const getSessionStatistics = async (): Promise<SessionStatistics> => {
     );
 
     if (!response.ok) {
+      // Handle authentication errors
+      if (response.status === 401) {
+        console.warn('Authentication failed, returning default statistics');
+        return {
+          total_sessions: 0,
+          total_hours: 0,
+          average_rating: 0,
+          completed_applications: 0
+        };
+      }
+      
       // If we get a 422 error due to route conflict, return mock data
       if (response.status === 422) {
         console.warn(
@@ -678,27 +733,20 @@ export const updateUserBasicProfile = async (
   return response.json();
 };
 
-// Upload user avatar function
+// Upload user avatar function - 使用新的文件上传API
 export const uploadUserAvatar = async (
   file: File
 ): Promise<{ avatar_url: string }> => {
-  const formData = new FormData();
-  formData.append('file', file);
-
-  const token = getAuthToken();
-  const response = await fetch(getFullUrl(API_CONFIG.ENDPOINTS.USERS.AVATAR), {
-    method: 'POST',
-    headers: {
-      ...(token && { Authorization: `Bearer ${token}` })
-    },
-    body: formData
-  });
-
-  if (!response.ok) {
-    throw new Error('Failed to upload avatar');
+  // 导入文件上传API
+  const { fileUploadAPI } = await import('./file-upload-api');
+  
+  try {
+    const result = await fileUploadAPI.uploadAvatar(file);
+    return { avatar_url: result.file_url };
+  } catch (error) {
+    console.error('Avatar upload failed:', error);
+    throw new Error(`Failed to upload avatar: ${error}`);
   }
-
-  return response.json();
 };
 
 // Import ProfileUpdateData type

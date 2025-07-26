@@ -16,6 +16,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
+import { API_CONFIG, getFullUrl } from '@/lib/api-config';
 
 interface Message {
   id: string;
@@ -132,7 +133,7 @@ function AIAdvisorContent() {
 
     try {
       const response = await fetch(
-        'http://localhost:8001/api/v1/planner/invoke',
+        getFullUrl(API_CONFIG.ENDPOINTS.PLANNER.INVOKE),
         {
           method: 'POST',
           headers: {
