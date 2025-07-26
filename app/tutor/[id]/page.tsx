@@ -15,6 +15,16 @@ import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
 import { searchMentors, type MentorPublic } from '@/lib/api';
+import {
+  Timeline,
+  TimelineContent,
+  TimelineDate,
+  TimelineHeader,
+  TimelineIndicator,
+  TimelineItem,
+  TimelineSeparator,
+  TimelineTitle
+} from '_components/ui/timeline';
 
 // 解析导师标题，提取大学和专业信息
 function parseMentorTitle(title: string): {
@@ -89,6 +99,12 @@ interface TutorData {
   languages: string[];
   achievements: string[];
   available: boolean;
+  education: {
+    id: number;
+    date: string;
+    title: string;
+    description: string;
+  }[];
 }
 
 async function getTutorData(id: string): Promise<TutorData | null> {
@@ -106,6 +122,45 @@ async function getTutorData(id: string): Promise<TutorData | null> {
 
     // Transform backend data to match frontend interface
     const { university, major, degree } = parseMentorTitle(mentor.title);
+
+    // 生成模拟的教育经历数据
+    const education = [];
+
+    // 根据导师的大学信息生成教育经历
+    if (
+      university.includes('大学') ||
+      university.toLowerCase().includes('university')
+    ) {
+      education.push({
+        id: 1,
+        date: '2015-2019',
+        title: `${degree} - ${university}`,
+        description: `主修 ${major}，获得优秀毕业生称号`
+      });
+    }
+
+    // 如果是斯坦福等名校，添加研究生经历
+    if (
+      university.toLowerCase().includes('stanford') ||
+      university.includes('斯坦福')
+    ) {
+      education.push({
+        id: 2,
+        date: '2019-2021',
+        title: `Master's Degree - ${university}`,
+        description: `专攻 ${major} 方向，参与多个研究项目`
+      });
+    }
+
+    // 如果没有教育经历，添加默认的
+    if (education.length === 0) {
+      education.push({
+        id: 1,
+        date: '2018-2022',
+        title: '本科学位',
+        description: `${major} 专业，成绩优异`
+      });
+    }
 
     return {
       id: mentor.mentor_id || mentor.id,
@@ -125,7 +180,8 @@ async function getTutorData(id: string): Promise<TutorData | null> {
         'Experienced mentor ready to help you achieve your goals.',
       languages: ['English', 'Chinese'],
       achievements: [`${mentor.sessions_completed || 0} sessions completed`],
-      available: true
+      available: true,
+      education
     };
   } catch (error) {
     console.error('Failed to fetch tutor data:', error);
@@ -210,13 +266,30 @@ export default async function TutorDetailPage({ params }: PageProps) {
             </CardHeader>
             <CardContent className="space-y-4">
               <div>
-                <h3 className="font-medium mb-2">教育背景</h3>
-                <p className="text-muted-foreground">
-                  {tutor.degree} - {tutor.university}
-                </p>
-                <p className="text-sm text-muted-foreground">
-                  专业: {tutor.major}
-                </p>
+                <h3 className="font-medium mb-4">教育背景</h3>
+                <Timeline defaultValue={tutor.education.length}>
+                  {tutor.education.map(item => (
+                    <TimelineItem
+                      key={item.id}
+                      step={item.id}
+                      className="group-data-[orientation=vertical]/timeline:sm:ms-16"
+                    >
+                      <TimelineHeader>
+                        <TimelineSeparator />
+                        <TimelineDate className="w-full text-sm">
+                          {item.date}
+                        </TimelineDate>
+                        <TimelineTitle className="sm:-mt-0.5 text-base">
+                          {item.title}
+                        </TimelineTitle>
+                        <TimelineIndicator />
+                      </TimelineHeader>
+                      <TimelineContent className="text-sm text-muted-foreground">
+                        {item.description}
+                      </TimelineContent>
+                    </TimelineItem>
+                  ))}
+                </Timeline>
               </div>
               <Separator />
               <div>
