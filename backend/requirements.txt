@@ -1,6 +1,6 @@
-# 留学双边信息平台 - 后端依赖包
-# 更新日期: 2024-01-01
-# Python 版本要求: >=3.11
+# PeerPortal 留学平台 - 后端依赖包
+# 更新日期: 2024-07-26
+# Python 版本要求: >=3.8
 
 # 核心Web框架
 fastapi==0.116.1
@@ -29,6 +29,7 @@ requests==2.32.4
 
 # 文件上传支持
 python-multipart==0.0.19
+aiofiles==24.1.0
 
 # AI Agent相关
 langchain==0.3.21
@@ -53,3 +54,34 @@ streamlit==1.41.1
 pytest==8.3.4
 pytest-asyncio==0.25.0
 httpx==0.28.1
+
+# 新增功能依赖
+# 注意: asyncio 是 Python 内置模块，无需安装
+
+# === v2.0智能体架构可选依赖 ===
+# 这些依赖是可选的，不安装也能运行基础功能
+
+# 记忆系统增强 (推荐)
+redis[hiredis]==5.0.8     # Redis缓存，用于短期记忆
+
+# 知识库增强 (企业级功能)
+# pymilvus==2.3.7         # Milvus向量数据库，用于长期记忆和RAG
+# motor==3.6.0             # MongoDB异步客户端，用于文档存储
+# elasticsearch==8.11.0    # Elasticsearch搜索引擎，用于关键词检索
+
+# 文档处理增强
+# python-docx==1.1.2      # Word文档处理
+# beautifulsoup4==4.12.3   # HTML文档处理
+
+# 性能监控 (开发调试)
+# prometheus-client==0.21.0 # 性能指标收集
+
+# 注释说明:
+# 1. Redis: 强烈推荐安装，大幅提升记忆系统性能
+# 2. Milvus/MongoDB: 企业级部署时安装，提供完整的知识库功能
+# 3. Elasticsearch: 大规模文档检索时安装
+# 4. 其他依赖: 根据具体需求安装
+
+# 快速安装命令:
+# pip install redis[hiredis]  # 基础增强
+# pip install redis pymilvus motor elasticsearch  # 完整功能

@@ -80,12 +80,12 @@ export const useAuthStore = create<AuthState>()(
               loading: false,
               initialized: true
             });
-          } catch (error) {
+          } catch {
             // Try to refresh token if available
             try {
               await get().refreshToken();
               set({ initialized: true });
-            } catch (refreshError) {
+            } catch {
               // Both current token and refresh failed, clear everything
               authUtils.logout();
               set({
@@ -158,6 +158,9 @@ export const useAuthStore = create<AuthState>()(
             username: userData.username,
             password: userData.password
           });
+
+          // Set flag to show first visit modal after registration
+          localStorage.setItem('showFirstVisitAfterRegistration', 'true');
         } catch (error) {
           set({ loading: false });
           throw error;

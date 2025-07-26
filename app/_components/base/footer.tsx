@@ -1,6 +1,6 @@
 import Logo from '@/components/base/logo';
 import Link from 'next/link';
-import { Globe, Mail, Phone, MapPin } from 'lucide-react';
+import { Globe, Mail, Phone } from 'lucide-react';
 
 const footerLinks = {
   services: [

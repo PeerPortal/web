@@ -1,0 +1,132 @@
+{
+  "total_tests": 13,
+  "passed_tests": 10,
+  "success_rate": 76.92307692307693,
+  "detailed_results": {
+    "basic_conversation": [
+      {
+        "case": "简单问候",
+        "success": true,
+        "execution_time": 3.824122905731201,
+        "output_length": 762,
+        "keywords_found": [
+          "留学",
+          "申请",
+          "流程"
+        ],
+        "keywords_expected": 3,
+        "tool_calls": 0,
+        "langsmith_enabled": true
+      },
+      {
+        "case": "具体专业咨询",
+        "success": true,
+        "execution_time": 2.0861313343048096,
+        "output_length": 790,
+        "keywords_found": [
+          "计算机科学",
+          "硕士",
+          "条件"
+        ],
+        "keywords_expected": 6,
+        "tool_calls": 0,
+        "langsmith_enabled": true
+      },
+      {
+        "case": "学校推荐",
+        "success": true,
+        "execution_time": 1.2463037967681885,
+        "output_length": 858,
+        "keywords_found": [
+          "计算机"
+        ],
+        "keywords_expected": 4,
+        "tool_calls": 0,
+        "langsmith_enabled": true
+      }
+    ],
+    "tool_integration": [
+      {
+        "case": "网络搜索工具",
+        "success": false,
+        "execution_time": 1.1023101806640625,
+        "output_length": 968,
+        "tool_calls": 0,
+        "tools_used": "未知"
+      },
+      {
+        "case": "知识库搜索",
+        "success": false,
+        "execution_time": 11.303282737731934,
+        "output_length": 1271,
+        "tool_calls": 0,
+        "tools_used": "未知"
+      },
+      {
+        "case": "数据库查询",
+        "success": false,
+        "execution_time": 2.5730690956115723,
+        "output_length": 1017,
+        "tool_calls": 0,
+        "tools_used": "未知"
+      }
+    ],
+    "conversation_continuity": [
+      {
+        "turn": 1,
+        "context": "初始咨询",
+        "success": true,
+        "execution_time": 2.3033318519592285,
+        "output_length": 168,
+        "chat_history_length": 2
+      },
+      {
+        "turn": 2,
+        "context": "补充专业信息",
+        "success": true,
+        "execution_time": 3.4042208194732666,
+        "output_length": 195,
+        "chat_history_length": 4
+      },
+      {
+        "turn": 3,
+        "context": "提供成绩信息",
+        "success": true,
+        "execution_time": 5.44794487953186,
+        "output_length": 425,
+        "chat_history_length": 6
+      },
+      {
+        "turn": 4,
+        "context": "请求具体建议",
+        "success": true,
+        "execution_time": 10.07593822479248,
+        "output_length": 938,
+        "chat_history_length": 8
+      }
+    ],
+    "error_handling": [
+      {
+        "case": "空输入",
+        "success": true,
+        "execution_time": 1.4490418434143066,
+        "output_length": 48,
+        "handled_gracefully": true
+      },
+      {
+        "case": "超长输入",
+        "success": true,
+        "execution_time": 1.4556701183319092,
+        "output_length": 52,
+        "handled_gracefully": true
+      },
+      {
+        "case": "特殊字符",
+        "success": true,
+        "execution_time": 1.3826239109039307,
+        "output_length": 59,
+        "handled_gracefully": true
+      }
+    ]
+  }
+}

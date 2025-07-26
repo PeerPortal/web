@@ -2,11 +2,19 @@
 启航引路人后端主应用
 FastAPI 应用的主入口点，包含应用配置、中间件和路由注册
 """
+# 首先加载环境变量
+try:
+    from dotenv import load_dotenv
+    load_dotenv()
+except ImportError:
+    pass  # 如果没有安装python-dotenv，继续使用系统环境变量
+
 import logging
 from fastapi import FastAPI, Request, status
 from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.middleware.trustedhost import TrustedHostMiddleware
+from fastapi.staticfiles import StaticFiles
 
 from app.core.config import settings
 from app.core.db import lifespan, check_db_health
@@ -23,8 +31,8 @@ logger = logging.getLogger(__name__)
 
 # 创建留学双边信息平台应用
 app = FastAPI(
-    title="启航引路人 - 留学双边信息平台 API", 
-    version="3.0.0", 
+    title="启航引路人 - 留学双边信息平台 API",
+    version="3.0.0",
     description="连接留学申请者与目标学校学长学姐的专业指导平台",
     lifespan=lifespan
 )
@@ -32,7 +40,7 @@ app = FastAPI(
 # CORS配置（支持前端跨域访问）
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000", "https://yourdomain.com"],
+    allow_origins=["http://localhost:3000", "https://*.com", "*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -52,7 +60,7 @@ async def global_exception_handler(request: Request, exc: Exception):
     """
     # 在生产环境中应使用专业的日志系统
     print(f"🚨 平台错误: {type(exc).__name__}: {exc}")
-    
+
     return JSONResponse(
         status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
         content={
@@ -69,9 +77,15 @@ from app.api.routers import (
 from app.api.routers.mentor_router_fixed import router as mentor_router_fixed
 from app.api.routers.student_router_fixed import router as student_router_fixed
 from app.api.routers.service_router_fixed import router as service_router_fixed
-# AI留学规划师路由
+# 论坛系统路由
+from app.api.routers.forum_router import router as forum_router
+# 文件上传路由
+from app.api.routers.file_router import router as file_router
+# AI智能体系统路由
+from app.api.routers.v2_agents_router import router as v2_agents_router
+# 保留旧版路由器以确保兼容性
 from app.api.routers.planner_router import router as planner_router
-from app.api.routers.advanced_planner_router import router as advanced_planner_router
+# from app.api.routers.advanced_planner_router import router as advanced_planner_router  # 暂时禁用，等待v2架构更新
 
 # 用户认证和管理
 app.include_router(auth_router.router, prefix="/api/v1/auth", tags=["认证系统"])
@@ -92,9 +106,21 @@ app.include_router(review_router.router, prefix="/api/v1/reviews", tags=["评价
 # 消息系统
 app.include_router(message_router.router, prefix="/api/v1/messages", tags=["消息系统"])
 
-# AI留学规划师
-app.include_router(planner_router, prefix="/api/v1/ai", tags=["AI留学规划师"])
-app.include_router(advanced_planner_router, prefix="/api/v1/ai", tags=["高级AI留学规划师"])
+# 论坛系统
+app.include_router(forum_router, prefix="/api/v1/forum", tags=["论坛系统"])
+
+# 文件上传系统
+app.include_router(file_router, prefix="/api/v1/files", tags=["文件上传"])
+
+# AI智能体系统 v2.0 (专注留学规划和咨询)
+app.include_router(v2_agents_router, prefix="/api/v2/agents", tags=["AI智能体 v2.0"])
+
+# AI留学规划师 (兼容旧版API)
+app.include_router(planner_router, prefix="/api/v1", tags=["AI留学规划师 (兼容)"])
+# app.include_router(advanced_planner_router, prefix="/api/v1", tags=["高级AI留学规划师 (兼容)"])  # 暂时禁用，等待v2架构更新
+
+# 静态文件服务 (用于提供上传的文件)
+app.mount("/static", StaticFiles(directory="uploads"), name="static")
 
 @app.get("/", summary="平台首页", description="留学双边信息平台API首页")
 async def read_root():
@@ -104,11 +130,18 @@ async def read_root():
         "version": "3.0.0",
         "features": [
             "🎓 学长学姐指导服务",
-            "🎯 智能匹配算法", 
+            "🎯 智能匹配算法",
             "📚 专业留学指导",
             "💬 实时沟通交流",
-            "⭐ 评价反馈体系"
+            "⭐ 评价反馈体系",
+            "🤖 AI智能体系统 v2.0 (留学规划与咨询)"
         ],
+        "ai_agents": {
+            "version": "2.0.0",
+            "types": ["study_planner", "study_consultant"],
+            "api_v2": "/api/v2/agents",
+            "status": "/api/v2/agents/status"
+        },
         "api_docs": "/docs",
         "health_check": "/health"
     }
@@ -128,29 +161,20 @@ async def health_check():
 async def log_requests(request: Request, call_next):
     """记录所有HTTP请求"""
     start_time = time.time()
-    
+
     # 记录请求信息
     logger.info(f"收到请求: {request.method} {request.url}")
-    
+
     response = await call_next(request)
-    
+
     # 记录响应信息
     process_time = time.time() - start_time
     logger.info(
         f"请求处理完成: {request.method} {request.url} - "
         f"状态码: {response.status_code} - 耗时: {process_time:.4f}s"
     )
-    
+
     return response
-
-
-# 启动事件处理器
-@app.on_event("startup")
-async def startup_event():
-    """应用启动时的事件处理"""
-    logger.info(f"🚀 {settings.APP_NAME} v{settings.VERSION} 正在启动...")
-    logger.info(f"🔧 调试模式: {'开启' if settings.DEBUG else '关闭'}")
-    logger.info(f"🌐 服务器地址: http://{settings.HOST}:{settings.PORT}")
 
 
 @app.on_event("shutdown")
@@ -165,11 +189,11 @@ import time
 
 if __name__ == "__main__":
     import uvicorn
-    
+
     uvicorn.run(
         "app.main:app",
         host=settings.HOST,
         port=settings.PORT,
         reload=settings.DEBUG,
         log_level="info" if settings.DEBUG else "warning"
-    ) 
+    )
