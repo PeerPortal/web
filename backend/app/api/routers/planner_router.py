@@ -11,7 +11,7 @@ import asyncio
 from datetime import datetime
 
 from app.api.deps import get_current_user
-from app.agents.planner_agent import get_agent_executor
+from app.agents.v2 import create_study_planner, StudyPlannerAgent
 
 router = APIRouter(prefix="/planner", tags=["AI留学规划师"])
 
@@ -27,19 +27,20 @@ class PlannerResponse(BaseModel):
     session_id: Optional[str] = Field(None, description="会话ID")
     timestamp: datetime = Field(default_factory=datetime.now, description="响应时间")
 
-# 获取Agent执行器实例
-agent_executor = None
+# 获取Agent实例
+study_planner_agent = None
 
 def get_agent():
-    """获取Agent执行器，延迟初始化以避免导入错误"""
-    global agent_executor
-    if agent_executor is None:
+    """获取StudyPlannerAgent，延迟初始化以避免导入错误"""
+    global study_planner_agent
+    if study_planner_agent is None:
         try:
-            agent_executor = get_agent_executor()
+            # 使用默认tenant_id，在实际应用中应该从用户信息中获取
+            study_planner_agent = create_study_planner("default_tenant")
         except Exception as e:
             print(f"❌ Agent初始化失败: {e}")
             raise HTTPException(status_code=500, detail=f"AI服务初始化失败: {str(e)}")
-    return agent_executor
+    return study_planner_agent
 
 @router.post("/invoke", summary="调用AI留学规划师", description="发送问题给AI留学规划师，获得专业的留学申请建议")
 async def invoke_planner(
@@ -72,9 +73,9 @@ async def invoke_planner(
             )
         else:
             # 非流式响应
-            result = await agent.ainvoke({"input": request.input})
+            result = await agent.execute(request.input)
             return PlannerResponse(
-                output=result["output"],
+                output=result,
                 session_id=request.session_id
             )
             
@@ -82,72 +83,27 @@ async def invoke_planner(
         print(f"❌ AI规划师调用失败: {e}")
         raise HTTPException(status_code=500, detail=f"AI服务调用失败: {str(e)}")
 
-async def stream_generator(agent, user_input: str, session_id: Optional[str] = None):
+async def stream_generator(agent: StudyPlannerAgent, user_input: str, session_id: Optional[str] = None):
     """生成流式响应"""
     try:
         # 发送开始事件
         yield f"data: {json.dumps({'type': 'start', 'content': 'AI留学规划师启动中...'}, ensure_ascii=False)}\n\n"
         
-        # 使用astream_events获取详细的执行过程
-        async for event in agent.astream_events(
-            {"input": user_input},
-            version="v1"
-        ):
-            event_type = event.get("event", "")
-            event_name = event.get("name", "")
-            
-            # Agent开始思考
-            if event_type == "on_chain_start" and event_name == "Agent":
-                data = {
-                    "type": "thinking",
-                    "content": "🤔 正在分析您的问题..."
-                }
-                yield f"data: {json.dumps(data, ensure_ascii=False)}\n\n"
-            
-            # 工具开始执行
-            elif event_type == "on_tool_start":
-                tool_name = event['name']
-                tool_input = event['data'].get('input', {})
-                
-                # 友好的工具执行提示
-                tool_descriptions = {
-                    'find_mentors_tool': '🔍 正在为您匹配合适的学长学姐引路人...',
-                    'find_services_tool': '🛍️ 正在搜索相关的指导服务...',
-                    'get_platform_stats_tool': '📊 正在获取平台最新统计信息...',
-                    'TavilySearchResults': '🌐 正在搜索最新的留学资讯...',
-                    'DuckDuckGoSearchRun': '🌐 正在搜索相关信息...'
-                }
-                
-                description = tool_descriptions.get(tool_name, f'⚙️ 正在使用 {tool_name} 工具...')
-                
-                data = {
-                    "type": "tool_start",
-                    "tool": tool_name,
-                    "content": description,
-                    "input": str(tool_input)[:200] + "..." if len(str(tool_input)) > 200 else str(tool_input)
-                }
-                yield f"data: {json.dumps(data, ensure_ascii=False)}\n\n"
-            
-            # 工具执行完成
-            elif event_type == "on_tool_end":
-                tool_name = event['name']
-                data = {
-                    "type": "tool_end", 
-                    "tool": tool_name,
-                    "content": f"✅ {tool_name} 执行完成"
-                }
-                yield f"data: {json.dumps(data, ensure_ascii=False)}\n\n"
-            
-            # Agent最终回答
-            elif event_type == "on_chain_end" and event_name == "Agent":
-                final_output = event['data']['output'].get('output', '')
-                data = {
-                    "type": "final_answer",
-                    "content": final_output,
-                    "session_id": session_id,
-                    "timestamp": datetime.now().isoformat()
-                }
-                yield f"data: {json.dumps(data, ensure_ascii=False)}\n\n"
+        # 发送思考状态
+        yield f"data: {json.dumps({'type': 'thinking', 'content': '🤔 正在分析您的问题...'}, ensure_ascii=False)}\n\n"
+        
+        # 新架构中执行agent并获取结果
+        # 注意：v2架构可能不支持完全相同的事件流，所以我们简化处理
+        result = await agent.execute(user_input)
+        
+        # 发送最终回答
+        data = {
+            "type": "final_answer",
+            "content": result,
+            "session_id": session_id,
+            "timestamp": datetime.now().isoformat()
+        }
+        yield f"data: {json.dumps(data, ensure_ascii=False)}\n\n"
         
         # 发送结束事件
         yield f"data: {json.dumps({'type': 'end', 'content': '咨询完成'}, ensure_ascii=False)}\n\n"
@@ -169,7 +125,8 @@ async def health_check():
             "status": "healthy",
             "service": "AI留学规划师",
             "timestamp": datetime.now().isoformat(),
-            "tools_count": len(agent.tools)
+            "agent_type": "study_planner",
+            "version": "v2.0"
         }
     except Exception as e:
         raise HTTPException(status_code=503, detail=f"AI服务不可用: {str(e)}")

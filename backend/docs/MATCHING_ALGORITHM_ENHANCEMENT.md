@@ -1,7 +1,6 @@
 # Enhanced Matching Algorithm - Partial Matching Support
 
 ## Overview
-
 The enhanced matching algorithm introduces sophisticated partial matching capabilities to improve mentor-student pairing accuracy and coverage. Instead of strict binary matching, the system now supports fuzzy matching, similarity scoring, and contextual relationships.
 
 ## Key Improvements
@@ -9,13 +8,11 @@ The enhanced matching algorithm introduces sophisticated partial matching capabi
 ### 1. University Matching Enhancements
 
 **Before:**
-
 ```sql
 CASE WHEN mr.university = ANY($1) THEN 0.3 ELSE 0.0 END
 ```
 
 **After:**
-
 ```sql
 GREATEST(
     -- Exact match (highest score)
@@ -28,7 +25,6 @@ GREATEST(
 ```
 
 **Reasons for Change:**
-
 - **Increased Coverage**: Students searching for "Stanford" now match mentors from "Stanford University"
 - **Tier Flexibility**: Students targeting top-tier schools get recommendations from similar-ranked institutions
 - **Reduced Zero Matches**: Fewer cases where students get no recommendations due to exact name mismatches
@@ -36,13 +32,11 @@ GREATEST(
 ### 2. Major Matching Enhancements
 
 **Before:**
-
 ```sql
 CASE WHEN mr.major = ANY($2) THEN 0.25 ELSE 0.0 END
 ```
 
 **After:**
-
 ```sql
 GREATEST(
     -- Exact match
@@ -57,7 +51,6 @@ GREATEST(
 ```
 
 **Reasons for Change:**
-
 - **Interdisciplinary Recognition**: Computer Science students can find Data Science mentors
 - **Career Transition Support**: Business students can connect with Finance/Marketing mentors
 - **Broader Expertise**: Students get access to mentors in related fields who can provide valuable insights
@@ -65,15 +58,13 @@ GREATEST(
 ### 3. Degree Level Flexibility
 
 **Before:**
-
 ```sql
 CASE WHEN mr.degree_level = $3 THEN 0.2 ELSE 0.0 END
 ```
 
 **After:**
-
 ```sql
-CASE
+CASE 
     WHEN mr.degree_level = $3 THEN 0.2
     WHEN adjacent_degrees THEN 0.1  -- Master ↔ PhD
     WHEN related_degrees THEN 0.05  -- Bachelor ↔ Master
@@ -82,7 +73,6 @@ END
 ```
 
 **Reasons for Change:**
-
 - **Experience Sharing**: PhD students can mentor Master's students (and vice versa)
 - **Career Progression**: Bachelor students can learn from Master's degree holders
 - **Flexible Guidance**: Different degree levels offer different perspectives
@@ -90,14 +80,12 @@ END
 ### 4. Dynamic Scoring System
 
 **New Features:**
-
 - **Experience Bonus**: More experienced mentors get higher scores
 - **Specialty Matching**: Mentors with relevant service specialties get bonus points
 - **Language Partial Matching**: Supports multilingual scenarios
 - **String Similarity**: Uses difflib for fuzzy text matching
 
 **Reasons for Implementation:**
-
 - **Quality Assurance**: Experienced mentors are prioritized
 - **Service Alignment**: Matches students with mentors offering specific services
 - **Global Support**: Better matching for international students

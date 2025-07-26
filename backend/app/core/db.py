@@ -61,44 +61,40 @@ async def lifespan(app: FastAPI):
         logger.info("应用将在降级模式下运行（仅支持 Supabase REST API）")
         db_pool = None
         
-    except ValueError as e:
-        # 配置错误（如缺少密码）
-        logger.warning(f"数据库配置不完整: {e}")
-        logger.info("应用将在降级模式下运行（仅支持 Supabase REST API）")
-        db_pool = None
-        
     except Exception as e:
-        # 其他连接错误  
-        if asyncpg:
-            try:
-                # 安全检查 asyncpg 异常类型
-                if hasattr(asyncpg, 'exceptions'):
-                    if hasattr(asyncpg.exceptions, 'InvalidAuthorizationSpecificationError'):
-                        if isinstance(e, asyncpg.exceptions.InvalidAuthorizationSpecificationError):
-                            # 认证失败
-                            logger.error(f"数据库认证失败: {e}")
-                            logger.info("请检查数据库用户名和密码是否正确")
-                            logger.info("应用将在降级模式下运行（仅支持 Supabase REST API）")
-                            db_pool = None
-                            return
-                            
-                    if hasattr(asyncpg.exceptions, 'CannotConnectNowError'):
-                        if isinstance(e, asyncpg.exceptions.CannotConnectNowError):
-                            # 服务器拒绝连接
-                            logger.error(f"数据库服务器拒绝连接: {e}")
-                            logger.info("可能是网络问题或数据库服务器繁忙")
-                            logger.info("应用将在降级模式下运行（仅支持 Supabase REST API）")
-                            db_pool = None
-                            return
-            except Exception:
-                # 如果异常类型检查也失败，就跳过特殊处理
-                pass
-        
-        # 其他连接错误
-        logger.error(f"无法创建数据库连接池: {e}")
-        logger.error(f"错误类型: {type(e).__name__}")
-        logger.info("应用将在降级模式下运行（仅支持 Supabase REST API）")
+        # 连接池创建失败
+        logger.error(f"数据库连接池创建失败: {e}")
+        logger.info("回退到 Supabase REST API")
         db_pool = None
+    
+    # 初始化AI智能体系统 v2.0
+    logger.info("🤖 正在初始化AI智能体系统 v2.0...")
+    try:
+        from app.core.config import settings
+        from app.agents.v2.config import init_v2_from_settings, config_manager
+        
+        logger.info("📦 导入v2配置模块成功")
+        logger.info(f"🔑 API密钥已配置: {'是' if settings.OPENAI_API_KEY else '否'}")
+        
+        success = await init_v2_from_settings(settings)
+        logger.info(f"🎯 v2初始化结果: {success}")
+        
+        if success:
+            # 获取并显示配置状态
+            status = config_manager.get_config_status()
+            logger.info(f"📊 配置状态: {status}")
+            logger.info("✅ AI智能体系统 v2.0 初始化成功")
+            logger.info("🎯 专注功能: 留学规划与咨询")
+            logger.info("🤖 可用智能体: 留学规划师, 留学咨询师")
+        else:
+            logger.warning("⚠️ AI智能体系统 v2.0 初始化失败，将使用降级模式")
+            
+    except Exception as e:
+        logger.error(f"❌ AI智能体系统 v2.0 初始化异常: {e}")
+        logger.error("📋 异常详情:")
+        import traceback
+        traceback.print_exc()
+        logger.info("🔄 应用将继续启动，但AI功能可能不可用")
 
     # 应用运行期间
     yield

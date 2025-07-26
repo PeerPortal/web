@@ -47,9 +47,33 @@ class Settings(BaseSettings):
     AGENT_MAX_ITERATIONS: int = Field(default=10)
     AGENT_TIMEOUT_SECONDS: int = Field(default=300)
     
+    # === v2.0智能体架构配置 ===
+    # AI模型配置
+    DEFAULT_MODEL: str = Field(default="gpt-4o-mini")
+    DEFAULT_EMBEDDING_MODEL: str = Field(default="text-embedding-ada-002")
+    
+    # 记忆系统配置
+    REDIS_URL: Optional[str] = Field(default=None)
+    MEMORY_SESSION_TTL: int = Field(default=86400)  # 24小时
+    MEMORY_DECAY_DAYS: int = Field(default=30)      # 30天
+    
+    # 知识库系统配置 (企业级功能)
+    MILVUS_HOST: Optional[str] = Field(default=None)
+    MILVUS_PORT: int = Field(default=19530)
+    MILVUS_USER: Optional[str] = Field(default=None)
+    MILVUS_PASSWORD: Optional[str] = Field(default=None)
+    
+    MONGODB_URL: Optional[str] = Field(default=None)
+    ELASTICSEARCH_URL: Optional[str] = Field(default=None)
+    
+    # RAG系统配置
+    RAG_CHUNK_SIZE: int = Field(default=1000)
+    RAG_CHUNK_OVERLAP: int = Field(default=200)
+    RAG_TOP_K: int = Field(default=5)
+    
     # CORS 配置
-    ALLOWED_ORIGINS: list[str] = Field(
-        default=["http://localhost:3000", "http://localhost:8080"]
+    ALLOWED_ORIGINS: str = Field(
+        default='["http://localhost:3000", "http://localhost:8080"]'
     )
     
     # 服务器配置

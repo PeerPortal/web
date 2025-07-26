@@ -6,7 +6,7 @@ services:
     build: .
     container_name: peerportal-backend
     ports:
-      - '8000:8000'
+      - "8000:8000"
     environment:
       - SUPABASE_URL=${SUPABASE_URL}
       - SUPABASE_KEY=${SUPABASE_KEY}
@@ -14,7 +14,6 @@ services:
       - SUPABASE_DB_PASSWORD=${SUPABASE_DB_PASSWORD}
       - SECRET_KEY=${SECRET_KEY:-your-secret-key-here}
       - DEBUG=${DEBUG:-true}
-      - OPENAI_API_KEY=${OPENAI_API_KEY}
     restart: unless-stopped
 
 networks:
