@@ -33,7 +33,7 @@ export default function Footer() {
             <div className="space-y-4">
               <Link href="/" className="flex items-center gap-2">
                 <Logo size={32} />
-                <span className="text-xl font-bold">OfferIn</span>
+                <span className="text-xl font-bold">学长帮 OfferIn</span>
               </Link>
               <p className="text-muted-foreground text-sm">
                 留学申请一站式平台，为您的留学之路提供专业指导与支持。
