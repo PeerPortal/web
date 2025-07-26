@@ -1,6 +1,7 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
+import Image from 'next/image';
 import {
   Dialog,
   DialogContent,
@@ -14,8 +15,9 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Skeleton } from '@/components/ui/skeleton';
-import { Edit, Loader2 } from 'lucide-react';
+import { Edit, Loader2, Camera, Upload } from 'lucide-react';
 import { User } from '@/lib/api';
+import { uploadUserAvatar } from '@/lib/api';
 
 interface ProfileUpdateData {
   full_name?: string;
@@ -39,6 +41,8 @@ export function EditProfileDialog({
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [dataLoading, setDataLoading] = useState(false);
+  const [avatarUploading, setAvatarUploading] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const [formData, setFormData] = useState({
     full_name: '',
     avatar_url: '',
@@ -80,6 +84,46 @@ export function EditProfileDialog({
       ...prev,
       [field]: value
     }));
+  };
+
+  const handleAvatarUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    // Validate file type
+    const allowedTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+    if (!allowedTypes.includes(file.type)) {
+      alert('请上传 JPG, PNG, GIF 或 WEBP 格式的图片');
+      return;
+    }
+
+    // Validate file size (5MB)
+    if (file.size > 5 * 1024 * 1024) {
+      alert('图片文件大小不能超过 5MB');
+      return;
+    }
+
+    setAvatarUploading(true);
+    try {
+      const result = await uploadUserAvatar(file);
+      setFormData(prev => ({
+        ...prev,
+        avatar_url: result.avatar_url
+      }));
+    } catch (error) {
+      console.error('Avatar upload failed:', error);
+      alert('头像上传失败，请重试');
+    } finally {
+      setAvatarUploading(false);
+      // Clear the file input
+      if (fileInputRef.current) {
+        fileInputRef.current.value = '';
+      }
+    }
+  };
+
+  const handleUploadClick = () => {
+    fileInputRef.current?.click();
   };
 
   const handleSave = async () => {
@@ -125,17 +169,87 @@ export function EditProfileDialog({
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="avatar_url">头像URL</Label>
+            <Label>头像</Label>
             {dataLoading ? (
-              <Skeleton className="h-10 w-full" />
+              <Skeleton className="h-32 w-full" />
             ) : (
-              <Input
-                id="avatar_url"
-                type="url"
-                value={formData.avatar_url}
-                onChange={e => handleInputChange('avatar_url', e.target.value)}
-                placeholder="输入头像图片链接"
-              />
+              <div className="space-y-4">
+                {/* Current Avatar Preview */}
+                <div className="flex items-center gap-4">
+                  <div className="relative">
+                    <div className="w-20 h-20 rounded-full overflow-hidden bg-gray-100 border-2 border-gray-200">
+                      {formData.avatar_url ? (
+                        <Image
+                          src={formData.avatar_url.startsWith('/static') 
+                            ? `https://web-4w0h.onrender.com${formData.avatar_url}` 
+                            : formData.avatar_url
+                          }
+                          alt="Avatar"
+                          width={80}
+                          height={80}
+                          className="w-full h-full object-cover"
+                          onError={(e) => {
+                            const target = e.target as HTMLImageElement;
+                            target.src = '/api/placeholder/80/80';
+                          }}
+                        />
+                      ) : (
+                        <div className="w-full h-full flex items-center justify-center text-gray-400">
+                          <Camera className="w-8 h-8" />
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                  <div className="flex-1">
+                    <Button
+                      type="button"
+                      variant="outline"
+                      onClick={handleUploadClick}
+                      disabled={avatarUploading}
+                      className="w-full"
+                    >
+                      {avatarUploading ? (
+                        <>
+                          <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                          上传中...
+                        </>
+                      ) : (
+                        <>
+                          <Upload className="w-4 h-4 mr-2" />
+                          上传新头像
+                        </>
+                      )}
+                    </Button>
+                    <p className="text-xs text-gray-500 mt-1">
+                      支持 JPG, PNG, GIF, WEBP 格式，文件大小不超过 5MB
+                    </p>
+                  </div>
+                </div>
+                
+                {/* Hidden File Input */}
+                <input
+                  type="file"
+                  ref={fileInputRef}
+                  onChange={handleAvatarUpload}
+                  accept="image/jpeg,image/png,image/gif,image/webp"
+                  className="hidden"
+                />
+                
+                {/* Manual URL Input (Alternative) */}
+                <div className="border-t pt-4">
+                  <Label htmlFor="avatar_url" className="text-sm text-gray-600">
+                    或输入图片链接
+                  </Label>
+                  <Input
+                    id="avatar_url"
+                    type="url"
+                    value={formData.avatar_url}
+                    onChange={e => handleInputChange('avatar_url', e.target.value)}
+                    placeholder="https://example.com/avatar.jpg"
+                    className="mt-1"
+                  />
+                </div>
+              </div>
             )}
           </div>
 

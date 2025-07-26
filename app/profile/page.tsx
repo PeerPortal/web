@@ -17,9 +17,9 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { ClickableAvatar } from '@/components/profile/clickable-avatar';
 import { useAuthStore } from '@/store/auth-store';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import {
   getUserProfile,
   getUserSessions,
@@ -48,51 +48,71 @@ export default function ProfilePage() {
     }
   }, [isAuthenticated, loading, router]);
 
-  useEffect(() => {
-    const fetchUserData = async () => {
-      if (!isAuthenticated || !user) return;
+  const fetchUserData = useCallback(async () => {
+    if (!isAuthenticated || !user) return;
 
-      try {
-        setDataLoading(true);
-        setDataError(null);
+    try {
+      setDataLoading(true);
+      setDataError(null);
 
-        const [profile, sessions, stats] = await Promise.allSettled([
-          getUserProfile(),
-          getUserSessions({ limit: 10 }),
-          getSessionStatistics()
-        ]);
+      const [profile, sessions, stats] = await Promise.allSettled([
+        getUserProfile(),
+        getUserSessions({ limit: 10 }),
+        getSessionStatistics()
+      ]);
 
-        if (profile.status === 'fulfilled') {
-          setProfileData(profile.value);
-        }
-        if (sessions.status === 'fulfilled') {
-          setSessionsData(sessions.value);
-        }
-        if (stats.status === 'fulfilled') {
-          setStatsData(stats.value);
-        }
-      } catch (error) {
-        console.error('Failed to fetch user data:', error);
-        setDataError('Failed to load profile data');
-      } finally {
-        setDataLoading(false);
+      if (profile.status === 'fulfilled') {
+        setProfileData(profile.value);
       }
-    };
+      if (sessions.status === 'fulfilled') {
+        setSessionsData(sessions.value);
+      }
+      if (stats.status === 'fulfilled') {
+        setStatsData(stats.value);
+      }
 
-    fetchUserData();
+      // Check for any errors
+      const errors = [profile, sessions, stats]
+        .filter(result => result.status === 'rejected')
+        .map(result => (result as PromiseRejectedResult).reason);
+
+      if (errors.length > 0) {
+        console.error('Some data failed to load:', errors);
+        setDataError('部分数据加载失败，请刷新页面重试');
+      }
+    } catch (error) {
+      console.error('Failed to fetch user data:', error);
+      setDataError('加载用户数据失败，请稍后重试');
+    } finally {
+      setDataLoading(false);
+    }
   }, [isAuthenticated, user]);
+
+  useEffect(() => {
+    fetchUserData();
+  }, [isAuthenticated, user, fetchUserData]);
 
   const handleProfileUpdate = async (updatedData: ProfileUpdateData) => {
     try {
       await updateUserProfile(updatedData);
-      // Refresh the data after successful update
-      const updatedProfile = await getUserProfile();
-      setProfileData(updatedProfile);
-      // Optionally update the user in the auth store
-      // You might need to add an updateUser method to your auth store
+      // Refresh profile data
+      await fetchUserData();
     } catch (error) {
       console.error('Failed to update profile:', error);
-      throw error; // Re-throw to let the dialog handle the error
+      throw error;
+    }
+  };
+
+  const handleAvatarUpdate = async (newAvatarUrl: string) => {
+    try {
+      await updateUserProfile({ avatar_url: newAvatarUrl });
+      // Update local state immediately for instant feedback
+      setProfileData(prev => prev ? { ...prev, avatar_url: newAvatarUrl } : null);
+      // Refresh profile data to ensure consistency
+      await fetchUserData();
+    } catch (error) {
+      console.error('Failed to update avatar:', error);
+      throw error;
     }
   };
 
@@ -154,15 +174,14 @@ export default function ProfilePage() {
           <Card>
             <CardContent className="pt-6">
               <div className="flex flex-col items-center text-center space-y-4">
-                <Avatar className="h-32 w-32">
-                  <AvatarImage
-                    src={profileData?.avatar_url || ''}
-                    alt={user.username}
-                  />
-                  <AvatarFallback>
-                    {getUserInitials(user.username)}
-                  </AvatarFallback>
-                </Avatar>
+                <ClickableAvatar
+                  src={profileData?.avatar_url}
+                  alt={user.username}
+                  size="xl"
+                  fallback={getUserInitials(user.username)}
+                  onAvatarUpdate={handleAvatarUpdate}
+                  className="h-32 w-32"
+                />
                 <div>
                   <h1 className="text-2xl font-bold">
                     {profileData?.full_name || user.username}
