@@ -1,5 +1,5 @@
 """
-启航引路人后端主应用
+学长帮后端主应用
 FastAPI 应用的主入口点，包含应用配置、中间件和路由注册
 """
 # 首先加载环境变量
@@ -31,7 +31,7 @@ logger = logging.getLogger(__name__)
 
 # 创建留学双边信息平台应用
 app = FastAPI(
-    title="启航引路人 - 留学双边信息平台 API",
+    title="学长帮 - 留学双边信息平台 API",
     version="3.0.0",
     description="连接留学申请者与目标学校学长学姐的专业指导平台",
     lifespan=lifespan
@@ -125,7 +125,7 @@ app.mount("/static", StaticFiles(directory="uploads"), name="static")
 @app.get("/", summary="平台首页", description="留学双边信息平台API首页")
 async def read_root():
     return {
-        "message": "欢迎使用启航引路人 - 留学双边信息平台",
+        "message": "欢迎使用学长帮 - 留学双边信息平台",
         "description": "连接留学申请者与目标学校学长学姐的专业指导平台",
         "version": "3.0.0",
         "features": [

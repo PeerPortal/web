@@ -203,7 +203,7 @@ function TutorSearchContent() {
                         <div className="border border-border rounded-lg shadow-sm hover:shadow-md transition-shadow p-6 cursor-pointer h-full">
                           {/* Tutor Header */}
                           <div className="flex items-start gap-4 mb-4">
-                            <div className="w-16 h-16 flex-shrink-0 bg-gradient-to-r from-pink-500 to-red-600 rounded-full flex items-center justify-center text-white font-bold text-xl">
+                            <div className="w-16 h-16 flex-shrink-0 bg-gradient-to-r from-blue-400 to-purple-400 rounded-full flex items-center justify-center text-white font-bold text-xl">
                               {tutor.name.charAt(0)}
                             </div>
                             <div className="flex-1">

@@ -44,7 +44,7 @@ export default function ChatWidget({
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <Bot className="h-5 w-5" />
-                <CardTitle className="text-sm">启航AI助手</CardTitle>
+                <CardTitle className="text-sm">学长帮 AI 助手</CardTitle>
               </div>
               <Button
                 variant="ghost"

@@ -1,5 +1,5 @@
 """
-PeerPortal 数据库表结构验证脚本
+OfferIn 数据库表结构验证脚本
 验证新增的数据库表是否正确创建
 """
 import asyncio

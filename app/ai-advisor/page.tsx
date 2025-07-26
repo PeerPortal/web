@@ -257,11 +257,11 @@ function AIAdvisorContent() {
               <Sparkles className="h-5 w-5 text-primary absolute -top-1 -right-1 animate-pulse" />
             </div>
             <h1 className="text-4xl font-bold bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent">
-              启航AI留学规划师
+              学长帮 AI 留学规划师
             </h1>
           </div>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            专业的AI驱动留学咨询服务，为您提供个性化的申请指导和学长学姐匹配
+            专业的 AI 驱动留学咨询服务，为您提供个性化的申请指导和学长学姐匹配
           </p>
         </div>
 
@@ -327,7 +327,7 @@ function AIAdvisorContent() {
                     <div className="absolute -bottom-1 -right-1 h-3 w-3 bg-green-500 rounded-full border-2 border-background"></div>
                   </div>
                   <div>
-                    <CardTitle className="text-lg">启航AI助手</CardTitle>
+                    <CardTitle className="text-lg">学长帮 AI 助手</CardTitle>
                     <p className="text-sm text-muted-foreground">
                       在线 · 随时为您服务
                     </p>

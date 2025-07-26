@@ -1,5 +1,5 @@
 """
-PeerPortal AI智能体架构 v2.0 对象存储管理器
+OfferIn AI智能体架构 v2.0 对象存储管理器
 统一的文件存储和管理接口
 """
 import os

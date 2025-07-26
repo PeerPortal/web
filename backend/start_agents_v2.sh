@@ -1,9 +1,9 @@
 #!/bin/bash
 """
-PeerPortal AI智能体系统 v2.0 一键启动脚本
+OfferIn AI智能体系统 v2.0 一键启动脚本
 """
 
-echo "🚀 PeerPortal AI智能体系统 v2.0 启动脚本"
+echo "🚀 OfferIn AI智能体系统 v2.0 启动脚本"
 echo "================================================"
 
 # 检查Python环境
@@ -138,4 +138,4 @@ while true; do
 done
 
 echo ""
-echo "🎉 感谢使用PeerPortal AI智能体系统 v2.0！" 
+echo "🎉 感谢使用OfferIn AI智能体系统 v2.0！" 

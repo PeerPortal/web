@@ -1,5 +1,5 @@
 """
-PeerPortal AI智能体架构 v2.0 工具辅助函数
+OfferIn AI智能体架构 v2.0 工具辅助函数
 通用的工具函数和辅助方法
 """
 import uuid

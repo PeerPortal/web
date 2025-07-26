@@ -52,7 +52,7 @@ async def test_database_connection():
             postgres_url,
             timeout=30,  # 增加超时时间
             server_settings={
-                'application_name': '启航引路人测试',
+                'application_name': '学长帮测试',
                 'jit': 'off'
             }
         )
@@ -130,7 +130,7 @@ async def test_database_connection():
 async def main():
     """主函数"""
     print("=" * 60)
-    print("🚀 启航引路人数据库连接测试")
+    print("🚀 学长帮数据库连接测试")
     print("=" * 60)
     
     # 检查环境变量

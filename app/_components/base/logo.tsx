@@ -4,7 +4,7 @@ export default function Logo({ size = 120 }: { size?: number }) {
   return (
     <Image
       src="/icon.png"
-      alt="PeerPortal Logo"
+      alt="OfferIn Logo"
       width={size}
       height={size}
       className="object-contain"

@@ -1,5 +1,5 @@
 """
-PeerPortal AI智能体架构 v2.0
+OfferIn AI智能体架构 v2.0
 专注于留学规划和咨询的智能体系统
 
 核心智能体：
@@ -8,7 +8,7 @@ PeerPortal AI智能体架构 v2.0
 """
 
 __version__ = "2.0.0"
-__author__ = "PeerPortal Team"
+__author__ = "OfferIn Team"
 
 # 导入核心组件
 from .core_infrastructure.error.exceptions import (
@@ -164,7 +164,7 @@ class StudyConsultantAgent:
     
     def _get_consultant_prompt(self) -> str:
         """获取咨询师专用提示词"""
-        return """你是PeerPortal平台的专业留学咨询师，名为"启航AI咨询师"。
+        return """你是OfferIn平台的专业留学咨询师，名为"启航AI咨询师"。
 
 🎯 你的职责：
 - 回答留学相关的各种问题
@@ -219,7 +219,7 @@ def create_study_consultant(tenant_id: str, model_name: str = "gpt-4o-mini") -> 
 def get_architecture_info() -> Dict[str, Any]:
     """获取架构信息"""
     return {
-        "name": "PeerPortal AI智能体架构",
+        "name": "OfferIn AI智能体架构",
         "version": __version__,
         "author": __author__,
         "agent_types": [agent_type.value for agent_type in AgentType],

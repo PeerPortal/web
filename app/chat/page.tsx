@@ -1,7 +1,15 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
-import { Send, Search, User, Circle } from 'lucide-react';
+import {
+  Send,
+  Search,
+  User,
+  Circle,
+  Paperclip,
+  Mic,
+  Image as ImageIcon
+} from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -33,17 +41,59 @@ interface Conversation {
   isOnline?: boolean;
 }
 
+// Default tutors data from tutors.json
+const defaultTutors: Conversation[] = [
+  {
+    tutorId: 1,
+    tutorName: 'Dr. Sarah Chen',
+    tutorAvatar: '/avatars/sarah-chen.jpg',
+    lastMessage: '我专注于 STEM 领域申请。',
+    lastMessageTime: new Date(Date.now() - 1000 * 60 * 31), // 31 minutes ago
+    unreadCount: 2,
+    isOnline: true
+  },
+  {
+    tutorId: 2,
+    tutorName: 'Prof. Michael Johnson',
+    tutorAvatar: '/avatars/michael-johnson.jpg',
+    lastMessage: '有什么可以帮助你的吗？',
+    lastMessageTime: new Date(Date.now() - 1000 * 60 * 60 * 2), // 2 hours ago
+    unreadCount: 0,
+    isOnline: true
+  },
+  {
+    tutorId: 3,
+    tutorName: 'Dr. Emily Rodriguez',
+    tutorAvatar: '/avatars/emily-rodriguez.jpg',
+    lastMessage: '申请材料已经准备好了吗？',
+    lastMessageTime: new Date(Date.now() - 1000 * 60 * 60 * 24), // 1 day ago
+    unreadCount: 1,
+    isOnline: false
+  },
+  {
+    tutorId: 4,
+    tutorName: 'Dr. James Thompson',
+    tutorAvatar: '/avatars/james-thompson.jpg',
+    lastMessage: '推荐信的事情我来帮你处理',
+    lastMessageTime: new Date(Date.now() - 1000 * 60 * 60 * 24 * 2), // 2 days ago
+    unreadCount: 0,
+    isOnline: false
+  }
+];
+
 export default function TutorChatPage() {
   const router = useRouter();
   const { isAuthenticated, token, initialized, loading } = useAuthStore();
   const [selectedTutor, setSelectedTutor] = useState<Conversation | null>(null);
-  const [conversations, setConversations] = useState<Conversation[]>([]);
+  const [conversations, setConversations] =
+    useState<Conversation[]>(defaultTutors);
   const [messages, setMessages] = useState<Message[]>([]);
   const [inputMessage, setInputMessage] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [searchResults, setSearchResults] = useState<MentorPublic[]>([]);
   const [isSearching, setIsSearching] = useState(false);
+  const [isTyping, setIsTyping] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -107,10 +157,22 @@ export default function TutorChatPage() {
             isOnline: conv.is_online || false
           })
         );
-        setConversations(formattedConversations);
+
+        // Merge with default tutors, prioritizing API data
+        const mergedConversations = [...formattedConversations];
+        defaultTutors.forEach(defaultTutor => {
+          if (
+            !mergedConversations.find(c => c.tutorId === defaultTutor.tutorId)
+          ) {
+            mergedConversations.push(defaultTutor);
+          }
+        });
+
+        setConversations(mergedConversations);
       }
     } catch (error) {
       console.error('Failed to load conversations:', error);
+      // Keep default tutors on error
     }
   };
 
@@ -203,7 +265,11 @@ export default function TutorChatPage() {
     };
 
     setMessages([...messages, newMessage]);
+    const currentInput = inputMessage;
     setInputMessage('');
+
+    // Simulate tutor typing
+    setIsTyping(true);
 
     try {
       const response = await fetch(
@@ -216,7 +282,7 @@ export default function TutorChatPage() {
           },
           body: JSON.stringify({
             recipient_id: selectedTutor.tutorId,
-            content: inputMessage,
+            content: currentInput,
             conversation_id: selectedTutor.tutorId
           })
         }
@@ -225,8 +291,23 @@ export default function TutorChatPage() {
       if (!response.ok) {
         console.error('Failed to send message');
       }
+
+      // Simulate tutor response after a delay
+      setTimeout(() => {
+        const tutorMessage: Message = {
+          id: String(Date.now() + 1),
+          content: `感谢您的消息！我会尽快回复您。`,
+          sender: 'tutor',
+          timestamp: new Date(),
+          tutorId: selectedTutor.tutorId,
+          tutorName: selectedTutor.tutorName
+        };
+        setMessages(prev => [...prev, tutorMessage]);
+        setIsTyping(false);
+      }, 2000);
     } catch (error) {
       console.error('Failed to send message:', error);
+      setIsTyping(false);
     }
   };
 
@@ -262,13 +343,13 @@ export default function TutorChatPage() {
   }
 
   return (
-    <div className="container max-w-6xl mx-auto p-4 h-[calc(100vh-100px)]">
-      <Card className="h-full">
+    <div className="container max-w-6xl mx-auto px-4 py-8 h-[calc(100vh-100px)]">
+      <Card className="h-full p-0">
         <div className="flex h-full">
           {/* Conversations List */}
           <div className="w-full md:w-1/3 h-full flex flex-col">
-            <CardHeader>
-              <CardTitle className="text-lg">导师对话</CardTitle>
+            <CardHeader className="py-0">
+              <CardTitle className="text-lg pt-4">导师对话</CardTitle>
               <div className="relative">
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
                 <Input
@@ -321,7 +402,7 @@ export default function TutorChatPage() {
                   {conversations.map(conversation => (
                     <div
                       key={conversation.tutorId}
-                      className={`flex items-center gap-3 p-3 hover:bg-gray-50 cursor-pointer rounded-lg ${
+                      className={`flex items-center gap-3 p-3 mx-3 hover:bg-gray-50 cursor-pointer rounded-lg ${
                         selectedTutor?.tutorId === conversation.tutorId
                           ? 'bg-gray-100'
                           : ''
@@ -356,12 +437,11 @@ export default function TutorChatPage() {
                           </p>
                         )}
                       </div>
-                      {conversation.unreadCount &&
-                        conversation.unreadCount > 0 && (
-                          <Badge variant="destructive" className="rounded-full">
-                            {conversation.unreadCount}
-                          </Badge>
-                        )}
+                      {conversation.unreadCount && conversation.unreadCount > 0 ? (
+                        <Badge variant="destructive" className="rounded-full">
+                          {conversation.unreadCount}
+                        </Badge>
+                      ) : null}
                     </div>
                   ))}
                 </div>
@@ -376,26 +456,20 @@ export default function TutorChatPage() {
           <div className="flex-1 h-full flex flex-col">
             {selectedTutor ? (
               <>
-                <CardHeader className="border-b">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-3">
-                      <Avatar>
-                        <AvatarImage src={selectedTutor.tutorAvatar} />
-                        <AvatarFallback>
-                          {selectedTutor.tutorName[0]}
-                        </AvatarFallback>
-                      </Avatar>
-                      <div>
-                        <CardTitle className="text-lg">
-                          {selectedTutor.tutorName}
-                        </CardTitle>
-                        <p className="text-sm text-gray-500">
-                          {selectedTutor.isOnline ? '在线' : '离线'}
-                        </p>
-                      </div>
-                    </div>
+                <div className="flex items-center p-4 border-b">
+                  <Avatar className="h-10 w-10 mr-3">
+                    <AvatarImage src={selectedTutor.tutorAvatar} />
+                    <AvatarFallback>
+                      {selectedTutor.tutorName[0]}
+                    </AvatarFallback>
+                  </Avatar>
+                  <div>
+                    <h2 className="font-semibold">{selectedTutor.tutorName}</h2>
+                    <p className="text-xs text-muted-foreground">
+                      {selectedTutor.isOnline ? '在线' : '离线'}
+                    </p>
                   </div>
-                </CardHeader>
+                </div>
 
                 <CardContent className="flex-1 p-0 overflow-hidden">
                   <ScrollArea className="h-full p-4">
@@ -419,55 +493,99 @@ export default function TutorChatPage() {
                             }`}
                           >
                             <div
-                              className={`max-w-[70%] p-3 rounded-lg ${
+                              className={`max-w-[80%] rounded-2xl px-4 py-2 ${
                                 message.sender === 'user'
-                                  ? 'bg-primary text-white'
-                                  : 'bg-gray-100 text-gray-900'
+                                  ? 'bg-primary text-primary-foreground rounded-br-none'
+                                  : 'bg-muted rounded-bl-none'
                               }`}
                             >
-                              <p className="whitespace-pre-wrap break-words">
-                                {message.content}
-                              </p>
-                              <p
+                              <p>{message.content || ''}</p>
+                              <div
                                 className={`text-xs mt-1 ${
                                   message.sender === 'user'
-                                    ? 'text-white/70'
-                                    : 'text-gray-500'
+                                    ? 'text-primary-foreground/70'
+                                    : 'text-muted-foreground'
                                 }`}
                               >
                                 {message.timestamp.toLocaleTimeString('zh-CN', {
                                   hour: '2-digit',
                                   minute: '2-digit'
                                 })}
-                              </p>
+                              </div>
                             </div>
                           </div>
                         ))}
+
+                        {isTyping && (
+                          <div className="flex justify-start">
+                            <div className="bg-muted rounded-2xl rounded-bl-none px-4 py-2">
+                              <div className="flex space-x-1">
+                                <div
+                                  className="w-2 h-2 rounded-full bg-muted-foreground/50 animate-bounce"
+                                  style={{ animationDelay: '0ms' }}
+                                ></div>
+                                <div
+                                  className="w-2 h-2 rounded-full bg-muted-foreground/50 animate-bounce"
+                                  style={{ animationDelay: '150ms' }}
+                                ></div>
+                                <div
+                                  className="w-2 h-2 rounded-full bg-muted-foreground/50 animate-bounce"
+                                  style={{ animationDelay: '300ms' }}
+                                ></div>
+                              </div>
+                            </div>
+                          </div>
+                        )}
                         <div ref={messagesEndRef} />
                       </div>
                     )}
                   </ScrollArea>
                 </CardContent>
 
-                <div className="border-t p-4">
-                  <div className="flex gap-2">
-                    <Input
-                      placeholder="输入消息..."
-                      value={inputMessage}
-                      onChange={e => setInputMessage(e.target.value)}
-                      onKeyDown={e => {
-                        if (e.key === 'Enter' && !e.shiftKey) {
-                          e.preventDefault();
-                          sendMessage();
-                        }
-                      }}
-                      className="flex-1"
-                    />
+                <div className="p-4 border-t">
+                  <div className="flex items-center gap-2">
+                    <Button
+                      variant="outline"
+                      size="icon"
+                      className="rounded-full"
+                    >
+                      <Paperclip className="h-5 w-5" />
+                    </Button>
+                    <Button
+                      variant="outline"
+                      size="icon"
+                      className="rounded-full"
+                    >
+                      <ImageIcon className="h-5 w-5" />
+                    </Button>
+                    <div className="flex-1 relative">
+                      <Input
+                        value={inputMessage}
+                        onChange={e => setInputMessage(e.target.value)}
+                        placeholder="输入消息..."
+                        className="pr-10 rounded-full"
+                        onKeyDown={e => {
+                          if (e.key === 'Enter' && !e.shiftKey) {
+                            e.preventDefault();
+                            sendMessage();
+                          }
+                        }}
+                      />
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="absolute right-1 top-1/2 -translate-y-1/2 rounded-full"
+                      >
+                        <Mic className="h-5 w-5" />
+                      </Button>
+                    </div>
                     <Button
                       onClick={sendMessage}
-                      disabled={!inputMessage.trim()}
+                      size="icon"
+                      className="rounded-full"
+                      disabled={inputMessage.trim() === ''}
                     >
-                      <Send className="h-4 w-4" />
+                      <Send className="h-5 w-5" />
                     </Button>
                   </div>
                 </div>

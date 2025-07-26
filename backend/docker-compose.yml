@@ -1,12 +1,12 @@
-# 启航引路人 - 留学双边信息平台 Docker Compose 配置
+# 学长帮 - 留学双边信息平台 Docker Compose 配置
 # 使用 Supabase 云数据库
 
 services:
   backend:
     build: .
-    container_name: peerportal-backend
+    container_name: OfferIn-backend
     ports:
-      - "8000:8000"
+      - '8000:8000'
     environment:
       - SUPABASE_URL=${SUPABASE_URL}
       - SUPABASE_KEY=${SUPABASE_KEY}
@@ -18,4 +18,4 @@ services:
 
 networks:
   default:
-    name: peerportal-network
+    name: OfferIn-network
