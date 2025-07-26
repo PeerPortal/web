@@ -128,3 +128,56 @@ Compose can now delegate builds to bake for better performance.
 #9 28.41   Downloading storage3-0.12.0-py3-none-any.whl.metadata (1.9 kB)
 #9 28.64 Collecting supafunc==0.10.1 (from supabase==2.17.0->-r requirements.txt (line 18))
 #9 28.85   Downloading supafunc-0.10.1-py3-none-any.whl.metadata (1.2 kB)
+#9 29.09 Collecting anyio (from httpx==0.28.1->-r requirements.txt (line 55))
+#9 29.31   Downloading anyio-4.9.0-py3-none-any.whl.metadata (4.7 kB)
+#9 29.55 Collecting certifi (from httpx==0.28.1->-r requirements.txt (line 55))
+#9 29.76   Downloading certifi-2025.7.14-py3-none-any.whl.metadata (2.4 kB)
+#9 29.99 Collecting httpcore==1.* (from httpx==0.28.1->-r requirements.txt (line 55))
+#9 30.20   Downloading httpcore-1.0.9-py3-none-any.whl.metadata (21 kB)
+#9 30.44 Collecting idna (from httpx==0.28.1->-r requirements.txt (line 55))
+#9 30.64   Downloading idna-3.10-py3-none-any.whl.metadata (10 kB)
+#9 30.87 Collecting ecdsa!=0.15 (from python-jose==3.5.0->python-jose[cryptography]==3.5.0->-r requirements.txt (line 21))
+#9 31.08   Downloading ecdsa-0.19.1-py2.py3-none-any.whl.metadata (29 kB)
+#9 31.35 Collecting rsa!=4.1.1,!=4.4,<5.0,>=4.0 (from python-jose==3.5.0->python-jose[cryptography]==3.5.0->-r requirements.txt (line 21))
+#9 31.56   Downloading rsa-4.9.1-py3-none-any.whl.metadata (5.6 kB)
+#9 31.79 Collecting pyasn1>=0.5.0 (from python-jose==3.5.0->python-jose[cryptography]==3.5.0->-r requirements.txt (line 21))
+#9 32.01   Downloading pyasn1-0.6.1-py3-none-any.whl.metadata (8.4 kB)
+#9 32.34 Collecting charset_normalizer<4,>=2 (from requests==2.32.4->-r requirements.txt (line 28))
+#9 32.57   Downloading charset_normalizer-3.4.2-cp311-cp311-manylinux_2_17_aarch64.manylinux2014_aarch64.whl.metadata (35 kB)
+#9 32.88 Collecting urllib3<3,>=1.21.1 (from requests==2.32.4->-r requirements.txt (line 28))
+#9 33.09   Downloading urllib3-2.5.0-py3-none-any.whl.metadata (6.5 kB)
+#9 33.35 Collecting langchain-text-splitters<1.0.0,>=0.3.6 (from langchain==0.3.20->-r requirements.txt (line 34))
+#9 33.59   Downloading langchain_text_splitters-0.3.9-py3-none-any.whl.metadata (1.9 kB)
+#9 33.91 Collecting PyYAML>=5.3 (from langchain==0.3.20->-r requirements.txt (line 34))
+#9 34.12   Downloading PyYAML-6.0.2-cp311-cp311-manylinux_2_17_aarch64.manylinux2014_aarch64.whl.metadata (2.1 kB)
+#9 34.40 Collecting openai<2.0.0,>=1.58.1 (from langchain-openai==0.3.1->-r requirements.txt (line 35))
+#9 34.63   Downloading openai-1.97.1-py3-none-any.whl.metadata (29 kB)
+#9 34.88 Collecting tiktoken<1,>=0.7 (from langchain-openai==0.3.1->-r requirements.txt (line 35))
+#9 35.09   Downloading tiktoken-0.9.0-cp311-cp311-manylinux_2_17_aarch64.manylinux2014_aarch64.whl.metadata (6.7 kB)
+#9 35.15 INFO: pip is looking at multiple versions of langchain-community to determine which version is compatible with other requirements. This could take a while.
+#9 35.15 ERROR: Cannot install -r requirements.txt (line 36) and langchain==0.3.20 because these package versions have conflicting dependencies.
+#9 35.15 
+#9 35.15 The conflict is caused by:
+#9 35.15     The user requested langchain==0.3.20
+#9 35.15     langchain-community 0.3.20 depends on langchain<1.0.0 and >=0.3.21
+#9 35.15 
+#9 35.15 To fix this you could try to:
+#9 35.15 1. loosen the range of package versions you've specified
+#9 35.15 2. remove package versions to allow pip to attempt to solve the dependency conflict
+#9 35.15 
+#9 36.25 ERROR: ResolutionImpossible: for help visit https://pip.pypa.io/en/latest/topics/dependency-resolution/#dealing-with-dependency-conflicts
+#9 ERROR: process "/bin/sh -c pip install --no-cache-dir --upgrade pip     && pip install --no-cache-dir -r requirements.txt" did not complete successfully: exit code: 1
+------
+ > [backend 5/7] RUN pip install --no-cache-dir --upgrade pip     && pip install --no-cache-dir -r requirements.txt:
+35.15 
+35.15 The conflict is caused by:
+35.15     The user requested langchain==0.3.20
+35.15     langchain-community 0.3.20 depends on langchain<1.0.0 and >=0.3.21
+35.15 
+35.15 To fix this you could try to:
+35.15 1. loosen the range of package versions you've specified
+35.15 2. remove package versions to allow pip to attempt to solve the dependency conflict
+35.15 
+36.25 ERROR: ResolutionImpossible: for help visit https://pip.pypa.io/en/latest/topics/dependency-resolution/#dealing-with-dependency-conflicts
+------
+failed to solve: process "/bin/sh -c pip install --no-cache-dir --upgrade pip     && pip install --no-cache-dir -r requirements.txt" did not complete successfully: exit code: 1

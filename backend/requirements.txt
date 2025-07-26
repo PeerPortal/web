@@ -31,7 +31,7 @@ requests==2.32.4
 python-multipart==0.0.19
 
 # AI Agent相关
-langchain==0.3.20
+langchain==0.3.21
 langchain-openai==0.3.1
 langchain-community==0.3.20
 langchain-core>=0.3.21,<0.4.0

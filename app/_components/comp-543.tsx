@@ -1,9 +1,9 @@
-"use client"
+'use client';
 
-import { CircleUserRoundIcon, XIcon } from "lucide-react"
+import { CircleUserRoundIcon, XIcon } from 'lucide-react';
 
-import { useFileUpload } from "_hooks/use-file-upload"
-import { Button } from "_components/ui/button"
+import { useFileUpload } from '_hooks/use-file-upload';
+import { Button } from '_components/ui/button';
 
 export default function Component() {
   const [
@@ -15,13 +15,13 @@ export default function Component() {
       handleDragEnter,
       handleDragLeave,
       handleDragOver,
-      handleDrop,
-    },
+      handleDrop
+    }
   ] = useFileUpload({
-    accept: "image/*",
-  })
+    accept: 'image/*'
+  });
 
-  const previewUrl = files[0]?.preview || null
+  const previewUrl = files[0]?.preview || null;
 
   return (
     <div className="flex flex-col items-center gap-2">
@@ -35,16 +35,16 @@ export default function Component() {
           onDragOver={handleDragOver}
           onDrop={handleDrop}
           data-dragging={isDragging || undefined}
-          aria-label={previewUrl ? "Change image" : "Upload image"}
+          aria-label={previewUrl ? 'Change image' : 'Upload image'}
         >
           {previewUrl ? (
             <img
               className="size-full object-cover"
               src={previewUrl}
-              alt={files[0]?.file?.name || "Uploaded image"}
+              alt={files[0]?.file?.name || 'Uploaded image'}
               width={64}
               height={64}
-              style={{ objectFit: "cover" }}
+              style={{ objectFit: 'cover' }}
             />
           ) : (
             <div aria-hidden="true">
@@ -74,7 +74,7 @@ export default function Component() {
         role="region"
         className="text-muted-foreground mt-2 text-xs"
       >
-        Avatar uploader with droppable area ∙{" "}
+        Avatar uploader with droppable area ∙{' '}
         <a
           href="https://github.com/origin-space/originui/tree/main/docs/use-file-upload.md"
           className="hover:text-foreground underline"
@@ -83,5 +83,5 @@ export default function Component() {
         </a>
       </p>
     </div>
-  )
+  );
 }
