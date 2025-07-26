@@ -3,13 +3,12 @@
 import { useMemo, Suspense, useState, useEffect } from 'react';
 import { useQueryState } from 'nuqs';
 import Link from 'next/link';
-import { Search, Star, MapPin, Languages, Award, Loader2 } from 'lucide-react';
+import { Search, Star, MapPin, Briefcase, Award, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Alert } from '@/components/ui/alert';
 import SearchField from '@/components/search-field';
 import TutorFilterSidebar from '@/components/tutor-filter-sidebar';
-import { searchMentors, type MentorPublic } from '@/lib/api';
+import tutorsData from '@/data/tutors.json';
 
 interface Tutor {
   id: number;
@@ -25,61 +24,9 @@ interface Tutor {
   price: number;
   location: string;
   bio: string;
-  languages: string[];
+  serviceTypes: string[];
   achievements: string[];
   available: boolean;
-}
-
-// 解析导师标题，提取大学和专业信息
-function parseMentorTitle(title: string): {
-  university: string;
-  major: string;
-  degree: string;
-} {
-  // 标题格式："北京大学 计算机科学 导师" 或 "斯坦福 计算机科学 导师" 或 "雅思口语专家"
-  const parts = title.split(' ').filter(part => part.trim() !== '');
-
-  let university = 'Unknown University';
-  let major = 'Unknown Major';
-  let degree = 'Unknown Degree';
-
-  if (parts.length >= 3 && parts[2] === '导师') {
-    // 格式: "大学 专业 导师"
-    university = parts[0];
-    major = parts[1];
-  } else if (parts.length >= 2) {
-    // 其他格式，尝试推断
-    if (
-      parts[0].includes('大学') ||
-      parts[0].includes('Stanford') ||
-      parts[0].includes('斯坦福')
-    ) {
-      university = parts[0];
-      if (parts[1] !== '导师') {
-        major = parts[1];
-      }
-    } else {
-      // 可能是专业名称，如"雅思口语专家"
-      major = parts.join(' ');
-    }
-  } else if (parts.length === 1) {
-    // 单个词，当作专业处理
-    major = parts[0];
-  }
-
-  // 简单的学位推断
-  if (university.includes('大学')) {
-    degree = 'Bachelor';
-  } else if (
-    university.toLowerCase().includes('stanford') ||
-    university.includes('斯坦福')
-  ) {
-    degree = 'Master';
-  } else if (major.includes('专家')) {
-    degree = 'Expert';
-  }
-
-  return { university, major, degree };
 }
 
 function TutorSearchContent() {
@@ -99,11 +46,14 @@ function TutorSearchContent() {
       parse: value => (value ? value.split(',').filter(Boolean) : [])
     }
   );
-  const [selectedLanguages, setSelectedLanguages] = useQueryState('languages', {
-    defaultValue: [] as string[],
-    serialize: value => (value.length > 0 ? value.join(',') : ''),
-    parse: value => (value ? value.split(',').filter(Boolean) : [])
-  });
+  const [selectedServiceTypes, setSelectedServiceTypes] = useQueryState(
+    'services',
+    {
+      defaultValue: [] as string[],
+      serialize: value => (value.length > 0 ? value.join(',') : ''),
+      parse: value => (value ? value.split(',').filter(Boolean) : [])
+    }
+  );
   const [priceRange, setPriceRange] = useQueryState('price', {
     defaultValue: [0, 300] as [number, number],
     serialize: value => `${value[0]}-${value[1]}`,
@@ -114,60 +64,11 @@ function TutorSearchContent() {
     }
   });
 
-  const [mentors, setMentors] = useState<MentorPublic[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  // Fetch mentors from backend
-  useEffect(() => {
-    const fetchMentors = async () => {
-      setLoading(true);
-      setError(null);
-      try {
-        const data = await searchMentors({
-          search_query: searchTerm || undefined,
-          limit: 50,
-          offset: 0
-        });
-        setMentors(data);
-      } catch (err) {
-        setError('Failed to load mentors. Please try again later.');
-        console.error('Error fetching mentors:', err);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchMentors();
-  }, [searchTerm]);
-
-  // Transform backend data to match frontend Tutor interface
-  const tutors: Tutor[] = useMemo(() => {
-    return mentors.map((mentor): Tutor => {
-      const { university, major, degree } = parseMentorTitle(mentor.title);
-
-      return {
-        id: mentor.mentor_id || mentor.id,
-        name: mentor.title || `Mentor ${mentor.mentor_id || mentor.id}`,
-        avatar: '',
-        university,
-        degree,
-        major,
-        specializations: mentor.description ? [mentor.description] : [],
-        experience: Math.floor((mentor.sessions_completed || 0) / 10),
-        rating: mentor.rating || 4.5,
-        reviews: mentor.sessions_completed || 0,
-        price: mentor.hourly_rate || 100,
-        location: 'Online',
-        bio:
-          mentor.description ||
-          'Experienced mentor ready to help you achieve your goals.',
-        languages: ['English', 'Chinese'],
-        achievements: [`${mentor.sessions_completed || 0} sessions completed`],
-        available: true
-      };
-    });
-  }, [mentors]);
+  // Use mock data
+  const tutors: Tutor[] = tutorsData as Tutor[];
 
   // Get unique values for filters
   const allMajors = Array.from(
@@ -176,8 +77,8 @@ function TutorSearchContent() {
   const allUniversities = Array.from(
     new Set(tutors.map(tutor => tutor.university))
   );
-  const allLanguages = Array.from(
-    new Set(tutors.flatMap(tutor => tutor.languages))
+  const allServiceTypes = Array.from(
+    new Set(tutors.flatMap(tutor => tutor.serviceTypes))
   );
 
   // Filter tutors based on search criteria
@@ -208,9 +109,11 @@ function TutorSearchContent() {
           tutor.university.toLowerCase().includes(university.toLowerCase())
         );
 
-      const matchesLanguages =
-        selectedLanguages.length === 0 ||
-        selectedLanguages.some(lang => tutor.languages.includes(lang));
+      const matchesServiceTypes =
+        selectedServiceTypes.length === 0 ||
+        selectedServiceTypes.some(service =>
+          tutor.serviceTypes.includes(service)
+        );
 
       const matchesPrice =
         tutor.price >= priceRange[0] && tutor.price <= priceRange[1];
@@ -219,7 +122,7 @@ function TutorSearchContent() {
         matchesSearch &&
         matchesMajors &&
         matchesUniversities &&
-        matchesLanguages &&
+        matchesServiceTypes &&
         matchesPrice
       );
     });
@@ -228,7 +131,7 @@ function TutorSearchContent() {
     searchTerm,
     selectedMajors,
     selectedUniversities,
-    selectedLanguages,
+    selectedServiceTypes,
     priceRange
   ]);
 
@@ -240,22 +143,9 @@ function TutorSearchContent() {
     setSelectedUniversities(universities);
   };
 
-  const handleLanguagesChange = (languages: string[]) => {
-    setSelectedLanguages(languages);
+  const handleServiceTypesChange = (serviceTypes: string[]) => {
+    setSelectedServiceTypes(serviceTypes);
   };
-
-  if (error) {
-    return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
-        <div className="text-center">
-          <Alert className="mb-4 max-w-md">
-            <p className="text-destructive">{error}</p>
-          </Alert>
-          <Button onClick={() => window.location.reload()}>重试</Button>
-        </div>
-      </div>
-    );
-  }
 
   return (
     <div className="min-h-screen bg-background">
@@ -275,17 +165,16 @@ function TutorSearchContent() {
           <TutorFilterSidebar
             allMajors={allMajors}
             allUniversities={allUniversities}
-            allLanguages={allLanguages}
+            allServiceTypes={allServiceTypes}
             selectedMajors={selectedMajors}
             selectedUniversities={selectedUniversities}
-            selectedLanguages={selectedLanguages}
+            selectedServiceTypes={selectedServiceTypes}
             priceRange={priceRange}
             onMajorsChange={handleMajorsChange}
             onUniversitiesChange={handleUniversitiesChange}
-            onLanguagesChange={handleLanguagesChange}
+            onServiceTypesChange={handleServiceTypesChange}
             onPriceChange={setPriceRange}
             tutors={tutors}
-            filteredTutorCount={filteredTutors.length}
           />
 
           {/* Content Area */}
@@ -390,8 +279,8 @@ function TutorSearchContent() {
                               {tutor.location}
                             </div>
                             <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                              <Languages className="w-4 h-4" />
-                              {tutor.languages.join(', ')}
+                              <Briefcase className="w-4 h-4" />
+                              {tutor.serviceTypes.join(' · ')}
                             </div>
                             <div className="flex items-center gap-2 text-sm text-muted-foreground">
                               <Award className="w-4 h-4" />

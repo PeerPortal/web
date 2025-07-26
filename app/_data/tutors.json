@@ -13,7 +13,7 @@
     "price": 180,
     "location": "Cambridge, MA",
     "bio": "Former Harvard admissions committee member with expertise in STEM applications. Helped 200+ students gain admission to top-tier universities.",
-    "languages": ["English", "Chinese", "Spanish"],
+    "serviceTypes": ["咨询", "文书修改", "文书写作"],
     "achievements": [
       "Harvard PhD",
       "Google Software Engineer",
@@ -35,7 +35,7 @@
     "price": 220,
     "location": "Palo Alto, CA",
     "bio": "Stanford MBA with 12 years of admissions consulting experience. Former Goldman Sachs analyst specializing in business school applications.",
-    "languages": ["English"],
+    "serviceTypes": ["咨询", "文书修改"],
     "achievements": [
       "Stanford MBA",
       "Goldman Sachs VP",
@@ -57,7 +57,7 @@
     "price": 200,
     "location": "Boston, MA",
     "bio": "MIT PhD with expertise in biomedical applications. Specialized in helping pre-med and engineering students craft compelling personal statements.",
-    "languages": ["English", "Spanish"],
+    "serviceTypes": ["咨询", "文书写作"],
     "achievements": ["MIT PhD", "NIH Research Fellow", "10+ Publications"],
     "available": true
   },
@@ -75,7 +75,7 @@
     "price": 190,
     "location": "New Haven, CT",
     "bio": "Yale Law graduate with extensive experience in law school admissions. Former corporate lawyer helping students navigate competitive legal programs.",
-    "languages": ["English", "French"],
+    "serviceTypes": ["咨询", "文书修改", "文书写作"],
     "achievements": ["Yale JD", "Supreme Court Clerk", "BigLaw Partner"],
     "available": true
   },
@@ -93,7 +93,7 @@
     "price": 210,
     "location": "Princeton, NJ",
     "bio": "Princeton Physics PhD with NASA research background. Specializes in helping students with STEM applications and research experience development.",
-    "languages": ["English", "Chinese", "Korean"],
+    "serviceTypes": ["咨询", "文书修改"],
     "achievements": [
       "Princeton PhD",
       "NASA Researcher",
@@ -115,7 +115,7 @@
     "price": 195,
     "location": "Chicago, IL",
     "bio": "University of Chicago Economics PhD with Federal Reserve experience. Expert in quantitative program applications and economic research.",
-    "languages": ["English", "Korean"],
+    "serviceTypes": ["咨询", "文书写作"],
     "achievements": ["UChicago PhD", "Federal Reserve Economist", "AEA Fellow"],
     "available": true
   },
@@ -133,7 +133,7 @@
     "price": 230,
     "location": "New York, NY",
     "bio": "Columbia MD with medical school admissions committee experience. Specializes in pre-med track guidance and medical school applications.",
-    "languages": ["English", "Spanish"],
+    "serviceTypes": ["咨询", "文书写作"],
     "achievements": [
       "Columbia MD",
       "Johns Hopkins Resident",
@@ -155,7 +155,7 @@
     "price": 170,
     "location": "Berkeley, CA",
     "bio": "UC Berkeley CS PhD working at leading tech companies. Focuses on helping students with computer science and data science applications.",
-    "languages": ["English", "Chinese"],
+    "serviceTypes": ["咨询", "文书修改", "文书写作"],
     "achievements": [
       "UC Berkeley PhD",
       "Google AI Researcher",
@@ -177,7 +177,7 @@
     "price": 165,
     "location": "Evanston, IL",
     "bio": "Northwestern Psychology PhD with clinical and research experience. Helps students craft compelling narratives for psychology and social science programs.",
-    "languages": ["English"],
+    "serviceTypes": ["咨询", "文书修改"],
     "achievements": [
       "Northwestern PhD",
       "APA Fellow",
@@ -203,7 +203,7 @@
     "price": 205,
     "location": "Philadelphia, PA",
     "bio": "UPenn Chemical Engineering PhD with industry and academic experience. Specializes in engineering applications and research proposal development.",
-    "languages": ["English", "Spanish"],
+    "serviceTypes": ["咨询", "文书写作"],
     "achievements": [
       "UPenn PhD",
       "DuPont Senior Scientist",
@@ -225,7 +225,7 @@
     "price": 240,
     "location": "Durham, NC",
     "bio": "Duke MD/PhD with extensive research background. Expert in helping students with physician-scientist track applications and research programs.",
-    "languages": ["English", "Korean"],
+    "serviceTypes": ["咨询", "文书写作"],
     "achievements": [
       "Duke MD/PhD",
       "NIH K-Award Recipient",
@@ -247,7 +247,7 @@
     "price": 225,
     "location": "Pasadena, CA",
     "bio": "Caltech Physics PhD with JPL experience. Specializes in physics, astronomy, and space science program applications.",
-    "languages": ["English", "Russian"],
+    "serviceTypes": ["咨询", "文书修改"],
     "achievements": [
       "Caltech PhD",
       "JPL Principal Scientist",
@@ -269,7 +269,7 @@
     "price": 175,
     "location": "Baltimore, MD",
     "bio": "Johns Hopkins Public Health PhD with WHO experience. Focuses on public health, global health, and epidemiology program applications.",
-    "languages": ["English", "Spanish", "Portuguese"],
+    "serviceTypes": ["咨询", "文书修改", "文书写作"],
     "achievements": [
       "Johns Hopkins PhD",
       "WHO Consultant",
@@ -295,7 +295,7 @@
     "price": 215,
     "location": "Pittsburgh, PA",
     "bio": "CMU Robotics PhD with industry robotics experience. Helps students with interdisciplinary engineering and robotics applications.",
-    "languages": ["English", "Chinese"],
+    "serviceTypes": ["咨询", "文书修改", "文书写作"],
     "achievements": ["CMU PhD", "Boston Dynamics Engineer", "Robotics Patents"],
     "available": true
   },
@@ -317,7 +317,7 @@
     "price": 185,
     "location": "Ann Arbor, MI",
     "bio": "University of Michigan Environmental Engineering PhD with EPA experience. Specializes in environmental and sustainability program applications.",
-    "languages": ["English"],
+    "serviceTypes": ["咨询", "文书修改"],
     "achievements": [
       "UMich PhD",
       "EPA Senior Scientist",
