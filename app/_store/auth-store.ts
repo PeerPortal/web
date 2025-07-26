@@ -229,3 +229,6 @@ export const useAuthStore = create<AuthState>()(
     }
   )
 );
+
+// Export useAuth as an alias for backward compatibility
+export const useAuth = useAuthStore;

@@ -1,0 +1,475 @@
+'use client';
+
+import { useState, useEffect, useRef } from 'react';
+import { Send, Search, User, Circle } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { ScrollArea } from '@/components/ui/scroll-area';
+import { Badge } from '@/components/ui/badge';
+import { apiClient, searchMentors, type MentorPublic } from '@/lib/api';
+import { useAuthStore } from '@/store/auth-store';
+import { useRouter } from 'next/navigation';
+
+interface Message {
+  id: string;
+  content: string;
+  sender: 'user' | 'tutor';
+  timestamp: Date;
+  tutorId?: number;
+  tutorName?: string;
+}
+
+interface Conversation {
+  tutorId: number;
+  tutorName: string;
+  tutorAvatar?: string;
+  lastMessage?: string;
+  lastMessageTime?: Date;
+  unreadCount?: number;
+  isOnline?: boolean;
+}
+
+export default function TutorChatPage() {
+  const router = useRouter();
+  const { isAuthenticated, token, initialized, loading } = useAuthStore();
+  const [selectedTutor, setSelectedTutor] = useState<Conversation | null>(null);
+  const [conversations, setConversations] = useState<Conversation[]>([]);
+  const [messages, setMessages] = useState<Message[]>([]);
+  const [inputMessage, setInputMessage] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [searchResults, setSearchResults] = useState<MentorPublic[]>([]);
+  const [isSearching, setIsSearching] = useState(false);
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    // Wait for auth initialization to complete
+    if (initialized && !loading && !isAuthenticated) {
+      router.push('/login');
+    }
+  }, [isAuthenticated, initialized, loading, router]);
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      loadConversations();
+    }
+  }, [isAuthenticated]);
+
+  useEffect(() => {
+    scrollToBottom();
+  }, [messages]);
+
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  };
+
+  const loadConversations = async () => {
+    try {
+      // Load existing conversations from API
+      const response = await fetch(
+        'http://localhost:8000/api/v1/messages/conversations',
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          }
+        }
+      );
+
+      if (response.ok) {
+        const data = await response.json();
+        // Transform API data to our conversation format
+        const formattedConversations: Conversation[] = data.map(
+          (conv: {
+            tutor_id?: number;
+            mentor_id?: number;
+            id?: number;
+            tutor_name?: string;
+            mentor_name?: string;
+            avatar_url?: string;
+            last_message?: string;
+            last_message_time?: string;
+            unread_count?: number;
+            is_online?: boolean;
+          }) => ({
+            tutorId: conv.tutor_id || conv.mentor_id || conv.id || 0,
+            tutorName: conv.tutor_name || conv.mentor_name || 'Unknown Tutor',
+            tutorAvatar: conv.avatar_url,
+            lastMessage: conv.last_message,
+            lastMessageTime: conv.last_message_time
+              ? new Date(conv.last_message_time)
+              : undefined,
+            unreadCount: conv.unread_count || 0,
+            isOnline: conv.is_online || false
+          })
+        );
+        setConversations(formattedConversations);
+      }
+    } catch (error) {
+      console.error('Failed to load conversations:', error);
+    }
+  };
+
+  const loadMessages = async (tutorId: number) => {
+    try {
+      setIsLoading(true);
+      const response = await fetch(
+        `http://localhost:8000/api/v1/messages/conversations/${tutorId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          }
+        }
+      );
+
+      if (response.ok) {
+        const data = await response.json();
+        const formattedMessages: Message[] = data.map(
+          (msg: {
+            id?: string | number;
+            content?: string;
+            message?: string;
+            sender_id?: number;
+            created_at?: string;
+            timestamp?: string;
+          }) => ({
+            id: String(msg.id || Date.now() + Math.random()),
+            content: msg.content || msg.message || '',
+            sender: msg.sender_id === tutorId ? 'tutor' : 'user',
+            timestamp: new Date(msg.created_at || msg.timestamp || Date.now()),
+            tutorId: tutorId,
+            tutorName: selectedTutor?.tutorName
+          })
+        );
+        setMessages(formattedMessages);
+      }
+    } catch (error) {
+      console.error('Failed to load messages:', error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const searchTutors = async () => {
+    if (!searchQuery.trim()) return;
+
+    try {
+      setIsSearching(true);
+      const results = await searchMentors({
+        search_query: searchQuery,
+        limit: 10
+      });
+      setSearchResults(results);
+    } catch (error) {
+      console.error('Failed to search tutors:', error);
+    } finally {
+      setIsSearching(false);
+    }
+  };
+
+  const startConversationWithTutor = (tutor: MentorPublic) => {
+    const newConversation: Conversation = {
+      tutorId: tutor.id,
+      tutorName: tutor.title,
+      isOnline: true
+    };
+
+    // Add to conversations if not already there
+    if (!conversations.find(c => c.tutorId === tutor.id)) {
+      setConversations([newConversation, ...conversations]);
+    }
+
+    setSelectedTutor(newConversation);
+    setMessages([]);
+    setSearchQuery('');
+    setSearchResults([]);
+  };
+
+  const sendMessage = async () => {
+    if (!inputMessage.trim() || !selectedTutor) return;
+
+    const newMessage: Message = {
+      id: String(Date.now()),
+      content: inputMessage,
+      sender: 'user',
+      timestamp: new Date(),
+      tutorId: selectedTutor.tutorId,
+      tutorName: selectedTutor.tutorName
+    };
+
+    setMessages([...messages, newMessage]);
+    setInputMessage('');
+
+    try {
+      const response = await fetch('http://localhost:8000/api/v1/messages', {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          recipient_id: selectedTutor.tutorId,
+          content: inputMessage,
+          conversation_id: selectedTutor.tutorId
+        })
+      });
+
+      if (!response.ok) {
+        console.error('Failed to send message');
+      }
+    } catch (error) {
+      console.error('Failed to send message:', error);
+    }
+  };
+
+  const selectConversation = (conversation: Conversation) => {
+    setSelectedTutor(conversation);
+    loadMessages(conversation.tutorId);
+  };
+
+  const formatTime = (date: Date) => {
+    const now = new Date();
+    const diff = now.getTime() - date.getTime();
+    const minutes = Math.floor(diff / 60000);
+    const hours = Math.floor(diff / 3600000);
+    const days = Math.floor(diff / 86400000);
+
+    if (minutes < 60) return `${minutes}分钟前`;
+    if (hours < 24) return `${hours}小时前`;
+    if (days < 7) return `${days}天前`;
+
+    return date.toLocaleDateString('zh-CN');
+  };
+
+  // Show loading state while auth is initializing
+  if (!initialized || loading) {
+    return (
+      <div className="container mx-auto p-4 h-[calc(100vh-100px)] flex items-center justify-center">
+        <div className="text-center">
+          <div className="w-12 h-12 border-4 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+          <p className="text-gray-500">加载中...</p>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="container max-w-6xl mx-auto p-4 h-[calc(100vh-100px)]">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 h-full">
+        {/* Conversations List */}
+        <Card className="col-span-1 h-full">
+          <CardHeader>
+            <CardTitle className="text-lg">导师对话</CardTitle>
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+              <Input
+                placeholder="搜索导师..."
+                className="pl-10 pr-4"
+                value={searchQuery}
+                onChange={e => setSearchQuery(e.target.value)}
+                onKeyDown={e => {
+                  if (e.key === 'Enter') {
+                    searchTutors();
+                  }
+                }}
+              />
+            </div>
+          </CardHeader>
+          <CardContent className="p-0">
+            <ScrollArea className="h-[calc(100vh-280px)]">
+              {/* Search Results */}
+              {searchResults.length > 0 && (
+                <div className="p-4 border-b">
+                  <p className="text-sm text-gray-500 mb-2">搜索结果</p>
+                  {searchResults.map(tutor => (
+                    <div
+                      key={tutor.id}
+                      className="flex items-center gap-3 p-3 hover:bg-gray-50 cursor-pointer rounded-lg"
+                      onClick={() => startConversationWithTutor(tutor)}
+                    >
+                      <Avatar>
+                        <AvatarFallback>{tutor.title[0]}</AvatarFallback>
+                      </Avatar>
+                      <div className="flex-1">
+                        <p className="font-medium">{tutor.title}</p>
+                        <p className="text-sm text-gray-500 line-clamp-1">
+                          {tutor.description}
+                        </p>
+                      </div>
+                      <Badge variant="secondary">开始对话</Badge>
+                    </div>
+                  ))}
+                </div>
+              )}
+
+              {/* Existing Conversations */}
+              <div className="p-2">
+                {conversations.length === 0 && !isSearching && (
+                  <p className="text-center text-gray-500 py-8">
+                    搜索导师开始对话
+                  </p>
+                )}
+                {conversations.map(conversation => (
+                  <div
+                    key={conversation.tutorId}
+                    className={`flex items-center gap-3 p-3 hover:bg-gray-50 cursor-pointer rounded-lg ${
+                      selectedTutor?.tutorId === conversation.tutorId
+                        ? 'bg-gray-100'
+                        : ''
+                    }`}
+                    onClick={() => selectConversation(conversation)}
+                  >
+                    <div className="relative">
+                      <Avatar>
+                        <AvatarImage src={conversation.tutorAvatar} />
+                        <AvatarFallback>
+                          {conversation.tutorName[0]}
+                        </AvatarFallback>
+                      </Avatar>
+                      {conversation.isOnline && (
+                        <Circle className="absolute bottom-0 right-0 h-3 w-3 fill-green-500 text-green-500" />
+                      )}
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center justify-between">
+                        <p className="font-medium truncate">
+                          {conversation.tutorName}
+                        </p>
+                        {conversation.lastMessageTime && (
+                          <span className="text-xs text-gray-500">
+                            {formatTime(conversation.lastMessageTime)}
+                          </span>
+                        )}
+                      </div>
+                      {conversation.lastMessage && (
+                        <p className="text-sm text-gray-500 truncate">
+                          {conversation.lastMessage}
+                        </p>
+                      )}
+                    </div>
+                    {conversation.unreadCount &&
+                      conversation.unreadCount > 0 && (
+                        <Badge variant="destructive" className="rounded-full">
+                          {conversation.unreadCount}
+                        </Badge>
+                      )}
+                  </div>
+                ))}
+              </div>
+            </ScrollArea>
+          </CardContent>
+        </Card>
+
+        {/* Chat Area */}
+        <Card className="col-span-1 md:col-span-2 h-full flex flex-col">
+          {selectedTutor ? (
+            <>
+              <CardHeader className="border-b">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <Avatar>
+                      <AvatarImage src={selectedTutor.tutorAvatar} />
+                      <AvatarFallback>
+                        {selectedTutor.tutorName[0]}
+                      </AvatarFallback>
+                    </Avatar>
+                    <div>
+                      <CardTitle className="text-lg">
+                        {selectedTutor.tutorName}
+                      </CardTitle>
+                      <p className="text-sm text-gray-500">
+                        {selectedTutor.isOnline ? '在线' : '离线'}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </CardHeader>
+
+              <CardContent className="flex-1 p-0 overflow-hidden">
+                <ScrollArea className="h-full p-4">
+                  {isLoading ? (
+                    <div className="flex items-center justify-center h-full">
+                      <p className="text-gray-500">加载中...</p>
+                    </div>
+                  ) : messages.length === 0 ? (
+                    <div className="flex items-center justify-center h-full">
+                      <p className="text-gray-500">开始与导师对话吧！</p>
+                    </div>
+                  ) : (
+                    <div className="space-y-4">
+                      {messages.map(message => (
+                        <div
+                          key={message.id}
+                          className={`flex ${
+                            message.sender === 'user'
+                              ? 'justify-end'
+                              : 'justify-start'
+                          }`}
+                        >
+                          <div
+                            className={`max-w-[70%] p-3 rounded-lg ${
+                              message.sender === 'user'
+                                ? 'bg-primary text-white'
+                                : 'bg-gray-100 text-gray-900'
+                            }`}
+                          >
+                            <p className="whitespace-pre-wrap break-words">
+                              {message.content}
+                            </p>
+                            <p
+                              className={`text-xs mt-1 ${
+                                message.sender === 'user'
+                                  ? 'text-white/70'
+                                  : 'text-gray-500'
+                              }`}
+                            >
+                              {message.timestamp.toLocaleTimeString('zh-CN', {
+                                hour: '2-digit',
+                                minute: '2-digit'
+                              })}
+                            </p>
+                          </div>
+                        </div>
+                      ))}
+                      <div ref={messagesEndRef} />
+                    </div>
+                  )}
+                </ScrollArea>
+              </CardContent>
+
+              <div className="border-t p-4">
+                <div className="flex gap-2">
+                  <Input
+                    placeholder="输入消息..."
+                    value={inputMessage}
+                    onChange={e => setInputMessage(e.target.value)}
+                    onKeyDown={e => {
+                      if (e.key === 'Enter' && !e.shiftKey) {
+                        e.preventDefault();
+                        sendMessage();
+                      }
+                    }}
+                    className="flex-1"
+                  />
+                  <Button onClick={sendMessage} disabled={!inputMessage.trim()}>
+                    <Send className="h-4 w-4" />
+                  </Button>
+                </div>
+              </div>
+            </>
+          ) : (
+            <div className="flex items-center justify-center h-full">
+              <div className="text-center">
+                <User className="h-16 w-16 text-gray-300 mx-auto mb-4" />
+                <p className="text-gray-500">选择一个导师开始对话</p>
+              </div>
+            </div>
+          )}
+        </Card>
+      </div>
+    </div>
+  );
+}

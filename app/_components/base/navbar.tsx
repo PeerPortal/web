@@ -23,12 +23,13 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import Logo from '@/components/base/logo';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { LogOut, Settings, UserIcon } from 'lucide-react';
+import { LogOut, Settings, UserIcon, MessageSquare } from 'lucide-react';
 import { useAuthStore } from '@/store/auth-store';
 
 // Navigation links array to be used in both desktop and mobile menus
 const navigationLinks = [
   { href: '/tutor', label: '导师' },
+  { href: '/tutor-chat', label: '导师聊天' },
   { href: '/ai-advisor', label: 'AI 助手' }
 ];
 
@@ -168,6 +169,12 @@ export default function Component() {
                       <Link href="/profile" className="cursor-pointer">
                         <UserIcon className="mr-2 h-4 w-4" />
                         个人资料
+                      </Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem asChild>
+                      <Link href="/tutor-chat" className="cursor-pointer">
+                        <MessageSquare className="mr-2 h-4 w-4" />
+                        导师聊天
                       </Link>
                     </DropdownMenuItem>
                     <DropdownMenuItem asChild>
