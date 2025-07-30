@@ -109,9 +109,10 @@ export default function TutorChatPage() {
     }
   }, [isAuthenticated]);
 
-  useEffect(() => {
-    scrollToBottom();
-  }, [messages]);
+  // Removed automatic scrolling when messages update
+  // useEffect(() => {
+  //   scrollToBottom();
+  // }, [messages]);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
