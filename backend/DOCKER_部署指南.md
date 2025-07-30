@@ -6,11 +6,11 @@
 
 ### 🎯 部署模式
 
-| 模式 | 描述 | 包含服务 | 适用场景 |
-|------|------|----------|----------|
-| **快速启动** | 基础AI功能 | AI Agent + Redis | 开发测试 |
-| **完整部署** | 企业级功能 | 上述 + Milvus + MongoDB | 生产环境 |
-| **生产部署** | 包含反向代理 | 上述 + Nginx | 公网服务 |
+| 模式         | 描述         | 包含服务                | 适用场景 |
+| ------------ | ------------ | ----------------------- | -------- |
+| **快速启动** | 基础AI功能   | AI Agent + Redis        | 开发测试 |
+| **完整部署** | 企业级功能   | 上述 + Milvus + MongoDB | 生产环境 |
+| **生产部署** | 包含反向代理 | 上述 + Nginx            | 公网服务 |
 
 ---
 
@@ -65,6 +65,7 @@ nano .env  # 或使用其他编辑器
 ```
 
 **必需配置项**：
+
 ```bash
 # OpenAI API密钥 (必须设置)
 OPENAI_API_KEY=sk-proj-your-actual-api-key
@@ -89,16 +90,19 @@ docker-compose build --no-cache ai-agent
 ### 3. 启动服务
 
 #### 基础部署
+
 ```bash
 docker-compose up -d ai-agent redis
 ```
 
 #### 完整部署
+
 ```bash
 docker-compose --profile full-stack up -d
 ```
 
 #### 生产部署
+
 ```bash
 docker-compose --profile production up -d
 ```
@@ -108,6 +112,7 @@ docker-compose --profile production up -d
 ## 📊 服务架构
 
 ### 基础架构图
+
 ```
 ┌─────────────────┐    ┌─────────────────┐
 │   AI Agent      │    │     Redis       │
@@ -117,6 +122,7 @@ docker-compose --profile production up -d
 ```
 
 ### 完整架构图
+
 ```
 ┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
 │   AI Agent      │    │     Redis       │    │    MongoDB      │
@@ -139,6 +145,7 @@ docker-compose --profile production up -d
 ### 环境变量详解
 
 #### 🔑 必需配置
+
 ```bash
 # OpenAI API配置
 OPENAI_API_KEY=sk-proj-xxx           # OpenAI API密钥
@@ -151,6 +158,7 @@ SUPABASE_KEY=eyJxxx
 ```
 
 #### ⚡ 性能配置
+
 ```bash
 # Agent性能
 AGENT_MAX_ITERATIONS=10              # 最大迭代次数
@@ -164,6 +172,7 @@ REDIS_MAX_MEMORY=256mb               # Redis最大内存
 ```
 
 #### 🔍 可选服务
+
 ```bash
 # 向量数据库 (企业级)
 MILVUS_PORT=19530
@@ -179,10 +188,10 @@ LANGCHAIN_API_KEY=your-langsmith-key
 
 ```yaml
 volumes:
-  - ./knowledge_base:/app/knowledge_base:ro    # 知识库(只读)
-  - ./uploads:/app/uploads                     # 文件上传
-  - ./logs:/app/logs                           # 日志文件
-  - vector_store:/app/vector_store             # 向量存储
+  - ./knowledge_base:/app/knowledge_base:ro # 知识库(只读)
+  - ./uploads:/app/uploads # 文件上传
+  - ./logs:/app/logs # 日志文件
+  - vector_store:/app/vector_store # 向量存储
 ```
 
 ---
@@ -237,6 +246,7 @@ docker run --rm -v peerportal_redis_data:/data -v $(pwd):/backup alpine tar xzf 
 ### 常见问题
 
 #### Q1: AI Agent启动失败
+
 ```bash
 # 检查日志
 docker-compose logs ai-agent
@@ -248,6 +258,7 @@ docker-compose logs ai-agent
 ```
 
 #### Q2: Redis连接失败
+
 ```bash
 # 检查Redis状态
 docker-compose ps redis
@@ -260,6 +271,7 @@ docker-compose restart redis
 ```
 
 #### Q3: 响应缓慢
+
 ```bash
 # 检查资源使用
 docker stats
@@ -348,6 +360,7 @@ docker-compose exec -T mongodb mongodump --archive | gzip > backup_${DATE}.gz
 ## 📋 部署检查清单
 
 ### 部署前检查
+
 - [ ] Docker和Docker Compose已安装
 - [ ] OPENAI_API_KEY已配置
 - [ ] Supabase数据库已配置
@@ -355,6 +368,7 @@ docker-compose exec -T mongodb mongodump --archive | gzip > backup_${DATE}.gz
 - [ ] 系统内存 >= 4GB
 
 ### 部署后验证
+
 - [ ] AI Agent服务正常运行 (`curl http://localhost:8000/health`)
 - [ ] Redis缓存正常工作
 - [ ] API文档可访问 (`http://localhost:8000/docs`)
@@ -362,6 +376,7 @@ docker-compose exec -T mongodb mongodump --archive | gzip > backup_${DATE}.gz
 - [ ] 日志无错误信息
 
 ### 生产环境额外检查
+
 - [ ] HTTPS配置正确
 - [ ] 防火墙规则已设置
 - [ ] 备份策略已实施
@@ -373,11 +388,13 @@ docker-compose exec -T mongodb mongodump --archive | gzip > backup_${DATE}.gz
 ## 📞 技术支持
 
 ### 文档资源
+
 - **完整文档**: `docs/AI_AGENT_SYSTEM_V2_文档.md`
 - **快速入门**: `AI_AGENT_快速入门.md`
 - **API文档**: `http://localhost:8000/docs`
 
 ### 常用命令参考
+
 ```bash
 # 部署相关
 ./deploy.sh                           # 交互式部署
@@ -399,4 +416,4 @@ python test_v2_config.py             # 本地测试
 
 **🚀 开始你的AI智能体之旅！**
 
-*最后更新: 2024年12月* 
+_最后更新: 2024年12月_

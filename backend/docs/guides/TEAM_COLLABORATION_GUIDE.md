@@ -5,6 +5,7 @@
 ### ✅ 方法1：项目邀请（最简单）
 
 #### 队友需要做的：
+
 - [ ] 登录 Supabase Dashboard
 - [ ] 选择项目 → Settings → Team
 - [ ] 点击 "Invite a teammate"
@@ -13,6 +14,7 @@
 - [ ] 发送邀请
 
 #### 您需要做的：
+
 - [ ] 检查邮箱接受邀请
 - [ ] 登录 Supabase Dashboard
 - [ ] 找到共享的项目
@@ -22,6 +24,7 @@
 ### ✅ 方法2：配置信息共享
 
 #### 队友提供配置信息：
+
 ```bash
 # 在 Supabase Dashboard → Settings → API 获取
 SUPABASE_URL=https://xxxxxxxxx.supabase.co
@@ -32,6 +35,7 @@ SUPABASE_DB_PASSWORD=数据库密码
 ```
 
 #### 您的操作步骤：
+
 ```bash
 # 1. 备份当前配置
 cp .env .env.backup
@@ -50,6 +54,7 @@ python start_new_app.py
 ## 🔄 同步数据库结构
 
 ### 选项A：使用现有 schema
+
 ```bash
 # 如果队友的数据库结构和我们的 db_schema.sql 一致
 # 直接在队友的 Supabase 项目中执行我们的 schema
@@ -62,17 +67,18 @@ cat db_schema.sql
 ```
 
 ### 选项B：导出队友的结构
+
 ```sql
 -- 在队友的 Supabase SQL Editor 中执行
 -- 导出完整的数据库结构
-SELECT 
+SELECT
     schemaname,
     tablename,
     tableowner,
     hasindexes,
     hasrules,
     hastriggers
-FROM pg_tables 
+FROM pg_tables
 WHERE schemaname = 'public';
 
 -- 导出每个表的详细结构
@@ -82,6 +88,7 @@ WHERE schemaname = 'public';
 ## 🧪 测试协作设置
 
 ### 1. 连接测试
+
 ```bash
 # 测试基本连接
 python -c "
@@ -95,6 +102,7 @@ python test/check_database.py
 ```
 
 ### 2. 功能测试
+
 ```bash
 # 启动应用
 python start_new_app.py
@@ -104,6 +112,7 @@ curl -s http://localhost:8001/health | python -m json.tool
 ```
 
 ### 3. 数据操作测试
+
 ```bash
 # 注册测试用户
 curl -X POST "http://localhost:8001/api/v1/auth/register" \
@@ -113,26 +122,29 @@ curl -X POST "http://localhost:8001/api/v1/auth/register" \
 
 ## 🔐 权限级别说明
 
-| 权限级别 | 数据库访问 | 设置修改 | 团队管理 | 适用场景 |
-|----------|------------|----------|----------|----------|
-| **Owner** | ✅ 完全 | ✅ 完全 | ✅ 完全 | 项目负责人 |
-| **Admin** | ✅ 完全 | ✅ 大部分 | ✅ 邀请成员 | 技术负责人 |
-| **Developer** | ✅ 读写 | ⚠️ 有限 | ❌ 无 | 开发人员 |
-| **Read-only** | 👁️ 只读 | ❌ 无 | ❌ 无 | 观察者 |
+| 权限级别      | 数据库访问 | 设置修改  | 团队管理    | 适用场景   |
+| ------------- | ---------- | --------- | ----------- | ---------- |
+| **Owner**     | ✅ 完全    | ✅ 完全   | ✅ 完全     | 项目负责人 |
+| **Admin**     | ✅ 完全    | ✅ 大部分 | ✅ 邀请成员 | 技术负责人 |
+| **Developer** | ✅ 读写    | ⚠️ 有限   | ❌ 无       | 开发人员   |
+| **Read-only** | 👁️ 只读    | ❌ 无     | ❌ 无       | 观察者     |
 
 ## 🚨 注意事项
 
 ### 🔒 安全考虑
+
 - **API Keys**: 永远不要在代码中硬编码
 - **数据库密码**: 只在需要直连时使用
 - **权限原则**: 给予最小必要权限
 
 ### 🔄 数据同步
+
 - **生产数据**: 谨慎操作，建议先在开发环境测试
 - **Schema 变更**: 团队协调，避免冲突
 - **备份**: 重要操作前务必备份
 
 ### 📝 团队协作最佳实践
+
 1. **统一环境**: 使用相同的 schema 版本
 2. **配置管理**: 使用 `.env.example` 分享配置模板
 3. **文档同步**: 及时更新 API 文档
@@ -141,13 +153,17 @@ curl -X POST "http://localhost:8001/api/v1/auth/register" \
 ## 🆘 常见问题解决
 
 ### Q: 无法访问队友的项目
+
 **A:** 检查以下几点：
+
 - 是否接受了邀请邮件
 - 邮箱地址是否正确
 - 是否登录了正确的 Supabase 账户
 
 ### Q: 数据库连接失败
+
 **A:** 验证配置：
+
 ```bash
 # 检查配置格式
 echo $SUPABASE_URL
@@ -158,11 +174,13 @@ curl -I $SUPABASE_URL
 ```
 
 ### Q: 权限不足错误
+
 **A:** 联系项目 Owner 检查权限级别
 
 ## 📞 获取帮助
 
 ### 快速验证命令
+
 ```bash
 # 一键验证团队协作设置
 python -c "
@@ -176,6 +194,7 @@ print('项目ID:', settings.SUPABASE_URL.split('//')[1].split('.')[0] if setting
 ```
 
 ### 团队配置模板
+
 ```bash
 # 团队成员配置文件模板
 # .env.team (队友分享给您的配置)
@@ -197,4 +216,4 @@ DB_POOL_MAX_SIZE=10
 
 ---
 
-✨ **通过以上任一方式，您都可以访问和同步队友的 Supabase 数据库！** 
+✨ **通过以上任一方式，您都可以访问和同步队友的 Supabase 数据库！**

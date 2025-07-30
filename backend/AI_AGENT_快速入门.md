@@ -5,11 +5,13 @@
 这是一个专业的**留学规划AI顾问**，包含两个核心智能体：
 
 ### 🎓 留学规划师 (StudyPlannerAgent)
+
 - **功能**: 制定个性化留学申请策略
 - **特长**: 院校推荐、时间规划、背景分析
 - **适用场景**: "我想申请美国CS硕士，请帮我制定申请计划"
 
-### 💬 留学咨询师 (StudyConsultantAgent)  
+### 💬 留学咨询师 (StudyConsultantAgent)
+
 - **功能**: 提供留学政策和生活咨询
 - **特长**: 费用分析、签证指导、生活建议
 - **适用场景**: "英国留学一年费用是多少？"
@@ -36,16 +38,19 @@ open http://localhost:8000/docs
 ## 🔧 核心技术特性
 
 ### 🧠 智能记忆系统
+
 - **短期记忆**: 维持当前会话连续性 (24小时)
 - **长期记忆**: 学习用户偏好和历史申请信息
 - **智能检索**: 基于上下文自动调用相关记忆
 
 ### 🔍 知识增强 (RAG)
+
 - **文档支持**: PDF、Word、Markdown等
 - **实时检索**: 从知识库获取最新申请信息
 - **智能匹配**: 根据用户问题精准检索相关内容
 
 ### 🛠️ 工具集成
+
 ```python
 内置工具:
 - find_mentors_tool     # 查找学长学姐
@@ -55,6 +60,7 @@ open http://localhost:8000/docs
 ```
 
 ### 🎭 状态机架构 (LangGraph)
+
 ```
 用户输入 → 思考分析 → 记忆检索 → 知识检索 → 工具调用 → 生成回答
 ```
@@ -64,6 +70,7 @@ open http://localhost:8000/docs
 ## 📱 API 使用示例
 
 ### 与留学规划师对话
+
 ```bash
 curl -X POST "http://localhost:8000/api/v2/agents/planner/chat" \
   -H "Content-Type: application/json" \
@@ -74,6 +81,7 @@ curl -X POST "http://localhost:8000/api/v2/agents/planner/chat" \
 ```
 
 ### 与留学咨询师对话
+
 ```bash
 curl -X POST "http://localhost:8000/api/v2/agents/consultant/chat" \
   -H "Content-Type: application/json" \
@@ -84,6 +92,7 @@ curl -X POST "http://localhost:8000/api/v2/agents/consultant/chat" \
 ```
 
 ### Python SDK 使用
+
 ```python
 from app.agents.v2 import create_study_planner, create_study_consultant
 
@@ -104,6 +113,7 @@ print(f"费用信息: {cost_info}")
 ## 🎬 实际对话示例
 
 ### 场景一：制定申请策略
+
 ```
 🧑 用户: "我是国内985本科CS专业，GPA 3.7，想申请美国top30的CS硕士"
 
@@ -111,7 +121,7 @@ print(f"费用信息: {cost_info}")
 
 【背景评估】
 - 985院校背景：优势明显 ✅
-- CS专业对口：专业匹配度高 ✅  
+- CS专业对口：专业匹配度高 ✅
 - GPA 3.7：中上水平，需要其他方面补强 ⚠️
 
 【推荐院校层次】
@@ -129,6 +139,7 @@ print(f"费用信息: {cost_info}")
 ```
 
 ### 场景二：费用咨询
+
 ```
 🧑 用户: "加州大学的学费和生活费大概是多少？"
 
@@ -161,6 +172,7 @@ print(f"费用信息: {cost_info}")
 ## 🔨 环境配置
 
 ### 最小化配置 (仅需OpenAI)
+
 ```bash
 # .env 文件
 OPENAI_API_KEY=sk-proj-xxx
@@ -168,6 +180,7 @@ DEBUG=True
 ```
 
 ### 完整配置 (包含记忆和知识库)
+
 ```bash
 # .env 文件
 OPENAI_API_KEY=sk-proj-xxx
@@ -178,6 +191,7 @@ DEBUG=True
 ```
 
 ### Docker 快速部署
+
 ```bash
 # 使用 Docker Compose
 docker-compose up -d
@@ -193,6 +207,7 @@ docker run -p 8000:8000 \
 ## 📊 系统监控
 
 ### 健康检查
+
 ```bash
 # 检查系统状态
 curl http://localhost:8000/api/v2/agents/status
@@ -202,11 +217,12 @@ curl http://localhost:8000/health
 ```
 
 ### 性能指标
+
 ```python
 # 当前系统配置
 {
     "🤖 LLM模型": 3,           # gpt-4o-mini, gpt-4, gpt-3.5-turbo
-    "📊 嵌入模型": 3,          # ada-002, 3-small, 3-large  
+    "📊 嵌入模型": 3,          # ada-002, 3-small, 3-large
     "💾 Redis缓存": "✅",      # 短期记忆
     "🔍 向量数据库": "⚪",     # 长期记忆 (可选)
     "📄 文档数据库": "⚪",     # 知识存储 (可选)
@@ -219,6 +235,7 @@ curl http://localhost:8000/health
 ## 🚨 常见问题
 
 ### Q: 如何提高响应速度？
+
 ```python
 # 使用更快的模型
 DEFAULT_MODEL = "gpt-4o-mini"  # 代替 gpt-4
@@ -231,6 +248,7 @@ AGENT_MAX_CONCURRENT = 5
 ```
 
 ### Q: 如何添加自定义知识？
+
 ```python
 # 1. 上传文档到 knowledge_base/ 目录
 # 2. 重启系统自动索引
@@ -240,6 +258,7 @@ await rag_manager.index_document("path/to/document.pdf")
 ```
 
 ### Q: 如何监控token使用？
+
 ```python
 # 查看使用统计
 curl http://localhost:8000/api/v2/agents/usage-stats
@@ -254,16 +273,19 @@ USER_TOKEN_LIMIT = 1000
 ## 🎯 应用场景
 
 ### 🏫 教育机构
+
 - **留学中介**: 提供24/7智能咨询服务
 - **国际学校**: 为学生提供申请指导
 - **培训机构**: 增强服务价值
 
-### 🎓 个人用户  
+### 🎓 个人用户
+
 - **留学申请者**: 获得专业的申请建议
 - **在读学生**: 了解转学和升学机会
 - **家长**: 了解留学政策和费用
 
 ### 🏢 企业应用
+
 - **人力资源**: 员工海外培训规划
 - **教育科技**: 集成AI咨询功能
 - **在线平台**: 提升用户体验
@@ -273,6 +295,7 @@ USER_TOKEN_LIMIT = 1000
 ## 🔄 版本演进
 
 ### v2.0.0 当前版本 ✅
+
 - 双智能体系统 (规划师 + 咨询师)
 - LangGraph 状态机架构
 - 双层记忆系统
@@ -280,12 +303,14 @@ USER_TOKEN_LIMIT = 1000
 - 工具集成框架
 
 ### v2.1.0 即将发布 🚧
+
 - 流式响应支持
 - 更多智能体类型 (文书润色师、面试教练)
 - 多语言支持 (英文、中文)
 - 移动端API优化
 
 ### v2.2.0 规划中 📋
+
 - 语音对话支持
 - 图表和数据可视化
 - 个性化推荐引擎
@@ -296,7 +321,7 @@ USER_TOKEN_LIMIT = 1000
 ## 🎉 立即开始
 
 1. **克隆项目**: `git clone https://github.com/yourrepo/peerpotal.git`
-2. **安装依赖**: `pip install -r requirements.txt`  
+2. **安装依赖**: `pip install -r requirements.txt`
 3. **配置OpenAI**: 设置 `OPENAI_API_KEY`
 4. **运行测试**: `python test_v2_config.py`
 5. **启动服务**: `uvicorn app.main:app --reload`
@@ -308,4 +333,4 @@ USER_TOKEN_LIMIT = 1000
 
 📞 技术支持: 查看 `docs/AI_AGENT_SYSTEM_V2_文档.md` 获取完整文档
 
-*更新时间: 2024年12月* 
+_更新时间: 2024年12月_

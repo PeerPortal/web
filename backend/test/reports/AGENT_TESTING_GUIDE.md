@@ -3,6 +3,7 @@
 ## 🎯 测试目标
 
 验证AI留学规划师Agent的核心功能，包括：
+
 - 基础对话能力
 - 工具调用集成
 - LangSmith追踪
@@ -37,6 +38,7 @@ uvicorn app.main:app --host 0.0.0.0 --port 8001 --reload
 ```
 
 服务启动后访问：
+
 - **API文档**: http://localhost:8001/docs
 - **健康检查**: http://localhost:8001/api/v1/advanced-planner/health
 
@@ -49,6 +51,7 @@ uvicorn app.main:app --host 0.0.0.0 --port 8001 --reload
 **测试目标**: 验证Agent对基础留学问题的回答能力
 
 **API调用**:
+
 ```bash
 curl -X POST "http://localhost:8001/api/v1/advanced-planner/invoke" \
   -H "Content-Type: application/json" \
@@ -62,12 +65,14 @@ curl -X POST "http://localhost:8001/api/v1/advanced-planner/invoke" \
 ```
 
 **预期结果**:
+
 - ✅ 响应时间 < 10秒
 - ✅ 回答包含关键信息：GPA要求、语言成绩、GRE、推荐信等
 - ✅ 回答长度 > 200字符
 - ✅ LangSmith追踪正常（如果已配置）
 
 **验证要点**:
+
 - 回答的准确性和完整性
 - 是否包含具体的申请要求
 - 语言表达是否自然流畅
@@ -77,6 +82,7 @@ curl -X POST "http://localhost:8001/api/v1/advanced-planner/invoke" \
 **测试目标**: 验证Agent能正确调用各种工具
 
 #### 2.1 网络搜索工具
+
 ```bash
 curl -X POST "http://localhost:8001/api/v1/advanced-planner/invoke" \
   -H "Content-Type: application/json" \
@@ -89,11 +95,13 @@ curl -X POST "http://localhost:8001/api/v1/advanced-planner/invoke" \
 ```
 
 **预期结果**:
+
 - ✅ 调用了网络搜索工具
 - ✅ 返回最新的排名信息
 - ✅ metadata中tool_calls > 0
 
 #### 2.2 知识库搜索
+
 ```bash
 curl -X POST "http://localhost:8001/api/v1/advanced-planner/invoke" \
   -H "Content-Type: application/json" \
@@ -106,11 +114,13 @@ curl -X POST "http://localhost:8001/api/v1/advanced-planner/invoke" \
 ```
 
 **预期结果**:
+
 - ✅ 调用了知识库搜索工具
 - ✅ 返回相关的技术信息
 - ✅ 基于上传的知识库文档回答
 
 #### 2.3 数据库查询
+
 ```bash
 curl -X POST "http://localhost:8001/api/v1/advanced-planner/invoke" \
   -H "Content-Type: application/json" \
@@ -123,6 +133,7 @@ curl -X POST "http://localhost:8001/api/v1/advanced-planner/invoke" \
 ```
 
 **预期结果**:
+
 - ✅ 调用了数据库查询工具
 - ✅ 返回相关的导师或服务信息
 - ✅ 数据来自Supabase数据库
@@ -132,6 +143,7 @@ curl -X POST "http://localhost:8001/api/v1/advanced-planner/invoke" \
 **测试目标**: 验证Agent能维持多轮对话的上下文
 
 #### 第一轮对话
+
 ```bash
 curl -X POST "http://localhost:8001/api/v1/advanced-planner/invoke" \
   -H "Content-Type: application/json" \
@@ -145,6 +157,7 @@ curl -X POST "http://localhost:8001/api/v1/advanced-planner/invoke" \
 ```
 
 #### 第二轮对话（基于第一轮的响应）
+
 ```bash
 curl -X POST "http://localhost:8001/api/v1/advanced-planner/invoke" \
   -H "Content-Type: application/json" \
@@ -161,12 +174,13 @@ curl -X POST "http://localhost:8001/api/v1/advanced-planner/invoke" \
 ```
 
 #### 第三轮对话
+
 ```bash
 curl -X POST "http://localhost:8001/api/v1/advanced-planner/invoke" \
   -H "Content-Type: application/json" \
   -d '{
     "input": "你觉得我应该申请哪些学校？",
-    "user_id": "continuity_user", 
+    "user_id": "continuity_user",
     "session_id": "continuity_session",
     "chat_history": [
       {"role": "user", "content": "我想申请美国的研究生"},
@@ -179,6 +193,7 @@ curl -X POST "http://localhost:8001/api/v1/advanced-planner/invoke" \
 ```
 
 **预期结果**:
+
 - ✅ Agent能记住之前的对话内容
 - ✅ 回答基于前面提供的信息（专业、GPA等）
 - ✅ 给出个性化的学校推荐
@@ -200,6 +215,7 @@ curl -X POST "http://localhost:8001/api/v1/advanced-planner/invoke" \
 ```
 
 **预期结果**:
+
 - ✅ 返回流式数据（Server-Sent Events格式）
 - ✅ 逐步输出回答内容
 - ✅ 最后发送完成信号
@@ -207,6 +223,7 @@ curl -X POST "http://localhost:8001/api/v1/advanced-planner/invoke" \
 ### 场景5: 错误处理测试
 
 #### 5.1 空输入测试
+
 ```bash
 curl -X POST "http://localhost:8001/api/v1/advanced-planner/invoke" \
   -H "Content-Type: application/json" \
@@ -219,10 +236,12 @@ curl -X POST "http://localhost:8001/api/v1/advanced-planner/invoke" \
 ```
 
 **预期结果**:
+
 - ✅ 返回400错误或优雅的错误提示
 - ✅ 不会导致服务崩溃
 
 #### 5.2 超长输入测试
+
 ```bash
 curl -X POST "http://localhost:8001/api/v1/advanced-planner/invoke" \
   -H "Content-Type: application/json" \
@@ -235,6 +254,7 @@ curl -X POST "http://localhost:8001/api/v1/advanced-planner/invoke" \
 ```
 
 **预期结果**:
+
 - ✅ 输入长度验证生效
 - ✅ 返回适当的错误信息
 
@@ -255,6 +275,7 @@ curl -X POST "http://localhost:8001/api/v1/advanced-planner/invoke" \
 ### 2. 本地追踪验证
 
 检查终端输出中的LangSmith日志：
+
 ```
 🔍 [LangSmith] 开始追踪Agent运行 - 用户: test_user_001
 ✅ [LangSmith] Agent运行完成 - 用户: test_user_001, 执行时间: 2.34秒
@@ -267,45 +288,57 @@ curl -X POST "http://localhost:8001/api/v1/advanced-planner/invoke" \
 ### 常见问题及解决方案
 
 #### 1. Agent初始化失败
-**现象**: 
+
+**现象**:
+
 ```
 ❌ Agent初始化失败: 'NoneType' object has no attribute...
 ```
 
 **解决方案**:
+
 - 检查 `.env` 文件中的 `OPENAI_API_KEY` 是否正确
 - 验证网络连接和API配额
 - 检查依赖包是否完整安装
 
 #### 2. 工具调用失败
-**现象**: 
+
+**现象**:
+
 ```
 ⚠️ 工具调用异常: API key not found
 ```
 
 **解决方案**:
+
 - 检查 `TAVILY_API_KEY` 配置
 - 验证 Supabase 数据库连接
 - 检查知识库文件是否存在
 
 #### 3. LangSmith追踪不显示
-**现象**: 
+
+**现象**:
+
 ```
 🔍 LangSmith状态: 未启用
 ```
 
 **解决方案**:
+
 - 检查 `LANGCHAIN_TRACING_V2=true`
 - 验证 `LANGCHAIN_API_KEY` 是否有效
 - 确认 `LANGCHAIN_PROJECT` 名称正确
 
 #### 4. 数据库连接错误
+
 **现象**:
+
 ```
 ❌ 数据库连接失败: could not connect to server
 ```
 
 **解决方案**:
+
 - 检查 Supabase URL 和密钥
 - 验证网络连接
 - 检查数据库是否正常运行
@@ -316,13 +349,13 @@ curl -X POST "http://localhost:8001/api/v1/advanced-planner/invoke" \
 
 ### 测试执行记录
 
-| 测试场景 | 执行时间 | 结果 | 响应时间 | 工具调用 | 备注 |
-|---------|---------|------|---------|---------|------|
-| 基础咨询 | 2024-01-25 | ✅/❌ | 2.3s | 1次 | |
-| 网络搜索 | 2024-01-25 | ✅/❌ | 4.1s | 2次 | |
-| 知识库查询 | 2024-01-25 | ✅/❌ | 1.8s | 1次 | |
-| 对话连续性 | 2024-01-25 | ✅/❌ | 2.1s | 0次 | |
-| 流式响应 | 2024-01-25 | ✅/❌ | 3.2s | 1次 | |
+| 测试场景   | 执行时间   | 结果  | 响应时间 | 工具调用 | 备注 |
+| ---------- | ---------- | ----- | -------- | -------- | ---- |
+| 基础咨询   | 2024-01-25 | ✅/❌ | 2.3s     | 1次      |      |
+| 网络搜索   | 2024-01-25 | ✅/❌ | 4.1s     | 2次      |      |
+| 知识库查询 | 2024-01-25 | ✅/❌ | 1.8s     | 1次      |      |
+| 对话连续性 | 2024-01-25 | ✅/❌ | 2.1s     | 0次      |      |
+| 流式响应   | 2024-01-25 | ✅/❌ | 3.2s     | 1次      |      |
 
 ### 性能基准
 
@@ -348,7 +381,8 @@ curl -X POST "http://localhost:8001/api/v1/advanced-planner/invoke" \
 
 ---
 
-**💡 提示**: 
+**💡 提示**:
+
 - 首次运行建议使用自动化测试脚本 `python test_agent_comprehensive.py`
 - 如需深入测试特定功能，可使用对应的手动测试场景
 - 建议在不同网络环境下进行测试以验证稳定性

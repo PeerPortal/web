@@ -27,22 +27,26 @@ backend/
 ## 目录说明
 
 ### `/app` - 主应用代码
+
 - **api/**: FastAPI路由定义
 - **core/**: 应用核心配置（数据库、设置等）
 - **crud/**: 数据库CRUD操作
 - **schemas/**: Pydantic数据模型
 
 ### `/docs` - 项目文档
+
 - **api/**: API接口文档
 - **guides/**: 配置和使用指南
 - **reports/**: 测试和项目报告
 
 ### `/scripts` - 脚本工具
+
 - **database/**: 数据库相关脚本（Schema分析、连接测试等）
 - **testing/**: 测试脚本（API测试、集成测试等）
 - **deployment/**: 部署相关脚本
 
 ### `/configs` - 配置文件
+
 - 环境变量示例
 - 部署配置模板
 

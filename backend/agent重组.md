@@ -7,14 +7,14 @@
 Code snippet
 
 graph TD
-    subgraph " "
-        direction LR
-        subgraph "核心基础设施层 (Core Infrastructure)"
-            direction TB
-            Error[Error Module]
-            Utils[Utils Module]
-            OSS[OSS Module]
-        end
+subgraph " "
+direction LR
+subgraph "核心基础设施层 (Core Infrastructure)"
+direction TB
+Error[Error Module]
+Utils[Utils Module]
+OSS[OSS Module]
+end
 
         subgraph "AI核心层 (AI Foundation)"
             direction TB
@@ -36,10 +36,10 @@ graph TD
     Agents --> LLM
     Agents --> Memory
     Agents --> RAG
-    
+
     RAG --> LLM
     RAG --> OSS
-    
+
     Memory --> LLM
     Memory --> DBs[(Redis/Milvus/MongoDB)]
 
@@ -51,6 +51,7 @@ graph TD
 
     style User fill:#f9f,stroke:#333,stroke-width:2px
     style DBs fill:#cce,stroke:#333,stroke-width:2px
+
 2.0 各模块详细设计与接口定义
 2.1 🔥 LLM Module - 大语言模型层
 职责: 作为所有大模型能力的唯一入口，屏蔽底层提供商的差异性。
@@ -68,11 +69,11 @@ Provider: 每个LLM服务的具体实现（如OpenAIProvider, OllamaProvider）�
 Python
 
 class LLMManager:
-    async def chat(self, tenant_id: str, model_name: str, messages: list, **kwargs) -> LLMResponse: ...
-    async def stream_chat(self, tenant_id: str, model_name: str, messages: list, **kwargs) -> AsyncGenerator[StreamChunk, None]: ...
+async def chat(self, tenant_id: str, model_name: str, messages: list, **kwargs) -> LLMResponse: ...
+async def stream_chat(self, tenant_id: str, model_name: str, messages: list, **kwargs) -> AsyncGenerator[StreamChunk, None]: ...
 
 class EmbeddingManager:
-    async def embed_texts(self, tenant_id: str, model_name: str, texts: list[str]) -> list[list[float]]: ...
+async def embed_texts(self, tenant_id: str, model_name: str, texts: list[str]) -> list[list[float]]: ...
 模块交互: Agents Module, Memory Module, RAG Module 都必须通过 LLMManager 和 EmbeddingManager 来访问模型，而不能直接实例化任何Provider。
 
 2.2 🧠 Memory Module - 记忆管理系统
@@ -97,10 +98,10 @@ ForgettingMechanism: 在检索时，可以为记忆评分引入时间衰减因�
 Python
 
 class MemoryBank:
-    async def get_context(self, session_id: str, user_id: str, query: str, top_k: int = 3) -> MemoryContext: ...
-    async def add_interaction(self, session_id: str, user_id: str, human_message: str, ai_message: str) -> None: ...
-    async def end_session(self, session_id: str, user_id: str) -> None: # 触发异步压缩
-        ...
+async def get_context(self, session_id: str, user_id: str, query: str, top_k: int = 3) -> MemoryContext: ...
+async def add_interaction(self, session_id: str, user_id: str, human_message: str, ai_message: str) -> None: ...
+async def end_session(self, session_id: str, user_id: str) -> None: # 触发异步压缩
+...
 模块交互: Agents Module 在每次执行前，调用 memory_bank.get_context 来构建完整的上下文。
 
 2.3 📚 RAG Module - 检索增强生成
@@ -119,9 +120,9 @@ Rerankers: 使用一个轻量级的交叉编码器模型（如 BGE-Reranker）�
 Python
 
 class RAGManager:
-    async def add_document(self, tenant_id: str, file_path: str, metadata: dict) -> DocumentIngestionResult: ...
-    async def query(self, tenant_id: str, query_text: str, top_k: int = 5) -> RAGQueryResult: ...
-模块交互: * 通过 OSS Module 存取原始文件。
+async def add_document(self, tenant_id: str, file_path: str, metadata: dict) -> DocumentIngestionResult: ...
+async def query(self, tenant_id: str, query_text: str, top_k: int = 5) -> RAGQueryResult: ...
+模块交互: \* 通过 OSS Module 存取原始文件。
 
 使用 EmbeddingManager 生成文本块的向量。
 
@@ -143,16 +144,16 @@ AgentFactory: 根据不同的任务需求（如“规划师Agent”、“文书�
 Python
 
 class AgentFactory:
-    def get_agent_executor(self, agent_type: str, tenant_id: str) -> AgentExecutor: ...
+def get_agent_executor(self, agent_type: str, tenant_id: str) -> AgentExecutor: ...
 模块交互 (核心示例):
 
 Python
 
 # Agent 在 LangGraph 节点中的伪代码
-async def think_node(state):
-    # 1. 获取记忆和上下文
-    memory_context = await memory_bank.get_context(...)
-    full_prompt = build_prompt(memory_context, state['input'])
+
+async def think_node(state): # 1. 获取记忆和上下文
+memory_context = await memory_bank.get_context(...)
+full_prompt = build_prompt(memory_context, state['input'])
 
     # 2. 调用LLM决策
     llm_response = await llm_manager.chat(..., messages=full_prompt)
@@ -165,9 +166,8 @@ async def think_node(state):
         return "end"
 
 async def rag_node(state):
-    rag_results = await rag_manager.query(...)
-    # 将RAG结果添加到state中，准备下一轮思考
-    ...
+rag_results = await rag_manager.query(...) # 将RAG结果添加到state中，准备下一轮思考
+...
 2.5 基础设施层 (Infrastructure Modules)
 Error Module: 提供全局的异常捕获。使用FastAPI的@app.exception_handler装饰器，捕获自定义的PlatformException，并根据error_code从多语言错误映射表中查找信息，返回标准化的HTTP错误响应。
 

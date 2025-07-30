@@ -9,11 +9,7 @@
         "success": true,
         "execution_time": 3.824122905731201,
         "output_length": 762,
-        "keywords_found": [
-          "留学",
-          "申请",
-          "流程"
-        ],
+        "keywords_found": ["留学", "申请", "流程"],
         "keywords_expected": 3,
         "tool_calls": 0,
         "langsmith_enabled": true
@@ -23,11 +19,7 @@
         "success": true,
         "execution_time": 2.0861313343048096,
         "output_length": 790,
-        "keywords_found": [
-          "计算机科学",
-          "硕士",
-          "条件"
-        ],
+        "keywords_found": ["计算机科学", "硕士", "条件"],
         "keywords_expected": 6,
         "tool_calls": 0,
         "langsmith_enabled": true
@@ -37,9 +29,7 @@
         "success": true,
         "execution_time": 1.2463037967681885,
         "output_length": 858,
-        "keywords_found": [
-          "计算机"
-        ],
+        "keywords_found": ["计算机"],
         "keywords_expected": 4,
         "tool_calls": 0,
         "langsmith_enabled": true

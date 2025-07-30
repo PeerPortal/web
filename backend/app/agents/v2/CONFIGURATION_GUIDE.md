@@ -6,11 +6,11 @@
 
 ### 🎯 配置层级
 
-| 配置级别 | 描述 | 所需服务 | 适用场景 |
-|----------|------|----------|----------|
-| **🟢 基础配置** | 仅AI功能 | OpenAI API | 开发测试 |
-| **🟡 增强配置** | +记忆缓存 | OpenAI + Redis | 生产环境 |
-| **🔴 完整配置** | 全部功能 | OpenAI + Redis + Milvus + MongoDB + ES | 企业级部署 |
+| 配置级别        | 描述      | 所需服务                               | 适用场景   |
+| --------------- | --------- | -------------------------------------- | ---------- |
+| **🟢 基础配置** | 仅AI功能  | OpenAI API                             | 开发测试   |
+| **🟡 增强配置** | +记忆缓存 | OpenAI + Redis                         | 生产环境   |
+| **🔴 完整配置** | 全部功能  | OpenAI + Redis + Milvus + MongoDB + ES | 企业级部署 |
 
 ---
 
@@ -147,6 +147,7 @@ SECRET_KEY=your-secret-key
 ```
 
 **功能**:
+
 - ✅ AI对话
 - ✅ 4种专业智能体
 - ✅ 工具调用
@@ -164,6 +165,7 @@ REDIS_URL=redis://localhost:6379
 ```
 
 **功能**:
+
 - ✅ 基础配置所有功能
 - ✅ 短期记忆缓存
 - ✅ 会话管理
@@ -182,6 +184,7 @@ ELASTICSEARCH_URL=http://localhost:9200
 ```
 
 **功能**:
+
 - ✅ 所有功能
 - ✅ 智能记忆系统
 - ✅ RAG知识库
@@ -200,7 +203,7 @@ services:
   app:
     build: .
     ports:
-      - "8000:8000"
+      - '8000:8000'
     environment:
       - OPENAI_API_KEY=${OPENAI_API_KEY}
       - REDIS_URL=redis://redis:6379
@@ -216,17 +219,17 @@ services:
   redis:
     image: redis:7-alpine
     ports:
-      - "6379:6379"
+      - '6379:6379'
 
   milvus:
     image: milvusdb/milvus:latest
     ports:
-      - "19530:19530"
+      - '19530:19530'
 
   mongodb:
     image: mongo:latest
     ports:
-      - "27017:27017"
+      - '27017:27017'
 
   elasticsearch:
     image: elasticsearch:8.8.0
@@ -234,7 +237,7 @@ services:
       - discovery.type=single-node
       - xpack.security.enabled=false
     ports:
-      - "9200:9200"
+      - '9200:9200'
 ```
 
 ### 启动命令
@@ -265,17 +268,17 @@ from app.agents.v2 import create_study_planner
 async def test_configuration():
     """测试v2.0配置"""
     print("🧪 测试v2.0智能体系统配置...")
-    
+
     # 1. 初始化系统
     success = await init_v2_from_env()
     if not success:
         print("❌ 初始化失败")
         return
-    
+
     # 2. 检查配置状态
     status = config_manager.get_config_status()
     print(f"📊 配置状态: {status}")
-    
+
     # 3. 测试智能体创建
     try:
         agent = create_study_planner("test_user")
@@ -283,7 +286,7 @@ async def test_configuration():
     except Exception as e:
         print(f"❌ 智能体创建失败: {e}")
         return
-    
+
     # 4. 测试基本对话
     try:
         response = await agent.execute("你好，请介绍一下你的功能")
@@ -291,7 +294,7 @@ async def test_configuration():
     except Exception as e:
         print(f"❌ 对话测试失败: {e}")
         return
-    
+
     print("🎉 所有测试通过！v2.0系统配置正确")
 
 if __name__ == "__main__":
@@ -356,10 +359,10 @@ async def startup_event():
 @app.post("/api/v2/agent/chat")
 async def chat_with_agent(request: ChatRequest):
     from app.agents.v2 import create_study_planner
-    
+
     agent = create_study_planner(request.user_id)
     response = await agent.execute(request.message)
-    
+
     return {"response": response}
 ```
 
@@ -375,7 +378,7 @@ async def invoke_agent_v2(request: PlannerRequest):
     """v2.0智能体调用接口"""
     if not config_manager.is_initialized:
         raise HTTPException(status_code=503, detail="v2.0系统未初始化")
-    
+
     # 根据需求选择智能体类型
     if request.agent_type == "study_planner":
         agent = create_study_planner(request.session_id)
@@ -383,9 +386,9 @@ async def invoke_agent_v2(request: PlannerRequest):
         from app.agents.v2 import create_essay_reviewer
         agent = create_essay_reviewer(request.session_id)
     # ... 其他类型
-    
+
     response = await agent.execute(request.input)
-    
+
     return {
         "output": response,
         "version": "v2.0",
@@ -400,24 +403,28 @@ async def invoke_agent_v2(request: PlannerRequest):
 ### 常见问题
 
 1. **OpenAI API Key错误**
+
 ```bash
 Error: Invalid OpenAI API key
 解决: 检查OPENAI_API_KEY环境变量是否正确设置
 ```
 
 2. **Redis连接失败**
+
 ```bash
 Warning: redis package not installed, using local memory for caching
 解决: pip install redis 或忽略（会使用本地内存）
 ```
 
 3. **导入错误**
+
 ```bash
 ImportError: No module named 'app.agents.v2'
 解决: 确保从正确的目录运行，或检查PYTHONPATH
 ```
 
 4. **初始化失败**
+
 ```bash
 ❌ v2.0架构初始化失败
 解决: 检查日志，通常是配置问题或依赖缺失
@@ -488,10 +495,11 @@ DEFAULT_MODEL=gpt-4               # 最高质量
 5. **🧪 易于测试**: 内置测试和验证工具
 
 **推荐配置路径**：
+
 ```
 基础配置（开发） → 增强配置（测试） → 完整配置（生产）
 ```
 
 现在您可以根据需求选择合适的配置级别，快速启动v2.0智能体系统！🚀
 
-有什么具体的配置问题需要解决吗？ 
+有什么具体的配置问题需要解决吗？
