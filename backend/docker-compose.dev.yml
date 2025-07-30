@@ -1,0 +1,146 @@
+# PeerPortal AI智能体系统 v2.0 - 开发环境 Docker Compose
+# 开发专用配置，支持热重载和调试
+
+version: '3.8'
+
+services:
+  # AI智能体开发服务
+  ai-agent-dev:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    container_name: peerportal-ai-agent-dev
+    restart: unless-stopped
+    ports:
+      - "${PORT:-8000}:8000"
+      - "5678:5678"  # 调试端口
+      - "8888:8888"  # Jupyter 端口
+    environment:
+      # === 必需配置 ===
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      
+      # === 数据库配置 ===
+      - SUPABASE_URL=${SUPABASE_URL}
+      - SUPABASE_KEY=${SUPABASE_KEY}
+      - SUPABASE_JWT_SECRET=${SUPABASE_JWT_SECRET}
+      - SUPABASE_DB_PASSWORD=${SUPABASE_DB_PASSWORD}
+      
+      # === AI Agent v2.0 配置 ===
+      - DEFAULT_MODEL=${DEFAULT_MODEL:-gpt-4o-mini}
+      - DEFAULT_EMBEDDING_MODEL=${DEFAULT_EMBEDDING_MODEL:-text-embedding-ada-002}
+      - REDIS_URL=redis://redis-dev:6379
+      
+      # === 开发配置 ===
+      - ENV=development
+      - DEBUG=true
+      - LANGCHAIN_TRACING_V2=${LANGCHAIN_TRACING_V2:-true}
+      - LANGCHAIN_API_KEY=${LANGCHAIN_API_KEY}
+      - LANGCHAIN_PROJECT=${LANGCHAIN_PROJECT:-PeerPortal-AI-Agent-Dev}
+      
+      # === 性能配置 ===
+      - AGENT_MAX_ITERATIONS=${AGENT_MAX_ITERATIONS:-5}
+      - AGENT_TIMEOUT_SECONDS=${AGENT_TIMEOUT_SECONDS:-120}
+      - MEMORY_SESSION_TTL=${MEMORY_SESSION_TTL:-3600}
+    
+    volumes:
+      # 代码热重载
+      - ./app:/app/app:rw
+      - ./configs:/app/configs:rw
+      - ./test:/app/test:rw
+      # 持久化数据
+      - ./knowledge_base:/app/knowledge_base:ro
+      - ./uploads:/app/uploads:rw
+      - ./logs:/app/logs:rw
+      - dev_vector_store:/app/vector_store
+      # 开发配置
+      - ./.vscode:/app/.vscode:ro
+    
+    depends_on:
+      - redis-dev
+    
+    networks:
+      - ai-agent-dev-network
+    
+    # 更宽松的健康检查
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 60s
+      timeout: 15s
+      retries: 2
+      start_period: 120s
+
+  # Redis 开发服务
+  redis-dev:
+    image: redis:7.2-alpine
+    container_name: peerportal-redis-dev
+    restart: unless-stopped
+    ports:
+      - "${REDIS_PORT:-6380}:6379"  # 使用不同端口避免冲突
+    command: redis-server --appendonly yes --maxmemory 128mb --maxmemory-policy allkeys-lru
+    volumes:
+      - redis_dev_data:/data
+    networks:
+      - ai-agent-dev-network
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
+  # 数据库管理工具
+  redis-commander:
+    image: rediscommander/redis-commander:latest
+    container_name: peerportal-redis-ui-dev
+    restart: unless-stopped
+    ports:
+      - "8081:8081"
+    environment:
+      - REDIS_HOSTS=local:redis-dev:6379
+    depends_on:
+      - redis-dev
+    networks:
+      - ai-agent-dev-network
+    profiles:
+      - tools
+
+  # Streamlit 开发服务
+  streamlit-dev:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    container_name: peerportal-streamlit-dev
+    restart: unless-stopped
+    ports:
+      - "8501:8501"
+    environment:
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - SUPABASE_URL=${SUPABASE_URL}
+      - SUPABASE_KEY=${SUPABASE_KEY}
+      - ENV=development
+    volumes:
+      - ./app:/app/app:rw
+      - ./streamlit_app.py:/app/streamlit_app.py:rw
+      - ./uploads:/app/uploads:rw
+      - ./logs:/app/logs:rw
+    command: ["streamlit", "run", "streamlit_app.py", "--server.address", "0.0.0.0", "--server.port", "8501"]
+    depends_on:
+      - ai-agent-dev
+    networks:
+      - ai-agent-dev-network
+    profiles:
+      - streamlit
+
+# 开发数据卷
+volumes:
+  redis_dev_data:
+    driver: local
+  dev_vector_store:
+    driver: local
+
+# 开发网络
+networks:
+  ai-agent-dev-network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.21.0.0/16 

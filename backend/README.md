@@ -7,14 +7,12 @@
 ## 🌟 核心功能
 
 ### 🤖 AI留学规划师
-
 - **智能对话**: 基于LangGraph的多轮对话AI系统
-- **知识库学习**: 支持PDF文档上传，AI自动学习专业知识
+- **知识库学习**: 支持PDF文档上传，AI自动学习专业知识  
 - **实时搜索**: 集成网络搜索获取最新信息
 - **工具融合**: 数据库查询 + 网络搜索 + 知识库检索
 
 ### 🏛️ 论坛系统 (新增)
-
 - **分类讨论**: 申请经验、院校讨论、留学生活、职业规划等
 - **帖子管理**: 创建、编辑、删除、置顶、加热
 - **互动功能**: 点赞、回复、嵌套评论
@@ -22,7 +20,6 @@
 - **举报系统**: 内容审核和社区管理
 
 ### 💬 消息系统 (增强)
-
 - **实时通信**: 导师学生一对一聊天
 - **对话管理**: 对话列表、未读消息提醒
 - **消息类型**: 文本、图片、文件消息支持
@@ -30,7 +27,6 @@
 - **在线状态**: 实时在线状态显示
 
 ### 📁 文件上传系统 (新增)
-
 - **头像上传**: 支持多种图片格式，自动压缩优化
 - **文档管理**: PDF、Word、TXT文件上传与管理
 - **批量上传**: 一次性上传多个文件
@@ -38,14 +34,12 @@
 - **静态服务**: 高效的文件访问和下载
 
 ### 🎯 智能匹配系统
-
 - **精准推荐**: 基于目标学校、专业、申请阶段的智能匹配
 - **引路人网络**: 连接在读生/毕业生与申请者
 - **服务推荐**: 个性化留学服务推荐
 - **评价体系**: 透明的服务评价和质量保证
 
 ### 🌐 多端支持
-
 - **REST API**: 完整的FastAPI后端服务
 - **Web界面**: Streamlit交互式界面
 - **Swagger文档**: 自动生成的API文档
@@ -163,7 +157,7 @@ python fix_test_issues.py
 ./start_api.sh
 # 访问 http://localhost:8000/docs
 
-# 方式2: 启动Streamlit Web界面
+# 方式2: 启动Streamlit Web界面  
 ./start_streamlit.sh
 # 访问 http://localhost:8503
 
@@ -192,24 +186,23 @@ cd test/scripts && ./run_tests.sh
 
 ## 🛠️ 技术栈
 
-| 组件           | 技术              | 版本    | 作用            |
-| -------------- | ----------------- | ------- | --------------- |
-| **后端框架**   | FastAPI           | 0.116.1 | RESTful API服务 |
-| **智能体核心** | LangGraph         | 0.2.51  | AI工作流编排    |
-| **大语言模型** | OpenAI GPT        | 4o-mini | 智能对话和推理  |
-| **知识库**     | ChromaDB          | 0.5.15  | 向量数据库      |
-| **文件处理**   | aiofiles          | 24.1.0  | 异步文件操作    |
-| **Web界面**    | Streamlit         | 1.41.1  | 交互式前端      |
-| **数据库**     | Supabase          | 2.17.0  | 后端数据存储    |
-| **网络搜索**   | Tavily/DuckDuckGo | latest  | 实时信息检索    |
-| **HTTP客户端** | httpx             | 0.28.1  | 异步HTTP请求    |
+| 组件 | 技术 | 版本 | 作用 |
+|------|------|------|------|
+| **后端框架** | FastAPI | 0.116.1 | RESTful API服务 |
+| **智能体核心** | LangGraph | 0.2.51 | AI工作流编排 |
+| **大语言模型** | OpenAI GPT | 4o-mini | 智能对话和推理 |
+| **知识库** | ChromaDB | 0.5.15 | 向量数据库 |
+| **文件处理** | aiofiles | 24.1.0 | 异步文件操作 |
+| **Web界面** | Streamlit | 1.41.1 | 交互式前端 |
+| **数据库** | Supabase | 2.17.0 | 后端数据存储 |
+| **网络搜索** | Tavily/DuckDuckGo | latest | 实时信息检索 |
+| **HTTP客户端** | httpx | 0.28.1 | 异步HTTP请求 |
 
 ## 📊 API接口
 
 ### 🏛️ 论坛系统 API (新增)
 
 #### 分类和帖子管理
-
 - `GET /api/v1/forum/categories` - 获取论坛分类
 - `GET /api/v1/forum/posts` - 获取帖子列表 (支持筛选和搜索)
 - `POST /api/v1/forum/posts` - 创建新帖子
@@ -218,7 +211,6 @@ cd test/scripts && ./run_tests.sh
 - `DELETE /api/v1/forum/posts/{post_id}` - 删除帖子
 
 #### 互动功能
-
 - `POST /api/v1/forum/posts/{post_id}/like` - 点赞/取消点赞帖子
 - `POST /api/v1/forum/posts/{post_id}/view` - 增加浏览量
 - `GET /api/v1/forum/posts/{post_id}/replies` - 获取帖子回复
@@ -228,7 +220,6 @@ cd test/scripts && ./run_tests.sh
 - `POST /api/v1/forum/replies/{reply_id}/like` - 点赞/取消点赞回复
 
 #### 个人和管理
-
 - `GET /api/v1/forum/my-posts` - 我的帖子
 - `GET /api/v1/forum/my-replies` - 我的回复
 - `GET /api/v1/forum/tags/popular` - 热门标签
@@ -238,26 +229,22 @@ cd test/scripts && ./run_tests.sh
 ### 💬 消息系统 API (增强)
 
 #### 对话管理
-
 - `GET /api/v1/messages/conversations` - 获取对话列表
 - `GET /api/v1/messages/conversations/{conversation_id}` - 获取对话消息
 - `GET /api/v1/messages` - 获取消息列表
 
 #### 消息操作
-
 - `POST /api/v1/messages` - 发送消息
 - `PUT /api/v1/messages/{message_id}/read` - 标记消息为已读
 
 ### 📁 文件上传 API (新增)
 
 #### 文件上传
-
 - `POST /api/v1/files/upload/avatar` - 上传头像 (JPG, PNG, GIF, WebP, 最大5MB)
 - `POST /api/v1/files/upload/document` - 上传文档 (PDF, DOC, DOCX, TXT, 最大10MB)
 - `POST /api/v1/files/upload/multiple` - 批量上传文件 (最多10个)
 
 #### 文件管理
-
 - `DELETE /api/v1/files/files/{file_id}` - 删除文件
 - `GET /static/uploads/avatars/{filename}` - 访问头像文件
 - `GET /static/uploads/documents/{filename}` - 访问文档文件
@@ -265,13 +252,11 @@ cd test/scripts && ./run_tests.sh
 ### 🤖 AI智能体API
 
 #### 基础版Agent
-
 - `GET /api/v1/planner/capabilities` - AI能力查询
 - `POST /api/v1/planner/invoke` - AI咨询对话 (路径已修复)
 
 #### 高级版Agent
-
-- `GET /api/v1/ai/advanced-planner/health` - 健康检查
+- `GET /api/v1/ai/advanced-planner/health` - 健康检查  
 - `POST /api/v1/ai/advanced-planner/invoke` - 高级AI咨询
 - `POST /api/v1/ai/advanced-planner/upload-documents` - 上传知识库文档
 - `GET /api/v1/ai/advanced-planner/knowledge-base/status` - 知识库状态
@@ -279,14 +264,12 @@ cd test/scripts && ./run_tests.sh
 ### 👤 用户管理 API
 
 #### 用户信息
-
 - `GET /api/v1/users/me` - 获取完整用户信息
 - `GET /api/v1/users/me/basic` - 获取基础用户信息 (新增)
 - `PUT /api/v1/users/me` - 更新用户信息
 - `GET /api/v1/users/{user_id}/profile` - 获取公开用户资料
 
 #### 认证系统
-
 - `POST /api/v1/auth/register` - 用户注册
 - `POST /api/v1/auth/login` - 用户登录
 - `POST /api/v1/auth/refresh` - 刷新Token
@@ -294,13 +277,11 @@ cd test/scripts && ./run_tests.sh
 ### 🎯 其他核心API
 
 #### 导师系统
-
 - `GET /api/v1/mentors/search` - 搜索导师
 - `GET /api/v1/mentors/{mentor_id}` - 获取导师详情
 - `POST /api/v1/mentors/profile` - 创建导师档案
 
 #### 会话和评价
-
 - `GET /api/v1/sessions` - 获取会话列表
 - `POST /api/v1/sessions` - 创建会话预约
 - `GET /api/v1/sessions/statistics` - 会话统计
@@ -308,11 +289,9 @@ cd test/scripts && ./run_tests.sh
 - `GET /api/v1/reviews/my-reviews` - 我的评价
 
 #### 服务订单
-
 - `GET /api/v1/services/orders/my-orders` - 我的订单
 
 #### 学生档案
-
 - `GET /api/v1/students/profile` - 获取学生档案
 
 ### API使用示例
@@ -365,13 +344,13 @@ response = await client.post(
 
 ### 新增数据表
 
-| 表名               | 说明     | 主要字段                                                                |
-| ------------------ | -------- | ----------------------------------------------------------------------- |
-| **forum_posts**    | 论坛帖子 | id, title, content, author_id, category, tags, likes_count, views_count |
-| **forum_replies**  | 论坛回复 | id, post_id, content, author_id, parent_id, likes_count                 |
-| **forum_likes**    | 点赞记录 | id, user_id, post_id, reply_id                                          |
-| **messages**       | 消息记录 | id, sender_id, recipient_id, content, message_type, status, is_read     |
-| **uploaded_files** | 文件记录 | id, file_id, user_id, filename, file_path, file_size, content_type      |
+| 表名 | 说明 | 主要字段 |
+|------|------|----------|
+| **forum_posts** | 论坛帖子 | id, title, content, author_id, category, tags, likes_count, views_count |
+| **forum_replies** | 论坛回复 | id, post_id, content, author_id, parent_id, likes_count |
+| **forum_likes** | 点赞记录 | id, user_id, post_id, reply_id |
+| **messages** | 消息记录 | id, sender_id, recipient_id, content, message_type, status, is_read |
+| **uploaded_files** | 文件记录 | id, file_id, user_id, filename, file_path, file_size, content_type |
 
 ### 数据库优化
 
@@ -385,14 +364,11 @@ response = await client.post(
 ### 新增测试工具
 
 #### 🔧 环境诊断工具
-
 ```bash
 # 运行环境诊断
 cd test/tools && python fix_test_issues.py
 ```
-
 **功能**:
-
 - Python版本检查
 - 虚拟环境状态验证
 - 依赖包安装检查
@@ -401,14 +377,11 @@ cd test/tools && python fix_test_issues.py
 - 常见问题自动修复
 
 #### 📊 综合功能测试
-
 ```bash
 # 运行所有新功能测试
 cd test/api && python test_new_features.py
 ```
-
 **测试范围**:
-
 - 🏛️ 论坛系统 (4个API端点)
 - 💬 消息系统 (3个API端点)
 - 📁 文件上传 (2个API端点)
@@ -416,14 +389,11 @@ cd test/api && python test_new_features.py
 - 👤 用户管理 (2个API端点)
 
 #### 🗄️ 数据库结构验证
-
 ```bash
 # 验证数据库表结构
 cd test/database && python test_database_tables.py
 ```
-
 **验证内容**:
-
 - 表存在性检查 (5个新增表)
 - 列结构完整性验证
 - 索引优化检查 (15+个索引)
@@ -431,14 +401,11 @@ cd test/database && python test_database_tables.py
 - 视图可用性检查
 
 #### 🚀 一键测试脚本
-
 ```bash
 # 运行完整测试套件
 cd test/scripts && ./run_feature_tests.sh
 ```
-
 **自动化功能**:
-
 - 环境检查和修复
 - 服务器状态验证
 - 依赖自动安装
@@ -447,14 +414,14 @@ cd test/scripts && ./run_feature_tests.sh
 
 ### 测试覆盖率
 
-| 功能模块        | 测试覆盖 | 端点数量 | 状态      |
-| --------------- | -------- | -------- | --------- |
-| 🏛️ **论坛系统** | 100%     | 12个API  | ✅ 全覆盖 |
-| 💬 **消息系统** | 100%     | 5个API   | ✅ 全覆盖 |
-| 📁 **文件上传** | 100%     | 4个API   | ✅ 全覆盖 |
-| 🤖 **AI功能**   | 100%     | 2个API   | ✅ 全覆盖 |
-| 👤 **用户管理** | 100%     | 4个API   | ✅ 全覆盖 |
-| 🗄️ **数据库**   | 100%     | 15项检查 | ✅ 全覆盖 |
+| 功能模块 | 测试覆盖 | 端点数量 | 状态 |
+|---------|---------|----------|------|
+| 🏛️ **论坛系统** | 100% | 12个API | ✅ 全覆盖 |
+| 💬 **消息系统** | 100% | 5个API | ✅ 全覆盖 |
+| 📁 **文件上传** | 100% | 4个API | ✅ 全覆盖 |
+| 🤖 **AI功能** | 100% | 2个API | ✅ 全覆盖 |
+| 👤 **用户管理** | 100% | 4个API | ✅ 全覆盖 |
+| 🗄️ **数据库** | 100% | 15项检查 | ✅ 全覆盖 |
 
 **总计**: 27个API端点 + 15项数据库检查 = **42项全面测试**
 
@@ -472,7 +439,6 @@ cd test/scripts && ./run_feature_tests.sh
 ### 添加新的论坛功能
 
 1. **扩展数据模型**:
-
 ```python
 # app/schemas/forum_schema.py
 class NewForumFeature(BaseModel):
@@ -481,7 +447,6 @@ class NewForumFeature(BaseModel):
 ```
 
 2. **实现CRUD操作**:
-
 ```python
 # app/crud/crud_forum.py
 async def create_feature(self, db_conn, feature_data):
@@ -490,7 +455,6 @@ async def create_feature(self, db_conn, feature_data):
 ```
 
 3. **添加API端点**:
-
 ```python
 # app/api/routers/forum_router.py
 @router.post("/features")
@@ -537,7 +501,6 @@ CREATE INDEX idx_forum_posts_featured ON forum_posts(featured) WHERE featured = 
 ## 🚀 生产部署
 
 ### Docker部署
-
 ```bash
 # 构建镜像
 docker build -t peerportal-backend .
@@ -547,7 +510,6 @@ docker run -d -p 8000:8000 --env-file .env peerportal-backend
 ```
 
 ### 环境配置
-
 ```env
 # 生产环境配置
 DEBUG=false
@@ -557,7 +519,6 @@ ALLOWED_ORIGINS=["https://yourdomain.com"]
 ```
 
 ### 性能优化
-
 - ✅ **连接池**: asyncpg数据库连接池
 - ✅ **静态文件**: 高效的文件服务
 - ✅ **异步处理**: 全异步架构
@@ -568,14 +529,12 @@ ALLOWED_ORIGINS=["https://yourdomain.com"]
 ### 常见问题
 
 1. **AsyncIO安装错误**:
-
    ```bash
    # asyncio是Python内置模块，无需安装
    python -c "import asyncio; print('✅ asyncio可用')"
    ```
 
 2. **文件上传失败**:
-
    ```bash
    # 确保上传目录存在
    mkdir -p uploads/avatars uploads/documents
@@ -583,18 +542,16 @@ ALLOWED_ORIGINS=["https://yourdomain.com"]
    ```
 
 3. **数据库表不存在**:
-
    ```bash
    # 执行数据库表创建脚本
    psql -h host -U user -d db -f scripts/database/create_missing_tables.sql
    ```
 
 4. **服务器启动失败**:
-
    ```bash
    # 检查依赖是否完整
    pip install -r requirements.txt
-
+   
    # 测试应用导入
    python -c "from app.main import app; print('✅ 应用导入成功')"
    ```
@@ -637,7 +594,7 @@ uvicorn app.main:app --reload --log-level debug
 ### 🎯 核心特性
 
 - 🎓 **专业定位**: 专注留学申请指导服务
-- ⚡ **高性能**: asyncpg连接池 + FastAPI异步架构
+- ⚡ **高性能**: asyncpg连接池 + FastAPI异步架构  
 - 🏛️ **社区交流**: 完整的论坛和消息系统
 - 📁 **文件管理**: 安全的上传和存储机制
 - 🎯 **智能匹配**: 多维度匹配算法
@@ -658,5 +615,4 @@ uvicorn app.main:app --reload --log-level debug
 **🚀 让每一个留学梦想都能在社区中找到支持和指导！**
 
 ---
-
-_© 2024 PeerPortal团队. All rights reserved. - 版本 v2.0.0_
+*© 2024 PeerPortal团队. All rights reserved. - 版本 v2.0.0*

@@ -1,0 +1,91 @@
+# PeerPortal AI智能体系统 v2.0 - 最小化 Dockerfile
+# 网络不稳定时的备用构建方案
+
+FROM python:3.11-slim
+
+# 设置环境变量
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1 \
+    PYTHONPATH=/app \
+    DEBIAN_FRONTEND=noninteractive
+
+# 安装最基本的系统依赖
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    curl \
+    netcat-openbsd \
+    && rm -rf /var/lib/apt/lists/* \
+    && apt-get clean
+
+# 设置工作目录
+WORKDIR /app
+
+# 升级pip（使用国内镜像）
+RUN pip install --upgrade pip \
+    -i https://pypi.tuna.tsinghua.edu.cn/simple/ \
+    --trusted-host pypi.tuna.tsinghua.edu.cn \
+    --timeout 300 \
+    --retries 5
+
+# 安装核心依赖包（分步安装以减少失败概率）
+RUN pip install --no-cache-dir \
+    -i https://pypi.tuna.tsinghua.edu.cn/simple/ \
+    --trusted-host pypi.tuna.tsinghua.edu.cn \
+    --timeout 300 \
+    --retries 5 \
+    fastapi==0.115.5 \
+    uvicorn[standard]==0.32.1
+
+RUN pip install --no-cache-dir \
+    -i https://pypi.tuna.tsinghua.edu.cn/simple/ \
+    --trusted-host pypi.tuna.tsinghua.edu.cn \
+    --timeout 300 \
+    --retries 5 \
+    pydantic[email]==2.10.5 \
+    pydantic-settings==2.6.1
+
+RUN pip install --no-cache-dir \
+    -i https://pypi.tuna.tsinghua.edu.cn/simple/ \
+    --trusted-host pypi.tuna.tsinghua.edu.cn \
+    --timeout 300 \
+    --retries 5 \
+    python-dotenv==1.0.1 \
+    requests==2.32.4 \
+    aiofiles==24.1.0
+
+# 可选：如果需要AI功能，可以后续安装
+# RUN pip install --no-cache-dir \
+#     -i https://pypi.tuna.tsinghua.edu.cn/simple/ \
+#     --trusted-host pypi.tuna.tsinghua.edu.cn \
+#     --timeout 300 \
+#     --retries 5 \
+#     openai>=1.54.0,<2.0.0
+
+# 创建应用用户
+RUN groupadd --gid 1000 appgroup && \
+    useradd --uid 1000 --gid appgroup --shell /bin/bash --create-home appuser
+
+# 创建必要目录
+RUN mkdir -p /app/{uploads,logs,vector_store,knowledge_base} && \
+    chown -R appuser:appgroup /app
+
+# 复制应用代码
+COPY --chown=appuser:appgroup app/ ./app/
+COPY --chown=appuser:appgroup configs/ ./configs/
+COPY --chown=appuser:appgroup docker-entrypoint.sh ./
+
+# 设置权限
+RUN chmod +x docker-entrypoint.sh
+
+# 切换用户
+USER appuser
+
+# 暴露端口
+EXPOSE 8000
+
+# 健康检查
+HEALTHCHECK --interval=60s --timeout=30s --start-period=120s --retries=3 \
+    CMD curl -f http://localhost:8000/health || exit 1
+
+# 启动命令
+ENTRYPOINT ["./docker-entrypoint.sh"]
+CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"] 

@@ -32,14 +32,12 @@ PeerPortal 是一个留学申请一站式服务平台，连接学生与已录取
 登录获取访问令牌。
 
 **请求参数** (Form Data):
-
 ```
 username: string  // 用户名
 password: string  // 密码
 ```
 
 **响应示例**:
-
 ```json
 {
   "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
@@ -55,7 +53,6 @@ password: string  // 密码
 创建新用户账户。
 
 **请求体**:
-
 ```json
 {
   "username": "student123",
@@ -66,7 +63,6 @@ password: string  // 密码
 ```
 
 **响应示例**:
-
 ```json
 {
   "id": 1,
@@ -85,7 +81,6 @@ password: string  // 密码
 刷新访问令牌。
 
 **请求头**:
-
 ```
 Authorization: Bearer <token>
 ```
@@ -99,7 +94,6 @@ Authorization: Bearer <token>
 **GET** `/api/v1/users/me`
 
 **响应示例**:
-
 ```json
 {
   "id": 1,
@@ -120,7 +114,6 @@ Authorization: Bearer <token>
 **PUT** `/api/v1/users/me`
 
 **请求体**:
-
 ```json
 {
   "full_name": "张三",
@@ -140,7 +133,6 @@ Authorization: Bearer <token>
 **GET** `/api/v1/mentors/search`
 
 **查询参数**:
-
 ```
 search_query: string (可选)     // 搜索关键词
 university: string (可选)       // 大学名称
@@ -150,7 +142,6 @@ offset: number (可选, 默认0)   // 偏移量
 ```
 
 **响应示例**:
-
 ```json
 [
   {
@@ -174,7 +165,6 @@ offset: number (可选, 默认0)   // 偏移量
 **POST** `/api/v1/mentors/profile`
 
 **请求体**:
-
 ```json
 {
   "title": "斯坦福大学 计算机科学 导师",
@@ -193,7 +183,6 @@ offset: number (可选, 默认0)   // 偏移量
 **POST** `/api/v1/planner/invoke`
 
 **请求体**:
-
 ```json
 {
   "input": "我想申请美国的计算机科学硕士，需要什么条件？",
@@ -203,7 +192,6 @@ offset: number (可选, 默认0)   // 偏移量
 ```
 
 **流式响应格式**:
-
 ```
 data: {"type": "start", "content": "开始分析您的问题..."}
 data: {"type": "thinking", "content": "正在分析美国CS硕士申请要求..."}
@@ -216,7 +204,6 @@ data: {"type": "end"}
 **GET** `/api/v1/planner/capabilities`
 
 **响应示例**:
-
 ```json
 {
   "capabilities": [
@@ -240,7 +227,6 @@ data: {"type": "end"}
 **GET** `/api/v1/forum/categories`
 
 **响应示例**:
-
 ```json
 [
   {
@@ -258,7 +244,6 @@ data: {"type": "end"}
 **GET** `/api/v1/forum/posts`
 
 **查询参数**:
-
 ```
 category: string (可选)        // 分类ID
 search: string (可选)          // 搜索关键词
@@ -268,7 +253,6 @@ offset: number (可选, 默认0)   // 偏移量
 ```
 
 **响应示例**:
-
 ```json
 {
   "posts": [
@@ -299,7 +283,6 @@ offset: number (可选, 默认0)   // 偏移量
 **POST** `/api/v1/forum/posts`
 
 **请求体**:
-
 ```json
 {
   "title": "如何准备MIT计算机科学申请？",
@@ -330,7 +313,6 @@ offset: number (可选, 默认0)   // 偏移量
 **GET** `/api/v1/messages/conversations`
 
 **响应示例**:
-
 ```json
 [
   {
@@ -354,7 +336,6 @@ offset: number (可选, 默认0)   // 偏移量
 **POST** `/api/v1/messages`
 
 **请求体**:
-
 ```json
 {
   "recipient_id": 2,
@@ -372,7 +353,6 @@ offset: number (可选, 默认0)   // 偏移量
 **GET** `/api/v1/sessions`
 
 **响应示例**:
-
 ```json
 [
   {
@@ -397,7 +377,6 @@ offset: number (可选, 默认0)   // 偏移量
 **GET** `/api/v1/sessions/statistics`
 
 **响应示例**:
-
 ```json
 {
   "total_sessions": 5,
@@ -436,7 +415,6 @@ offset: number (可选, 默认0)   // 偏移量
 **GET** `/api/v1/students/profile`
 
 **响应示例**:
-
 ```json
 {
   "id": 1,
@@ -462,7 +440,6 @@ offset: number (可选, 默认0)   // 偏移量
 ## 错误码说明
 
 ### HTTP状态码
-
 - `200` - 请求成功
 - `201` - 创建成功
 - `400` - 请求参数错误
@@ -472,7 +449,6 @@ offset: number (可选, 默认0)   // 偏移量
 - `500` - 服务器内部错误
 
 ### 业务错误码
-
 ```json
 {
   "error": {
@@ -487,7 +463,6 @@ offset: number (可选, 默认0)   // 偏移量
 ## 认证和授权
 
 ### JWT Token格式
-
 ```json
 {
   "sub": "user_123",
@@ -498,7 +473,6 @@ offset: number (可选, 默认0)   // 偏移量
 ```
 
 ### 请求头格式
-
 ```
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
 Content-Type: application/json
@@ -535,4 +509,4 @@ API设计与前端Zustand状态管理兼容：
 - 通知系统
 
 **最后更新**: 2024年1月20日  
-**API版本**: v1.0.0
+**API版本**: v1.0.0 

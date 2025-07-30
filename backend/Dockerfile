@@ -36,13 +36,17 @@ RUN apt-get update \
 # 复制requirements文件并安装Python依赖
 COPY requirements.txt .
 RUN pip install --no-cache-dir --upgrade pip \
-    && pip install --no-cache-dir -r requirements.txt
+    && pip install --no-cache-dir -r requirements.txt \
+    --timeout 300 \
+    --retries 5 \
+    -i https://pypi.tuna.tsinghua.edu.cn/simple/ \
+    --trusted-host pypi.tuna.tsinghua.edu.cn
 
 # 复制应用代码
 COPY app/ ./app/
 COPY configs/ ./configs/
 COPY knowledge_base/ ./knowledge_base/
-COPY test_v2_config.py ./
+# 移除测试配置文件，它不是运行时必需的
 COPY AI_AGENT_快速入门.md ./
 
 # 创建必要的目录

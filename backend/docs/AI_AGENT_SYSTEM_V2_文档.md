@@ -43,25 +43,21 @@
 ### 核心模块
 
 #### 1. **AI Foundation Layer (AI基础层)**
-
 - **LLM Manager**: 大语言模型统一管理
 - **Memory Bank**: 双层记忆架构（短期+长期）
 - **Agent Factory**: 智能体动态创建工厂
 - **Embedding Manager**: 向量嵌入服务
 
 #### 2. **Core Infrastructure (核心基础设施)**
-
 - **Error Handling**: 统一异常处理
 - **Storage Manager**: 对象存储管理
 - **Utilities**: 通用工具函数
 
 #### 3. **Data Communication (数据通信)**
-
 - **RAG Manager**: 检索增强生成
 - **Channels**: 通信渠道管理
 
 #### 4. **Tools Layer (工具层)**
-
 - **Study Tools**: 留学专用工具集
 - **External APIs**: 外部服务集成
 
@@ -72,21 +68,18 @@
 ### 1. 留学规划师 (StudyPlannerAgent)
 
 **核心功能**:
-
 - 🎯 个性化申请策略制定
 - 🏫 院校和专业推荐
 - 📅 申请时间规划
 - 📋 材料准备指导
 
 **特色能力**:
-
 - 基于学术背景分析最佳申请路径
-- 结合历史数据提供录取概率评估
+- 结合历史数据提供录取概率评估  
 - 制定详细的申请时间线
 - 提供个性化的背景提升建议
 
 **使用场景**:
-
 ```
 用户: "我想申请美国大学的计算机科学专业，请给我一些建议"
 规划师: "当然可以！为了更好地为你提供个性化的建议，我需要了解一些关于你的背景信息..."
@@ -95,21 +88,18 @@
 ### 2. 留学咨询师 (StudyConsultantAgent)
 
 **核心功能**:
-
 - 💬 留学政策解读
 - 🌍 各国教育体系介绍
 - 💰 费用和奖学金咨询
 - 🏠 生活和文化指导
 
 **特色能力**:
-
 - 实时政策信息获取
 - 多国留学方案对比
 - 签证申请流程指导
 - 海外生活经验分享
 
 **使用场景**:
-
 ```
 用户: "美国留学的费用大概是多少？"
 咨询师: "美国留学费用因学校类型、地理位置和专业而异..."
@@ -122,14 +112,12 @@
 ### 1. 双层记忆架构
 
 #### 短期记忆 (Working Memory)
-
 - **存储**: Redis / 本地缓存
 - **内容**: 当前会话历史
 - **生命周期**: 24小时
 - **功能**: 维持对话连续性
 
-#### 长期记忆 (Long-term Memory)
-
+#### 长期记忆 (Long-term Memory)  
 - **存储**: Milvus + MongoDB
 - **内容**: 压缩后的历史会话
 - **生命周期**: 永久存储
@@ -143,9 +131,8 @@
 ```
 
 **支持的文档类型**:
-
 - PDF 文件
-- Word 文档
+- Word 文档  
 - 纯文本文件
 - HTML 网页
 - Markdown 文档
@@ -158,7 +145,6 @@
 ```
 
 **节点类型**:
-
 - **Think Node**: 分析用户意图
 - **Memory Node**: 检索历史记忆
 - **Knowledge Node**: 获取相关知识
@@ -168,14 +154,12 @@
 ### 4. 智能工具集成
 
 #### 内置工具
-
 - **find_mentors_tool**: 查找引路人
 - **find_services_tool**: 查找服务
 - **get_platform_stats_tool**: 平台统计
 - **web_search_tool**: 网络搜索
 
 #### 扩展能力
-
 - 支持自定义工具注册
 - 动态工具加载
 - 工具调用链管理
@@ -227,7 +211,6 @@ python -m uvicorn app.main:app --reload
 ### 1. RESTful API
 
 #### 留学规划师对话
-
 ```http
 POST /api/v2/agents/planner/chat
 Content-Type: application/json
@@ -239,7 +222,6 @@ Content-Type: application/json
 ```
 
 #### 留学咨询师对话
-
 ```http
 POST /api/v2/agents/consultant/chat
 Content-Type: application/json
@@ -251,7 +233,6 @@ Content-Type: application/json
 ```
 
 #### 系统状态检查
-
 ```http
 GET /api/v2/agents/status
 ```
@@ -266,7 +247,7 @@ planner = create_study_planner("user_123")
 response = await planner.execute("我想申请美国大学CS专业")
 
 # 创建留学咨询师
-consultant = create_study_consultant("user_123")
+consultant = create_study_consultant("user_123") 
 response = await consultant.execute("美国留学的费用大概是多少？")
 ```
 
@@ -294,7 +275,7 @@ LLM_MODELS = [
 
 EMBEDDING_MODELS = [
     "text-embedding-ada-002",    # 默认嵌入模型
-    "text-embedding-3-small",    # 新版小型模型
+    "text-embedding-3-small",    # 新版小型模型  
     "text-embedding-3-large"     # 新版大型模型
 ]
 ```
@@ -333,7 +314,7 @@ RAG_SETTINGS = {
 # 当前系统状态
 {
     "🤖 LLM模型": 3,
-    "📊 嵌入模型": 3,
+    "📊 嵌入模型": 3, 
     "💾 Redis缓存": "✅ 已配置",
     "🔍 Milvus向量库": "⚪ 未配置",
     "📄 MongoDB文档库": "⚪ 未配置",
@@ -344,13 +325,11 @@ RAG_SETTINGS = {
 ### 2. 性能优化
 
 #### 响应时间优化
-
 - 模型选择策略（经济 vs 质量）
 - 缓存机制（Redis 短期记忆）
 - 异步处理（并发请求支持）
 
 #### 成本控制
-
 - Token 使用监控
 - 模型调用频率限制
 - 智能路由（简单问题使用小模型）
@@ -388,8 +367,8 @@ async def chat_with_essay_reviewer(request: ChatRequest):
 ```python
 # 1. 定义工具函数
 async def scholarship_search_tool(
-    country: str,
-    field: str,
+    country: str, 
+    field: str, 
     amount_min: int = 0
 ) -> str:
     """搜索奖学金信息"""
@@ -445,9 +424,7 @@ class ApplicationMemoryBank(MemoryBank):
 ### 1. 常见问题
 
 #### Q: 智能体响应缓慢
-
 **A**: 检查以下配置
-
 ```bash
 # 1. 检查 OpenAI API 连接
 curl -H "Authorization: Bearer $OPENAI_API_KEY" \
@@ -461,9 +438,7 @@ DEFAULT_MODEL=gpt-4o-mini  # 使用更快的模型
 ```
 
 #### Q: 记忆功能异常
-
 **A**: 检查记忆组件状态
-
 ```python
 # 检查记忆银行状态
 memory_status = await memory_bank.health_check()
@@ -474,9 +449,7 @@ await memory_bank.clear_cache(user_id)
 ```
 
 #### Q: RAG 检索效果差
-
 **A**: 调整检索参数
-
 ```python
 # 降低相似度阈值
 RAG_SIMILARITY_THRESHOLD = 0.5
@@ -506,7 +479,6 @@ grep "ERROR" logs/app.log | tail -10
 ## 📈 版本历史
 
 ### v2.0.0 (当前版本)
-
 - ✅ 完整的双智能体系统
 - ✅ LangGraph 状态机架构
 - ✅ 双层记忆系统
@@ -515,7 +487,6 @@ grep "ERROR" logs/app.log | tail -10
 - ✅ FastAPI REST 接口
 
 ### 未来规划 (v2.1.0)
-
 - 🔄 流式响应支持
 - 🎯 更多智能体类型
 - 🌐 多语言支持
@@ -549,7 +520,7 @@ isort app/
 # 功能开发
 git commit -m "feat: 添加文书润色智能体"
 
-# Bug 修复
+# Bug 修复  
 git commit -m "fix: 修复记忆检索空指针异常"
 
 # 文档更新
@@ -574,13 +545,11 @@ pytest tests/test_performance.py --benchmark
 ## 📞 技术支持
 
 ### 官方资源
-
 - **文档**: `/docs` 目录
 - **API 文档**: `http://localhost:8000/docs`
 - **测试工具**: `test_v2_config.py`
 
 ### 社区支持
-
 - **GitHub Issues**: 问题报告和功能请求
 - **讨论区**: 技术交流和经验分享
 - **Wiki**: 详细的开发文档
@@ -595,4 +564,4 @@ pytest tests/test_performance.py --benchmark
 
 **🎓 让 AI 成为每一位留学申请者的专业顾问！**
 
-_最后更新: 2024年12月_
+*最后更新: 2024年12月* 

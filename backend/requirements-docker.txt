@@ -32,12 +32,13 @@ python-multipart==0.0.19
 aiofiles==24.1.0
 
 # === AI和LangChain核心 (简化版本) ===
-langchain==0.3.0
-langchain-openai==0.2.8
-langchain-community==0.3.0
-langchain-core>=0.3.0,<0.4.0
+langchain>=0.3.20,<0.4.0
+langchain-openai>=0.3.1,<0.4.0
+langchain-community>=0.3.20,<0.4.0
+langchain-core>=0.3.21,<0.4.0
 langchain-text-splitters>=0.3.0,<0.4.0
-langgraph==0.2.45
+langchain-tavily>=0.2.0,<0.3.0
+langgraph>=0.2.45,<0.3.0
 langsmith>=0.1.17,<0.2.0
 
 # === AI工具 ===
@@ -45,8 +46,8 @@ openai>=1.54.0,<2.0.0
 tiktoken>=0.7.0,<1.0.0
 
 # === 搜索工具 ===
-tavily-python==0.7.10
-duckduckgo-search==6.3.0
+tavily-python>=0.7.10,<0.8.0
+duckduckgo-search>=6.3.0,<7.0.0
 
 # === 向量存储 (简化) ===
 chromadb==0.5.10

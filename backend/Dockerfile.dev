@@ -1,0 +1,91 @@
+# PeerPortal AI智能体系统 v2.0 - 开发环境 Dockerfile
+# 包含开发工具和调试支持
+
+FROM python:3.11-slim
+
+# 设置环境变量
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1 \
+    PYTHONPATH=/app \
+    DEBIAN_FRONTEND=noninteractive \
+    ENV=development
+
+# 安装系统依赖（包含开发工具）
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    # 构建工具
+    build-essential \
+    libpq-dev \
+    gcc \
+    g++ \
+    # 网络和调试工具
+    curl \
+    wget \
+    netcat-openbsd \
+    telnet \
+    # 版本控制
+    git \
+    # PDF和文档处理
+    poppler-utils \
+    # OCR支持
+    tesseract-ocr \
+    tesseract-ocr-chi-sim \
+    tesseract-ocr-chi-tra \
+    # 图像处理
+    libmagic1 \
+    # 开发工具
+    vim \
+    htop \
+    tree \
+    # 清理缓存
+    && rm -rf /var/lib/apt/lists/* \
+    && apt-get clean
+
+# 设置工作目录
+WORKDIR /app
+
+# 升级pip并安装Python开发工具
+RUN pip install --upgrade pip setuptools wheel
+
+# 复制requirements文件并安装依赖（使用完整版依赖）
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt \
+    --timeout 300 \
+    --retries 5 \
+    -i https://pypi.tuna.tsinghua.edu.cn/simple/ \
+    --trusted-host pypi.tuna.tsinghua.edu.cn
+
+# 安装额外的开发工具
+RUN pip install --no-cache-dir \
+    black \
+    flake8 \
+    mypy \
+    isort \
+    pytest-cov \
+    pytest-xdist \
+    ipython \
+    jupyter \
+    debugpy
+
+# 创建必要的目录
+RUN mkdir -p /app/{uploads,logs,vector_store,knowledge_base}
+
+# 复制应用代码（开发环境通常使用挂载卷）
+COPY . .
+
+# 设置权限（开发环境可以使用root）
+RUN chmod +x docker-entrypoint.sh
+
+# 暴露端口（包含调试端口）
+EXPOSE 8000 5678
+
+# 添加标签
+LABEL maintainer="PeerPortal Team" \
+      version="2.0-dev" \
+      description="PeerPortal AI智能体系统 - 开发环境"
+
+# 开发环境健康检查（更宽松）
+HEALTHCHECK --interval=60s --timeout=30s --start-period=180s --retries=2 \
+    CMD curl -f http://localhost:8000/health || exit 1
+
+# 开发环境启动命令（支持热重载）
+CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000", "--reload", "--access-log"] 
