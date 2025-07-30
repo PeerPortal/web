@@ -10,6 +10,7 @@ import time
 import logging
 
 from ...core_infrastructure.error.exceptions import LLMException, ErrorCode
+from .providers.base_provider import LLMResponse
 
 
 class ModelProvider(str, Enum):
@@ -18,22 +19,6 @@ class ModelProvider(str, Enum):
     OLLAMA = "ollama"
     ANTHROPIC = "anthropic"
     ZHIPU = "zhipu"
-
-
-@dataclass
-class LLMResponse:
-    """LLM响应数据结构"""
-    content: str
-    model: str
-    provider: str
-    usage: Dict[str, int]
-    latency: float
-    has_tool_call: bool = False
-    tool_calls: List[Dict] = None
-    
-    def __post_init__(self):
-        if self.tool_calls is None:
-            self.tool_calls = []
 
 
 @dataclass
@@ -126,9 +111,9 @@ class LLMManager:
             return LLMResponse(
                 content=response.content,
                 model=model_name,
-                provider=self.models[model_name].provider.value,
                 usage=response.usage,
-                latency=latency,
+                finish_reason=response.finish_reason,
+                response_time=latency,
                 has_tool_call=response.has_tool_call,
                 tool_calls=response.tool_calls
             )
