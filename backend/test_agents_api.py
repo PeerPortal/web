@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-OfferIn AI智能体系统 v2.0 API测试脚本
+PeerPortal AI智能体系统 v2.0 API测试脚本
 测试留学规划师和咨询师的功能
 """
 import asyncio
@@ -219,7 +219,7 @@ class AgentAPITester:
     
     async def run_all_tests(self) -> bool:
         """运行所有测试"""
-        print("🧪 OfferIn AI智能体系统 v2.0 API测试")
+        print("🧪 PeerPortal AI智能体系统 v2.0 API测试")
         print("=" * 60)
         
         tests = [

@@ -4,7 +4,7 @@ import { API_CONFIG, getFullUrl } from './api-config';
 // Helper function to get auth token
 const getAuthToken = (): string => {
   if (typeof window === 'undefined') return '';
-  
+
   try {
     const authStorage = localStorage.getItem('auth-storage');
     if (authStorage) {
@@ -53,7 +53,7 @@ export interface ApiError {
 // 支持的文件类型常量
 export const SUPPORTED_IMAGE_TYPES = [
   'image/jpeg',
-  'image/jpg', 
+  'image/jpg',
   'image/png',
   'image/gif',
   'image/webp'
@@ -122,7 +122,7 @@ class FileUploadAPI {
 
       // 设置上传进度监听
       if (onProgress) {
-        xhr.upload.addEventListener('progress', (event) => {
+        xhr.upload.addEventListener('progress', event => {
           if (event.lengthComputable) {
             const progress: FileUploadProgress = {
               loaded: event.loaded,
@@ -166,7 +166,7 @@ class FileUploadAPI {
       // 配置请求
       xhr.open('POST', getFullUrl(endpoint));
       xhr.timeout = 60000; // 60秒超时
-      
+
       if (token) {
         xhr.setRequestHeader('Authorization', `Bearer ${token}`);
       }
@@ -199,7 +199,12 @@ class FileUploadAPI {
   async uploadDocument(
     file: File,
     description?: string,
-    category?: 'transcript' | 'recommendation' | 'personal_statement' | 'resume' | 'other',
+    category?:
+      | 'transcript'
+      | 'recommendation'
+      | 'personal_statement'
+      | 'resume'
+      | 'other',
     onProgress?: (progress: FileUploadProgress) => void
   ): Promise<FileUploadResponse> {
     this.validateFile(file, SUPPORTED_DOCUMENT_TYPES, MAX_FILE_SIZES.document);
@@ -256,7 +261,7 @@ class FileUploadAPI {
    */
   async deleteFile(fileId: string): Promise<{ success: boolean }> {
     const token = getAuthToken();
-    
+
     const response = await fetch(
       getFullUrl(API_CONFIG.ENDPOINTS.FILES.DELETE(fileId)),
       {
@@ -287,30 +292,40 @@ class FileUploadAPI {
     onError?: (fileIndex: number, error: Error) => void
   ): Promise<FileUploadResponse[]> {
     const results: FileUploadResponse[] = [];
-    
+
     for (let i = 0; i < files.length; i++) {
       try {
         const file = files[i];
-        
+
         const progressCallback = onProgress
           ? (progress: FileUploadProgress) => onProgress(i, progress)
           : undefined;
 
         let response: FileUploadResponse;
-        
+
         switch (uploadType) {
           case 'avatar':
             response = await this.uploadAvatar(file, progressCallback);
             break;
           case 'document':
-            response = await this.uploadDocument(file, undefined, undefined, progressCallback);
+            response = await this.uploadDocument(
+              file,
+              undefined,
+              undefined,
+              progressCallback
+            );
             break;
           default:
-            response = await this.uploadGeneral(file, undefined, undefined, progressCallback);
+            response = await this.uploadGeneral(
+              file,
+              undefined,
+              undefined,
+              progressCallback
+            );
         }
 
         results.push(response);
-        
+
         if (onFileComplete) {
           onFileComplete(i, response);
         }
@@ -338,22 +353,19 @@ class FileUploadAPI {
     expires_at: string;
   }> {
     const token = getAuthToken();
-    
-    const response = await fetch(
-      getFullUrl(`/api/v1/files/presigned-url`),
-      {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          ...(token && { Authorization: `Bearer ${token}` })
-        },
-        body: JSON.stringify({
-          filename,
-          content_type: contentType,
-          upload_type: uploadType
-        })
-      }
-    );
+
+    const response = await fetch(getFullUrl(`/api/v1/files/presigned-url`), {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        ...(token && { Authorization: `Bearer ${token}` })
+      },
+      body: JSON.stringify({
+        filename,
+        content_type: contentType,
+        upload_type: uploadType
+      })
+    });
 
     if (!response.ok) {
       const error: ApiError = await response.json();
@@ -372,7 +384,7 @@ class FileUploadAPI {
       'application/pdf',
       'text/plain'
     ];
-    
+
     return previewableTypes.includes(contentType);
   }
 
@@ -381,14 +393,14 @@ class FileUploadAPI {
    */
   formatFileSize(bytes: number): string {
     if (bytes === 0) return '0 Bytes';
-    
+
     const k = 1024;
     const sizes = ['Bytes', 'KB', 'MB', 'GB'];
     const i = Math.floor(Math.log(bytes) / Math.log(k));
-    
-    return Math.round(bytes / Math.pow(k, i) * 100) / 100 + ' ' + sizes[i];
+
+    return Math.round((bytes / Math.pow(k, i)) * 100) / 100 + ' ' + sizes[i];
   }
 }
 
 // 导出文件上传API实例和常量
-export const fileUploadAPI = new FileUploadAPI(); 
+export const fileUploadAPI = new FileUploadAPI();

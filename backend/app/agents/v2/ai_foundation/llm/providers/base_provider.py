@@ -15,6 +15,12 @@ class LLMResponse:
     usage: Dict[str, Any]
     finish_reason: str
     response_time: float
+    has_tool_call: bool = False
+    tool_calls: List[Dict] = None
+    
+    def __post_init__(self):
+        if self.tool_calls is None:
+            self.tool_calls = []
 
 
 @dataclass 

@@ -1,4 +1,4 @@
-# OfferIn 项目结构整理报告
+# PeerPortal 项目结构整理报告
 
 **整理时间**: 2024-07-26 15:00  
 **目标**: 将所有测试相关文件统一整理到 `test/` 目录下  
@@ -243,4 +243,4 @@ python test/scripts/run_comprehensive_tests.py
 
 _整理完成时间: 2024-07-26 15:00_  
 _文件统计: 77个测试相关文件已重新组织_  
-_版本: OfferIn v2.0.0_
+_版本: PeerPortal v2.0.0_

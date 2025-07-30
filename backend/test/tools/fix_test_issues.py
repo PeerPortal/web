@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-OfferIn 测试问题诊断和修复脚本
+PeerPortal 测试问题诊断和修复脚本
 解决常见的测试环境问题
 """
 import subprocess
@@ -212,7 +212,7 @@ def generate_diagnostic_report():
     print_section("生成诊断报告")
     
     report = []
-    report.append("# OfferIn 测试环境诊断报告")
+    report.append("# PeerPortal 测试环境诊断报告")
     report.append(f"生成时间: {__import__('datetime').datetime.now()}")
     report.append("")
     
@@ -246,7 +246,7 @@ def generate_diagnostic_report():
 
 def main():
     """主函数"""
-    print("🚀 OfferIn 测试环境诊断工具")
+    print("🚀 PeerPortal 测试环境诊断工具")
     print("本工具将检查并修复常见的测试环境问题")
     
     checks = [

@@ -322,7 +322,9 @@ export const getUserProfile = async (): Promise<UserProfileResponse> => {
       throw new Error('User not authenticated');
     }
 
-    const response = await apiRequest(getFullUrl(API_CONFIG.ENDPOINTS.USERS.ME));
+    const response = await apiRequest(
+      getFullUrl(API_CONFIG.ENDPOINTS.USERS.ME)
+    );
 
     if (!response.ok) {
       // Handle authentication errors
@@ -420,7 +422,7 @@ export const getSessionStatistics = async (): Promise<SessionStatistics> => {
           completed_applications: 0
         };
       }
-      
+
       // If we get a 422 error due to route conflict, return mock data
       if (response.status === 422) {
         console.warn(
@@ -739,7 +741,7 @@ export const uploadUserAvatar = async (
 ): Promise<{ avatar_url: string }> => {
   // 导入文件上传API
   const { fileUploadAPI } = await import('./file-upload-api');
-  
+
   try {
     const result = await fileUploadAPI.uploadAvatar(file);
     return { avatar_url: result.file_url };

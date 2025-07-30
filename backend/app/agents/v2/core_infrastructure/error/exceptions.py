@@ -1,5 +1,5 @@
 """
-OfferIn AI智能体架构 v2.0 异常系统
+PeerPortal AI智能体架构 v2.0 异常系统
 统一的错误处理和异常定义
 """
 from enum import Enum

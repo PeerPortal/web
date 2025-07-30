@@ -33,10 +33,7 @@ export type {
 
 // 📁 文件上传 API
 export { fileUploadAPI } from './file-upload-api';
-export type {
-  FileUploadResponse,
-  FileUploadProgress
-} from './file-upload-api';
+export type { FileUploadResponse, FileUploadProgress } from './file-upload-api';
 export {
   SUPPORTED_IMAGE_TYPES,
   SUPPORTED_DOCUMENT_TYPES,
@@ -83,23 +80,19 @@ export {
 } from './api';
 
 // 🏫 引路人相关
-export {
-  searchMentors,
-  getMentorProfile,
-  deleteMentorProfile
-} from './api';
+export { searchMentors, getMentorProfile, deleteMentorProfile } from './api';
 
 // 便捷的组合API方法
 export const API = {
   // AI智能体
   ai: aiAgentAPI,
-  
+
   // 智能匹配
   matching: matchingAPI,
-  
+
   // 文件上传
   files: fileUploadAPI,
-  
+
   // 基础API
   auth: {
     login: (credentials: LoginRequest) => apiClient.login(credentials),
@@ -109,4 +102,4 @@ export const API = {
 };
 
 // 默认导出
-export default API; 
+export default API;

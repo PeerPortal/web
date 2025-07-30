@@ -74,13 +74,13 @@ export default function ProfilePage() {
       } else {
         console.error('Profile fetch failed:', profile.reason);
       }
-      
+
       if (sessions.status === 'fulfilled') {
         setSessionsData(sessions.value);
       } else {
         console.error('Sessions fetch failed:', sessions.reason);
       }
-      
+
       if (stats.status === 'fulfilled') {
         setStatsData(stats.value);
       } else {

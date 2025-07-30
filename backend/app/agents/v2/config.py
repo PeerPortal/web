@@ -1,5 +1,5 @@
 """
-OfferIn AI智能体架构 v2.0 配置管理
+PeerPortal AI智能体架构 v2.0 配置管理
 专为新架构设计的配置系统
 """
 # 确保加载.env文件中的环境变量
@@ -229,7 +229,7 @@ class V2ConfigManager:
             agent_factory.rag_manager = rag_manager
             
             self.is_initialized = True
-            self.logger.info("✅ OfferIn AI智能体架构v2.0初始化完成")
+            self.logger.info("✅ PeerPortal AI智能体架构v2.0初始化完成")
             
             # 打印配置摘要
             self._print_config_summary(clients)
@@ -242,7 +242,7 @@ class V2ConfigManager:
     
     def _print_config_summary(self, clients: Dict[str, Any]):
         """打印配置摘要"""
-        print("\n🎯 OfferIn AI智能体架构v2.0 配置摘要")
+        print("\n🎯 PeerPortal AI智能体架构v2.0 配置摘要")
         print("=" * 50)
         print(f"🤖 LLM模型: {len(self.get_llm_configs())}个")
         print(f"📊 嵌入模型: {len(self.get_embedding_configs())}个")

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-学长帮平台 - 完整API测试套件
+启航引路人平台 - 完整API测试套件
 测试所有API端点的功能性和安全性
 """
 import asyncio
@@ -409,7 +409,7 @@ class ComprehensiveAPITester:
 
 async def main():
     """主函数"""
-    print("🚀 学长帮平台 - API测试套件")
+    print("🚀 启航引路人平台 - API测试套件")
     print("=" * 60)
     
     tester = ComprehensiveAPITester()

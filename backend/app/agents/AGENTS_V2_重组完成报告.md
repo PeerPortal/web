@@ -1,4 +1,4 @@
-# OfferIn AI智能体架构 v2.0 重组完成报告
+# PeerPortal AI智能体架构 v2.0 重组完成报告
 
 **完成时间**: 2024-07-26 15:30  
 **重组状态**: ✅ **架构重组完成**  
@@ -407,7 +407,7 @@ from app.agents.planner_agent import PlannerAgent  # 仍可使用
 
 ## 🎯 总体评价
 
-**🎉 OfferIn AI智能体架构v2.0重组圆满完成！**
+**🎉 PeerPortal AI智能体架构v2.0重组圆满完成！**
 
 ### 📊 重组评分
 

@@ -35,7 +35,7 @@ class MockProvider(BaseLLMProvider):
         
         # 模拟不同类型的响应
         if '你好' in last_message or 'hello' in last_message.lower():
-            content = "你好！我是OfferIn的AI留学规划师。我可以帮助您制定个性化的留学申请策略，包括选校建议、文书润色、面试指导等。请告诉我您的具体需求，我会为您提供专业的建议。"
+            content = "你好！我是PeerPortal的AI留学规划师。我可以帮助您制定个性化的留学申请策略，包括选校建议、文书润色、面试指导等。请告诉我您的具体需求，我会为您提供专业的建议。"
         elif '功能' in last_message or 'feature' in last_message.lower():
             content = """我的主要功能包括：
 

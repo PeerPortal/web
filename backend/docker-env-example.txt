@@ -1,0 +1,110 @@
+# PeerPortal AI智能体系统 v2.0 - Docker部署环境变量示例
+# 复制此文件为 .env 并填入真实值
+
+# =============================================================================
+# 必需配置 (必须设置)
+# =============================================================================
+
+# OpenAI API密钥 (必需)
+OPENAI_API_KEY=sk-proj-your-openai-api-key-here
+
+# Supabase数据库配置 (必需)
+SUPABASE_URL=https://your-project.supabase.co
+SUPABASE_KEY=your-supabase-anon-key
+SUPABASE_JWT_SECRET=your-jwt-secret
+SUPABASE_DB_PASSWORD=your-database-password
+
+# =============================================================================
+# AI Agent v2.0 配置
+# =============================================================================
+
+# 默认AI模型 (经济高效)
+DEFAULT_MODEL=gpt-4o-mini
+DEFAULT_EMBEDDING_MODEL=text-embedding-ada-002
+
+# 可选AI模型配置
+# DEFAULT_MODEL=gpt-4                    # 高质量模型 (更贵)
+# DEFAULT_MODEL=gpt-3.5-turbo           # 快速响应模型
+
+# =============================================================================
+# 数据库配置 (Redis必需，其他可选)
+# =============================================================================
+
+# Redis配置 (短期记忆，强烈推荐)
+REDIS_PORT=6379
+REDIS_MAX_MEMORY=256mb
+
+# MongoDB配置 (长期记忆，可选)
+MONGODB_PORT=27017
+MONGODB_USERNAME=admin
+MONGODB_PASSWORD=password123
+
+# Milvus配置 (向量数据库，企业级可选)
+MILVUS_PORT=19530
+MINIO_ACCESS_KEY=minioadmin
+MINIO_SECRET_KEY=minioadmin
+MINIO_PORT=9000
+MINIO_CONSOLE_PORT=9001
+
+# =============================================================================
+# 系统配置
+# =============================================================================
+
+# 应用端口
+PORT=8000
+
+# 调试模式 (生产环境设为false)
+DEBUG=false
+
+# 安全密钥 (生产环境必须更改)
+SECRET_KEY=your-secret-key-change-in-production
+
+# =============================================================================
+# AI Agent性能配置
+# =============================================================================
+
+# Agent执行参数
+AGENT_MAX_ITERATIONS=10
+AGENT_TIMEOUT_SECONDS=300
+
+# 记忆系统配置
+MEMORY_SESSION_TTL=86400                # 24小时
+
+# =============================================================================
+# LangSmith监控 (可选)
+# =============================================================================
+
+# LangChain追踪 (用于调试和监控)
+LANGCHAIN_TRACING_V2=false
+LANGCHAIN_API_KEY=your-langsmith-api-key
+LANGCHAIN_PROJECT=PeerPortal-AI-Agent
+
+# =============================================================================
+# 生产环境配置 (Nginx)
+# =============================================================================
+
+# 反向代理端口
+NGINX_PORT=80
+NGINX_SSL_PORT=443
+
+# =============================================================================
+# 部署配置说明
+# =============================================================================
+
+# 基础部署 (仅AI Agent + Redis):
+#   docker-compose up ai-agent redis
+
+# 完整部署 (包含向量数据库):
+#   docker-compose --profile full-stack up
+
+# 生产部署 (包含Nginx):
+#   docker-compose --profile production up
+
+# =============================================================================
+# 快速开始示例
+# =============================================================================
+
+# 1. 复制此文件: cp docker-env-example.txt .env
+# 2. 设置OPENAI_API_KEY和Supabase配置
+# 3. 启动基础服务: docker-compose up ai-agent redis
+# 4. 访问: http://localhost:8000/docs 

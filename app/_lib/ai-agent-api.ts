@@ -4,7 +4,7 @@ import { API_CONFIG, getFullUrl } from './api-config';
 // Helper function to get auth token
 const getAuthToken = (): string => {
   if (typeof window === 'undefined') return '';
-  
+
   try {
     const authStorage = localStorage.getItem('auth-storage');
     if (authStorage) {
@@ -236,4 +236,4 @@ class AIAgentAPI {
 }
 
 // 导出AI智能体API实例
-export const aiAgentAPI = new AIAgentAPI(); 
+export const aiAgentAPI = new AIAgentAPI();

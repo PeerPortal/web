@@ -1,4 +1,4 @@
-# OfferIn 留学平台 - 后端依赖包
+# PeerPortal 留学平台 - 后端依赖包
 # 更新日期: 2024-07-26
 # Python 版本要求: >=3.8
 
@@ -14,7 +14,7 @@ pydantic-settings==2.10.1
 # 数据库连接
 asyncpg==0.30.0
 psycopg2-binary==2.9.10
-sqlalchemy[asyncio]==2.0.35
+sqlalchemy[asyncio]>=2.0.0,<2.0.36
 supabase==2.17.0
 
 # 认证与安全
@@ -32,9 +32,9 @@ python-multipart==0.0.19
 aiofiles==24.1.0
 
 # AI Agent相关
-langchain==0.3.21
+langchain==0.3.8
 langchain-openai==0.3.1
-langchain-community==0.3.20
+langchain-community==0.3.8
 langchain-core>=0.3.21,<0.4.0
 langchain-tavily==0.2.0
 langgraph==0.2.51

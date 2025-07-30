@@ -45,7 +45,7 @@ def create_planner_agent_executor() -> AgentExecutor:
     # 3. 设计专业的留学顾问提示词
     prompt = PromptTemplate(
         input_variables=["input", "agent_scratchpad", "tools", "tool_names"],
-        template="""你是"启航AI"，一个专业、友善且经验丰富的留学规划助手。你在学长帮平台上为准备申请留学的学生提供咨询服务。
+        template="""你是"启航AI"，一个专业、友善且经验丰富的留学规划助手。你在启航引路人平台上为准备申请留学的学生提供咨询服务。
 
 🎯 你的核心使命：
 - 为学弟学妹提供专业的留学申请指导

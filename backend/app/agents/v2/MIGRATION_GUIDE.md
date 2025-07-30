@@ -1,4 +1,4 @@
-# OfferIn AI智能体架构 v2.0 迁移指南
+# PeerPortal AI智能体架构 v2.0 迁移指南
 
 ## 📋 迁移概览
 

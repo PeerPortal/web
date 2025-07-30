@@ -1,4 +1,4 @@
-# OfferIn - AI留学规划师平台
+# PeerPortal - AI留学规划师平台
 
 一个集成论坛、消息、文件上传、AI咨询的智能留学申请平台，基于FastAPI + LangGraph构建，提供全方位留学申请指导服务。
 
@@ -93,7 +93,7 @@ backend/
 │   │   └── create_missing_tables.sql # 新增表结构 (新增)
 │   └── *.py                     # 调试和维护脚本
 ├── docs/                        # 项目文档
-│   ├── OfferIn_后端API文档.md # 完整API文档 (新增)
+│   ├── PeerPortal_后端API文档.md # 完整API文档 (新增)
 │   ├── 新功能测试指南.md        # 测试指南 (新增)
 │   └── 项目完善完成报告.md      # 项目报告 (新增)
 ├── uploads/                     # 文件上传目录 (新增)
@@ -540,10 +540,10 @@ CREATE INDEX idx_forum_posts_featured ON forum_posts(featured) WHERE featured = 
 
 ```bash
 # 构建镜像
-docker build -t OfferIn-backend .
+docker build -t peerportal-backend .
 
 # 运行容器
-docker run -d -p 8000:8000 --env-file .env OfferIn-backend
+docker run -d -p 8000:8000 --env-file .env peerportal-backend
 ```
 
 ### 环境配置
@@ -614,16 +614,16 @@ uvicorn app.main:app --reload --log-level debug
 
 ### 获取支持
 
-- 📧 **技术支持**: tech@OfferIn.com
+- 📧 **技术支持**: tech@peerportal.com
 - 📚 **详细文档**: 查看 `docs/` 目录
-- 🐛 **Bug报告**: [GitHub Issues](https://github.com/OfferIn/backend/issues)
+- 🐛 **Bug报告**: [GitHub Issues](https://github.com/PeerPortal/backend/issues)
 - 💬 **社区讨论**: [论坛系统](http://localhost:8000/api/v1/forum/categories)
 
 ---
 
 ## 🌟 项目状态
 
-**✅ OfferIn v2.0.0 - 全功能留学平台**
+**✅ PeerPortal v2.0.0 - 全功能留学平台**
 
 ### 🎉 最新更新 (v2.0.0)
 
@@ -659,4 +659,4 @@ uvicorn app.main:app --reload --log-level debug
 
 ---
 
-_© 2024 OfferIn团队. All rights reserved. - 版本 v2.0.0_
+_© 2024 PeerPortal团队. All rights reserved. - 版本 v2.0.0_

@@ -1,8 +1,8 @@
-# OfferIn AI智能体系统 v2.0 启动和测试指南
+# PeerPortal AI智能体系统 v2.0 启动和测试指南
 
 ## 🎯 系统概述
 
-OfferIn AI智能体系统 v2.0 是专注于留学规划和咨询的智能体平台，提供两个核心智能体：
+PeerPortal AI智能体系统 v2.0 是专注于留学规划和咨询的智能体平台，提供两个核心智能体：
 
 - **🎓 留学规划师 (Study Planner)**: 个性化申请策略、选校建议、时间规划
 - **💬 留学咨询师 (Study Consultant)**: 留学问答、政策解读、经验分享
@@ -269,4 +269,4 @@ v2.0系统保持了向后兼容性：
 - [ ] ✅ 测试智能体：运行 `python test_agents_api.py`
 - [ ] ✅ 开始使用：调用 `/api/v2/agents/planner/chat` 或 `/api/v2/agents/consultant/chat`
 
-恭喜！您的OfferIn AI智能体系统 v2.0 已经可以使用了！🚀
+恭喜！您的PeerPortal AI智能体系统 v2.0 已经可以使用了！🚀

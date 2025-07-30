@@ -1,4 +1,4 @@
-# 🛠️ OfferIn AI智能体系统 v2.0 配置指南
+# 🛠️ PeerPortal AI智能体系统 v2.0 配置指南
 
 ## 📋 配置概览
 
@@ -99,7 +99,7 @@ MILVUS_HOST=localhost
 MILVUS_PORT=19530
 
 # MongoDB - 文档数据库，用于记忆摘要存储
-MONGODB_URL=mongodb://localhost:27017/OfferIn
+MONGODB_URL=mongodb://localhost:27017/peerportal
 
 # Elasticsearch - 搜索引擎，用于关键词检索
 ELASTICSEARCH_URL=http://localhost:9200
@@ -107,7 +107,7 @@ ELASTICSEARCH_URL=http://localhost:9200
 # === LangSmith配置（AI监控）===
 LANGCHAIN_TRACING_V2=true
 LANGCHAIN_API_KEY=lsv2_your_api_key
-LANGCHAIN_PROJECT=OfferIn-v2
+LANGCHAIN_PROJECT=PeerPortal-v2
 ```
 
 ### Agent性能配置
@@ -208,7 +208,7 @@ services:
       - OPENAI_API_KEY=${OPENAI_API_KEY}
       - REDIS_URL=redis://redis:6379
       - MILVUS_HOST=milvus
-      - MONGODB_URL=mongodb://mongodb:27017/OfferIn
+      - MONGODB_URL=mongodb://mongodb:27017/peerportal
       - ELASTICSEARCH_URL=http://elasticsearch:9200
     depends_on:
       - redis
@@ -313,7 +313,7 @@ python test_v2_config.py
 ```
 🧪 测试v2.0智能体系统配置...
 
-🎯 OfferIn AI智能体架构v2.0 配置摘要
+🎯 PeerPortal AI智能体架构v2.0 配置摘要
 ==================================================
 🤖 LLM模型: 3个
 📊 嵌入模型: 3个
@@ -324,10 +324,10 @@ python test_v2_config.py
 🐛 调试模式: ✅ 开启
 ==================================================
 
-✅ OfferIn AI智能体架构v2.0初始化完成
+✅ PeerPortal AI智能体架构v2.0初始化完成
 📊 配置状态: {'is_initialized': True, 'config_loaded': True, ...}
 ✅ 智能体创建成功
-✅ 对话测试成功: 你好！我是OfferIn的AI留学规划师...
+✅ 对话测试成功: 你好！我是PeerPortal的AI留学规划师...
 🎉 所有测试通过！v2.0系统配置正确
 ```
 

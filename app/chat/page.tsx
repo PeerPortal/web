@@ -350,7 +350,9 @@ export default function TutorChatPage() {
           {/* Conversations List */}
           <div className="w-full md:w-1/3 h-full flex flex-col">
             <CardHeader className="py-0">
-              <CardTitle className="text-lg pt-4 bg-gradient-to-r from-blue-600 to-sky-600 bg-clip-text text-transparent">导师对话</CardTitle>
+              <CardTitle className="text-lg pt-4 bg-gradient-to-r from-blue-600 to-sky-600 bg-clip-text text-transparent">
+                导师对话
+              </CardTitle>
               <div className="relative">
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
                 <Input
@@ -371,7 +373,9 @@ export default function TutorChatPage() {
                 {/* Search Results */}
                 {searchResults.length > 0 && (
                   <div className="p-4 border-b-2 border-blue-200">
-                    <p className="text-sm text-blue-600 font-medium mb-2">搜索结果</p>
+                    <p className="text-sm text-blue-600 font-medium mb-2">
+                      搜索结果
+                    </p>
                     {searchResults.map(tutor => (
                       <div
                         key={tutor.id}
@@ -387,7 +391,9 @@ export default function TutorChatPage() {
                             {tutor.description}
                           </p>
                         </div>
-                        <Badge className="bg-gradient-to-r from-blue-500 to-sky-500 text-white border-0">开始对话</Badge>
+                        <Badge className="bg-gradient-to-r from-blue-500 to-sky-500 text-white border-0">
+                          开始对话
+                        </Badge>
                       </div>
                     ))}
                   </div>
@@ -438,7 +444,8 @@ export default function TutorChatPage() {
                           </p>
                         )}
                       </div>
-                      {conversation.unreadCount && conversation.unreadCount > 0 ? (
+                      {conversation.unreadCount &&
+                      conversation.unreadCount > 0 ? (
                         <Badge className="bg-gradient-to-r from-red-500 to-pink-500 text-white border-0 rounded-full">
                           {conversation.unreadCount}
                         </Badge>
@@ -451,7 +458,10 @@ export default function TutorChatPage() {
           </div>
 
           {/* Vertical Separator */}
-          <Separator orientation="vertical" className="hidden md:block w-0.5 bg-blue-200" />
+          <Separator
+            orientation="vertical"
+            className="hidden md:block w-0.5 bg-blue-200"
+          />
 
           {/* Chat Area */}
           <div className="flex-1 h-full flex flex-col">
@@ -466,9 +476,13 @@ export default function TutorChatPage() {
                   </Avatar>
                   <div>
                     <h2 className="font-semibold">{selectedTutor.tutorName}</h2>
-                    <p className={`text-xs font-medium ${
-                      selectedTutor.isOnline ? 'text-emerald-600' : 'text-gray-500'
-                    }`}>
+                    <p
+                      className={`text-xs font-medium ${
+                        selectedTutor.isOnline
+                          ? 'text-emerald-600'
+                          : 'text-gray-500'
+                      }`}
+                    >
                       {selectedTutor.isOnline ? '🟢 在线' : '⚫ 离线'}
                     </p>
                   </div>

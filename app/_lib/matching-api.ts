@@ -4,7 +4,7 @@ import { API_CONFIG, getFullUrl } from './api-config';
 // Helper function to get auth token
 const getAuthToken = (): string => {
   if (typeof window === 'undefined') return '';
-  
+
   try {
     const authStorage = localStorage.getItem('auth-storage');
     if (authStorage) {
@@ -418,4 +418,4 @@ class MatchingAPI {
 }
 
 // 导出智能匹配API实例
-export const matchingAPI = new MatchingAPI(); 
+export const matchingAPI = new MatchingAPI();

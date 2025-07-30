@@ -6,7 +6,7 @@
 ✅ **AI智能体v2.0 API客户端** - 完整的留学规划师和咨询师对话功能  
 ✅ **智能匹配系统 API客户端** - 推荐引路人、筛选、保存匹配等功能  
 ✅ **文件上传 API客户端** - 头像、文档上传，支持进度监控  
-✅ **统一API导出** - 方便组件导入和使用  
+✅ **统一API导出** - 方便组件导入和使用
 
 ---
 
@@ -21,11 +21,11 @@ import { aiAgentAPI, ChatRequest, ChatResponse } from '@/lib';
 const handlePlannerChat = async () => {
   try {
     const request: ChatRequest = {
-      message: "我想申请美国CS硕士，需要什么准备？",
-      user_id: "user123",
-      session_id: "session456"
+      message: '我想申请美国CS硕士，需要什么准备？',
+      user_id: 'user123',
+      session_id: 'session456'
     };
-    
+
     const response: ChatResponse = await aiAgentAPI.chatWithPlanner(request);
     console.log('规划师回复:', response.response);
   } catch (error) {
@@ -36,10 +36,10 @@ const handlePlannerChat = async () => {
 // 与留学咨询师对话
 const handleConsultantChat = async () => {
   const request: ChatRequest = {
-    message: "请帮我分析这个学校的录取要求",
-    user_id: "user123"
+    message: '请帮我分析这个学校的录取要求',
+    user_id: 'user123'
   };
-  
+
   const response = await aiAgentAPI.chatWithConsultant(request);
   console.log('咨询师回复:', response.response);
 };
@@ -47,9 +47,9 @@ const handleConsultantChat = async () => {
 // 智能选择合适的智能体
 const handleAutoChat = async () => {
   const response = await aiAgentAPI.chatWithAutoAgent({
-    message: "我想了解留学申请流程"
+    message: '我想了解留学申请流程'
   });
-  
+
   console.log(`${response.agent_type}回复:`, response.response);
 };
 ```
@@ -74,9 +74,9 @@ const handleMatchingRecommend = async () => {
       graduation_year: 2023
     }
   };
-  
+
   const result: MatchingResult = await matchingAPI.recommendMentors(request);
-  
+
   result.matches.forEach(mentor => {
     console.log(`引路人: ${mentor.mentor_name}`);
     console.log(`匹配度: ${mentor.match_score}%`);
@@ -87,7 +87,7 @@ const handleMatchingRecommend = async () => {
 
 // 保存感兴趣的引路人
 const handleSaveMatch = async (mentorId: number) => {
-  await matchingAPI.saveMatch(mentorId, "这位导师经验很符合我的需求");
+  await matchingAPI.saveMatch(mentorId, '这位导师经验很符合我的需求');
 };
 
 // 获取保存的匹配
@@ -111,7 +111,7 @@ const handleAvatarUpload = async (file: File) => {
         console.log(`上传进度: ${progress.percentage}%`);
       }
     );
-    
+
     console.log('头像上传成功:', response.file_url);
     return response.file_url;
   } catch (error) {
@@ -123,13 +123,13 @@ const handleAvatarUpload = async (file: File) => {
 const handleDocumentUpload = async (file: File) => {
   const response = await fileUploadAPI.uploadDocument(
     file,
-    "我的成绩单",
-    "transcript",
-    (progress) => {
+    '我的成绩单',
+    'transcript',
+    progress => {
       console.log(`文档上传: ${progress.percentage}%`);
     }
   );
-  
+
   return response;
 };
 
@@ -148,7 +148,7 @@ const handleMultipleUpload = async (files: File[]) => {
       console.error(`文件${fileIndex + 1}上传失败:`, error);
     }
   );
-  
+
   return results;
 };
 ```
@@ -181,31 +181,36 @@ const useAIAgent = () => {
 // 智能匹配Hook
 const useMatching = () => {
   const [matches, setMatches] = useState<MentorMatch[]>([]);
-  
+
   const findMentors = async (criteria: MatchingRequest) => {
     const result = await API.matching.recommendMentors(criteria);
     setMatches(result.matches);
   };
-  
+
   return { matches, findMentors };
 };
 
 // 文件上传Hook
 const useFileUpload = () => {
   const [uploadProgress, setUploadProgress] = useState(0);
-  
+
   const uploadFile = async (file: File, type: 'avatar' | 'document') => {
     if (type === 'avatar') {
-      return await API.files.uploadAvatar(file, (progress) => {
+      return await API.files.uploadAvatar(file, progress => {
         setUploadProgress(progress.percentage);
       });
     } else {
-      return await API.files.uploadDocument(file, undefined, undefined, (progress) => {
-        setUploadProgress(progress.percentage);
-      });
+      return await API.files.uploadDocument(
+        file,
+        undefined,
+        undefined,
+        progress => {
+          setUploadProgress(progress.percentage);
+        }
+      );
     }
   };
-  
+
   return { uploadFile, uploadProgress };
 };
 ```
@@ -244,16 +249,16 @@ import type {
   ChatRequest,
   ChatResponse,
   SystemStatusResponse,
-  
+
   // 智能匹配类型
   MatchingRequest,
   MentorMatch,
   MatchingResult,
-  
+
   // 文件上传类型
   FileUploadResponse,
   FileUploadProgress,
-  
+
   // 基础类型
   User,
   LoginRequest,
@@ -266,6 +271,7 @@ import type {
 ## 🎯 **组件集成建议**
 
 ### 1. **AI对话组件**
+
 ```typescript
 // components/AIChat.tsx
 import { aiAgentAPI } from '@/lib';
@@ -278,6 +284,7 @@ const AIChat = () => {
 ```
 
 ### 2. **引路人匹配组件**
+
 ```typescript
 // components/MentorMatching.tsx
 import { matchingAPI } from '@/lib';
@@ -290,6 +297,7 @@ const MentorMatching = () => {
 ```
 
 ### 3. **文件上传组件**
+
 ```typescript
 // components/FileUploader.tsx
 import { fileUploadAPI } from '@/lib';
@@ -306,11 +314,13 @@ const FileUploader = () => {
 ## ⚡ **立即开始使用**
 
 1. **导入需要的API**:
+
    ```typescript
    import { aiAgentAPI, matchingAPI, fileUploadAPI } from '@/lib';
    ```
 
 2. **确保后端服务运行**:
+
    ```bash
    cd backend && python -m uvicorn app.main:app --reload
    ```
@@ -322,4 +332,4 @@ const FileUploader = () => {
 
 ---
 
-**🎉 前端已完全支持后端所有核心接口！现在可以开始开发完整的用户体验了！** 
+**🎉 前端已完全支持后端所有核心接口！现在可以开始开发完整的用户体验了！**

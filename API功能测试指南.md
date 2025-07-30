@@ -16,6 +16,7 @@ python -m uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
 ```
 
 验证后端是否启动成功：
+
 - 访问 http://localhost:8000
 - 访问 http://localhost:8000/docs (Swagger API文档)
 
@@ -33,6 +34,7 @@ npm run dev
 ```
 
 验证前端是否启动成功：
+
 - 访问 http://localhost:3000
 
 ### 3. **环境配置**
@@ -65,18 +67,21 @@ NEXT_PUBLIC_ENABLE_FILE_UPLOAD=true
 const testPlannerChat = async () => {
   try {
     // 确保用户已登录
-    const response = await fetch('http://localhost:8000/api/v2/agents/planner/chat', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        // 'Authorization': 'Bearer YOUR_TOKEN_HERE' // 如果需要认证
-      },
-      body: JSON.stringify({
-        message: "我想申请美国CS硕士，需要什么准备？",
-        user_id: "test_user_123"
-      })
-    });
-    
+    const response = await fetch(
+      'http://localhost:8000/api/v2/agents/planner/chat',
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+          // 'Authorization': 'Bearer YOUR_TOKEN_HERE' // 如果需要认证
+        },
+        body: JSON.stringify({
+          message: '我想申请美国CS硕士，需要什么准备？',
+          user_id: 'test_user_123'
+        })
+      }
+    );
+
     if (response.ok) {
       const data = await response.json();
       console.log('✅ AI规划师回复:', data);
@@ -96,15 +101,18 @@ testPlannerChat();
 ```javascript
 // 2. 测试与留学咨询师对话
 const testConsultantChat = async () => {
-  const response = await fetch('http://localhost:8000/api/v2/agents/consultant/chat', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      message: "请帮我分析MIT的录取要求",
-      user_id: "test_user_123"
-    })
-  });
-  
+  const response = await fetch(
+    'http://localhost:8000/api/v2/agents/consultant/chat',
+    {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        message: '请帮我分析MIT的录取要求',
+        user_id: 'test_user_123'
+      })
+    }
+  );
+
   const data = await response.json();
   console.log('✅ AI咨询师回复:', data);
 };
@@ -138,11 +146,13 @@ export default function AIAgentTestPage() {
   const [message, setMessage] = useState('');
   const [response, setResponse] = useState<ChatResponse | null>(null);
   const [loading, setLoading] = useState(false);
-  const [agentType, setAgentType] = useState<'planner' | 'consultant'>('planner');
+  const [agentType, setAgentType] = useState<'planner' | 'consultant'>(
+    'planner'
+  );
 
   const handleSendMessage = async () => {
     if (!message.trim()) return;
-    
+
     setLoading(true);
     try {
       const request: ChatRequest = {
@@ -171,14 +181,18 @@ export default function AIAgentTestPage() {
   return (
     <div className="max-w-4xl mx-auto p-6">
       <h1 className="text-2xl font-bold mb-6">🤖 AI智能体测试</h1>
-      
+
       <div className="space-y-4">
         {/* 智能体类型选择 */}
         <div>
-          <label className="block text-sm font-medium mb-2">选择智能体类型:</label>
-          <select 
-            value={agentType} 
-            onChange={(e) => setAgentType(e.target.value as 'planner' | 'consultant')}
+          <label className="block text-sm font-medium mb-2">
+            选择智能体类型:
+          </label>
+          <select
+            value={agentType}
+            onChange={e =>
+              setAgentType(e.target.value as 'planner' | 'consultant')
+            }
             className="border border-gray-300 rounded px-3 py-2"
           >
             <option value="planner">留学规划师</option>
@@ -191,7 +205,7 @@ export default function AIAgentTestPage() {
           <label className="block text-sm font-medium mb-2">输入消息:</label>
           <textarea
             value={message}
-            onChange={(e) => setMessage(e.target.value)}
+            onChange={e => setMessage(e.target.value)}
             placeholder="输入你的问题..."
             className="w-full border border-gray-300 rounded px-3 py-2 h-24"
           />
@@ -251,11 +265,14 @@ const testMatching = async () => {
     }
   };
 
-  const response = await fetch('http://localhost:8000/api/v1/matching/recommend', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(matchingRequest)
-  });
+  const response = await fetch(
+    'http://localhost:8000/api/v1/matching/recommend',
+    {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(matchingRequest)
+    }
+  );
 
   const data = await response.json();
   console.log('✅ 匹配结果:', data);
@@ -294,7 +311,11 @@ export default function MatchingTestPage() {
     setLoading(true);
     try {
       const request: MatchingRequest = {
-        target_universities: ['Stanford University', 'MIT', 'Carnegie Mellon University'],
+        target_universities: [
+          'Stanford University',
+          'MIT',
+          'Carnegie Mellon University'
+        ],
         target_majors: ['Computer Science', 'Data Science'],
         preferred_degree: 'Master',
         budget_range: [80, 150],
@@ -335,7 +356,7 @@ export default function MatchingTestPage() {
   return (
     <div className="max-w-6xl mx-auto p-6">
       <h1 className="text-2xl font-bold mb-6">🎯 智能匹配测试</h1>
-      
+
       <button
         onClick={handleTestMatching}
         disabled={loading}
@@ -349,18 +370,19 @@ export default function MatchingTestPage() {
           <h2 className="text-xl font-semibold">
             匹配结果 (共 {result.total_matches} 个)
           </h2>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {result.matches.map((mentor: MentorMatch) => (
               <div key={mentor.mentor_id} className="border p-4 rounded-lg">
                 <h3 className="font-semibold">{mentor.mentor_name}</h3>
                 <p className="text-sm text-gray-600">
-                  {mentor.mentor_profile.university} - {mentor.mentor_profile.major}
+                  {mentor.mentor_profile.university} -{' '}
+                  {mentor.mentor_profile.major}
                 </p>
                 <p className="text-sm">匹配度: {mentor.match_score}%</p>
                 <p className="text-sm">评分: {mentor.rating}/5</p>
                 <p className="text-sm">经验: {mentor.total_sessions} 次指导</p>
-                
+
                 <div className="mt-2">
                   <p className="text-xs text-gray-500">匹配原因:</p>
                   <ul className="text-xs list-disc list-inside">
@@ -402,20 +424,23 @@ const testFileUpload = async () => {
   const ctx = canvas.getContext('2d');
   ctx.fillStyle = '#FF0000';
   ctx.fillRect(0, 0, 100, 100);
-  
-  canvas.toBlob(async (blob) => {
+
+  canvas.toBlob(async blob => {
     const file = new File([blob], 'test-avatar.png', { type: 'image/png' });
-    
+
     const formData = new FormData();
     formData.append('file', file);
-    
+
     try {
-      const response = await fetch('http://localhost:8000/api/v1/files/upload/avatar', {
-        method: 'POST',
-        // headers: { 'Authorization': 'Bearer YOUR_TOKEN' }, // 如果需要认证
-        body: formData
-      });
-      
+      const response = await fetch(
+        'http://localhost:8000/api/v1/files/upload/avatar',
+        {
+          method: 'POST',
+          // headers: { 'Authorization': 'Bearer YOUR_TOKEN' }, // 如果需要认证
+          body: formData
+        }
+      );
+
       const result = await response.json();
       console.log('✅ 文件上传成功:', result);
     } catch (error) {
@@ -440,10 +465,14 @@ import type { FileUploadResponse, FileUploadProgress } from '@/lib';
 
 export default function FileUploadTestPage() {
   const [uploadProgress, setUploadProgress] = useState(0);
-  const [uploadResult, setUploadResult] = useState<FileUploadResponse | null>(null);
+  const [uploadResult, setUploadResult] = useState<FileUploadResponse | null>(
+    null
+  );
   const [uploading, setUploading] = useState(false);
 
-  const handleAvatarUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleAvatarUpload = async (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
     const file = event.target.files?.[0];
     if (!file) return;
 
@@ -468,7 +497,9 @@ export default function FileUploadTestPage() {
     }
   };
 
-  const handleDocumentUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleDocumentUpload = async (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
     const file = event.target.files?.[0];
     if (!file) return;
 
@@ -498,7 +529,7 @@ export default function FileUploadTestPage() {
   return (
     <div className="max-w-4xl mx-auto p-6">
       <h1 className="text-2xl font-bold mb-6">📁 文件上传测试</h1>
-      
+
       <div className="space-y-6">
         {/* 头像上传测试 */}
         <div className="border p-4 rounded">
@@ -510,7 +541,9 @@ export default function FileUploadTestPage() {
             disabled={uploading}
             className="mb-2"
           />
-          <p className="text-sm text-gray-600">支持格式: JPG, PNG, GIF, WebP (最大5MB)</p>
+          <p className="text-sm text-gray-600">
+            支持格式: JPG, PNG, GIF, WebP (最大5MB)
+          </p>
         </div>
 
         {/* 文档上传测试 */}
@@ -523,7 +556,9 @@ export default function FileUploadTestPage() {
             disabled={uploading}
             className="mb-2"
           />
-          <p className="text-sm text-gray-600">支持格式: PDF, DOC, DOCX, TXT (最大10MB)</p>
+          <p className="text-sm text-gray-600">
+            支持格式: PDF, DOC, DOCX, TXT (最大10MB)
+          </p>
         </div>
 
         {/* 上传进度 */}
@@ -531,8 +566,8 @@ export default function FileUploadTestPage() {
           <div className="border p-4 rounded">
             <h3 className="font-semibold mb-2">上传进度</h3>
             <div className="w-full bg-gray-200 rounded-full h-2.5">
-              <div 
-                className="bg-blue-600 h-2.5 rounded-full transition-all duration-300" 
+              <div
+                className="bg-blue-600 h-2.5 rounded-full transition-all duration-300"
                 style={{ width: `${uploadProgress}%` }}
               ></div>
             </div>
@@ -545,16 +580,35 @@ export default function FileUploadTestPage() {
           <div className="border p-4 rounded bg-green-50">
             <h3 className="font-semibold mb-2">✅ 上传成功</h3>
             <div className="text-sm space-y-1">
-              <p><strong>文件名:</strong> {uploadResult.filename}</p>
-              <p><strong>原始名:</strong> {uploadResult.original_filename}</p>
-              <p><strong>大小:</strong> {fileUploadAPI.formatFileSize(uploadResult.file_size)}</p>
-              <p><strong>类型:</strong> {uploadResult.content_type}</p>
-              <p><strong>URL:</strong> <a href={uploadResult.file_url} target="_blank" className="text-blue-600 underline">{uploadResult.file_url}</a></p>
+              <p>
+                <strong>文件名:</strong> {uploadResult.filename}
+              </p>
+              <p>
+                <strong>原始名:</strong> {uploadResult.original_filename}
+              </p>
+              <p>
+                <strong>大小:</strong>{' '}
+                {fileUploadAPI.formatFileSize(uploadResult.file_size)}
+              </p>
+              <p>
+                <strong>类型:</strong> {uploadResult.content_type}
+              </p>
+              <p>
+                <strong>URL:</strong>{' '}
+                <a
+                  href={uploadResult.file_url}
+                  target="_blank"
+                  className="text-blue-600 underline"
+                >
+                  {uploadResult.file_url}
+                </a>
+              </p>
             </div>
-            
+
             {uploadResult.metadata?.width && (
               <p className="text-sm mt-2">
-                <strong>尺寸:</strong> {uploadResult.metadata.width} × {uploadResult.metadata.height}px
+                <strong>尺寸:</strong> {uploadResult.metadata.width} ×{' '}
+                {uploadResult.metadata.height}px
               </p>
             )}
           </div>
@@ -580,7 +634,9 @@ import { aiAgentAPI, matchingAPI } from '@/lib';
 
 export default function TestPage() {
   const [systemStatus, setSystemStatus] = useState<any>(null);
-  const [backendStatus, setBackendStatus] = useState<'online' | 'offline' | 'checking'>('checking');
+  const [backendStatus, setBackendStatus] = useState<
+    'online' | 'offline' | 'checking'
+  >('checking');
 
   useEffect(() => {
     checkBackendStatus();
@@ -591,7 +647,7 @@ export default function TestPage() {
       const response = await fetch('http://localhost:8000/health');
       if (response.ok) {
         setBackendStatus('online');
-        
+
         // 尝试获取AI系统状态
         try {
           const status = await aiAgentAPI.getSystemStatus();
@@ -610,24 +666,31 @@ export default function TestPage() {
   return (
     <div className="max-w-4xl mx-auto p-6">
       <h1 className="text-3xl font-bold mb-6">🧪 PeerPortal API 测试中心</h1>
-      
+
       {/* 系统状态 */}
       <div className="mb-8 p-4 border rounded-lg">
         <h2 className="text-xl font-semibold mb-4">系统状态</h2>
-        
+
         <div className="space-y-2">
           <div className="flex items-center gap-2">
             <span>后端服务:</span>
-            <span className={`px-2 py-1 rounded text-sm ${
-              backendStatus === 'online' ? 'bg-green-100 text-green-800' :
-              backendStatus === 'offline' ? 'bg-red-100 text-red-800' :
-              'bg-yellow-100 text-yellow-800'
-            }`}>
-              {backendStatus === 'online' ? '🟢 在线' :
-               backendStatus === 'offline' ? '🔴 离线' : '🟡 检查中'}
+            <span
+              className={`px-2 py-1 rounded text-sm ${
+                backendStatus === 'online'
+                  ? 'bg-green-100 text-green-800'
+                  : backendStatus === 'offline'
+                    ? 'bg-red-100 text-red-800'
+                    : 'bg-yellow-100 text-yellow-800'
+              }`}
+            >
+              {backendStatus === 'online'
+                ? '🟢 在线'
+                : backendStatus === 'offline'
+                  ? '🔴 离线'
+                  : '🟡 检查中'}
             </span>
           </div>
-          
+
           {systemStatus && (
             <div className="text-sm text-gray-600">
               <p>AI系统版本: {systemStatus.version}</p>
@@ -636,7 +699,7 @@ export default function TestPage() {
             </div>
           )}
         </div>
-        
+
         <button
           onClick={checkBackendStatus}
           className="mt-2 bg-blue-500 text-white px-3 py-1 rounded text-sm"
@@ -647,7 +710,7 @@ export default function TestPage() {
 
       {/* 功能测试链接 */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        <Link 
+        <Link
           href="/test/ai-agent"
           className="block p-6 border rounded-lg hover:shadow-lg transition-shadow"
         >
@@ -655,7 +718,7 @@ export default function TestPage() {
           <p className="text-gray-600">测试留学规划师和咨询师对话功能</p>
         </Link>
 
-        <Link 
+        <Link
           href="/test/matching"
           className="block p-6 border rounded-lg hover:shadow-lg transition-shadow"
         >
@@ -663,7 +726,7 @@ export default function TestPage() {
           <p className="text-gray-600">测试引路人推荐和匹配功能</p>
         </Link>
 
-        <Link 
+        <Link
           href="/test/file-upload"
           className="block p-6 border rounded-lg hover:shadow-lg transition-shadow"
         >
@@ -680,7 +743,7 @@ export default function TestPage() {
             onClick={async () => {
               try {
                 const response = await aiAgentAPI.chatWithPlanner({
-                  message: "Hello, 测试消息"
+                  message: 'Hello, 测试消息'
                 });
                 alert('AI测试成功！查看控制台输出。');
                 console.log('AI回复:', response);
@@ -714,14 +777,14 @@ export default function TestPage() {
       <div className="mt-8 p-4 border rounded-lg">
         <h2 className="text-xl font-semibold mb-4">相关资源</h2>
         <div className="space-y-2">
-          <a 
-            href="http://localhost:8000/docs" 
+          <a
+            href="http://localhost:8000/docs"
             target="_blank"
             className="block text-blue-600 hover:underline"
           >
             📚 后端API文档 (Swagger)
           </a>
-          <Link 
+          <Link
             href="/前端API使用说明.md"
             className="block text-blue-600 hover:underline"
           >
@@ -741,19 +804,22 @@ export default function TestPage() {
 ### 1. **常见问题和解决方案**
 
 **问题1: CORS错误**
+
 ```
 解决方案: 确保后端已配置CORS，允许http://localhost:3000
 ```
 
 **问题2: 认证错误 (401)**
+
 ```
-解决方案: 
+解决方案:
 1. 检查是否已登录
 2. 确保token正确传递
 3. 检查token是否过期
 ```
 
 **问题3: API端点404**
+
 ```
 解决方案:
 1. 确认后端服务正在运行
@@ -764,6 +830,7 @@ export default function TestPage() {
 ### 2. **调试技巧**
 
 **开启调试模式:**
+
 ```javascript
 // 在浏览器控制台中
 localStorage.setItem('debug', 'true');
@@ -773,16 +840,16 @@ localStorage.setItem('debug', 'true');
 ```
 
 **监听API调用:**
+
 ```javascript
 // 拦截fetch请求进行调试
 const originalFetch = window.fetch;
-window.fetch = function(...args) {
+window.fetch = function (...args) {
   console.log('API调用:', args[0], args[1]);
-  return originalFetch.apply(this, args)
-    .then(response => {
-      console.log('API响应:', response.status, response.url);
-      return response;
-    });
+  return originalFetch.apply(this, args).then(response => {
+    console.log('API响应:', response.status, response.url);
+    return response;
+  });
 };
 ```
 
@@ -790,7 +857,7 @@ window.fetch = function(...args) {
 
 ```javascript
 // 监控API响应时间
-const measureApiPerformance = async (apiCall) => {
+const measureApiPerformance = async apiCall => {
   const start = performance.now();
   try {
     const result = await apiCall();
@@ -805,7 +872,7 @@ const measureApiPerformance = async (apiCall) => {
 };
 
 // 使用示例
-measureApiPerformance(() => aiAgentAPI.chatWithPlanner({message: "test"}));
+measureApiPerformance(() => aiAgentAPI.chatWithPlanner({ message: 'test' }));
 ```
 
 ---
@@ -813,14 +880,16 @@ measureApiPerformance(() => aiAgentAPI.chatWithPlanner({message: "test"}));
 ## ✅ **测试检查清单**
 
 ### AI智能体v2.0
+
 - [ ] 规划师对话功能
-- [ ] 咨询师对话功能  
+- [ ] 咨询师对话功能
 - [ ] 自动智能体选择
 - [ ] 系统状态检查
 - [ ] 健康检查
 - [ ] 错误处理
 
 ### 智能匹配系统
+
 - [ ] 推荐引路人功能
 - [ ] 获取筛选条件
 - [ ] 高级筛选功能
@@ -829,6 +898,7 @@ measureApiPerformance(() => aiAgentAPI.chatWithPlanner({message: "test"}));
 - [ ] 兼容性检查
 
 ### 文件上传系统
+
 - [ ] 头像上传功能
 - [ ] 文档上传功能
 - [ ] 上传进度监控
@@ -837,6 +907,7 @@ measureApiPerformance(() => aiAgentAPI.chatWithPlanner({message: "test"}));
 - [ ] 批量上传功能
 
 ### 集成测试
+
 - [ ] 认证流程完整性
 - [ ] 错误处理一致性
 - [ ] 性能表现
@@ -844,4 +915,4 @@ measureApiPerformance(() => aiAgentAPI.chatWithPlanner({message: "test"}));
 
 ---
 
-**🎉 现在你可以开始全面测试所有新功能了！记得检查浏览器控制台的输出和网络请求。** 
+**🎉 现在你可以开始全面测试所有新功能了！记得检查浏览器控制台的输出和网络请求。**

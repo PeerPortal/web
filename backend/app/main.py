@@ -1,5 +1,5 @@
 """
-学长帮后端主应用
+启航引路人后端主应用
 FastAPI 应用的主入口点，包含应用配置、中间件和路由注册
 """
 # 首先加载环境变量
@@ -31,19 +31,48 @@ logger = logging.getLogger(__name__)
 
 # 创建留学双边信息平台应用
 app = FastAPI(
-    title="学长帮 - 留学双边信息平台 API",
-    version="3.0.0",
+    title="启航引路人 - 留学双边信息平台 API", 
+    version="3.0.0", 
     description="连接留学申请者与目标学校学长学姐的专业指导平台",
     lifespan=lifespan
 )
 
 # CORS配置（支持前端跨域访问）
+# 开发环境和生产环境的动态配置
+allowed_origins = [
+    "http://localhost:3000",  # Next.js 开发服务器
+    "http://127.0.0.1:3000", # 本地回环地址
+    "http://localhost:8080",  # 备用前端端口
+    "*.vercel.app", # 生产环境域名
+    "*.com", # 生产环境 www 域名
+]
+
+# 如果是开发环境，允许更多本地端口
+if settings.DEBUG:
+    allowed_origins.extend([
+        "http://localhost:3001",
+        "http://localhost:3002", 
+        "http://localhost:4173",  # Vite preview
+        "http://localhost:5173",  # Vite dev server
+    ])
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000", "https://*.com", "*"],
+    allow_origins=allowed_origins,
     allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
+    allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"],
+    allow_headers=[
+        "Accept",
+        "Accept-Language", 
+        "Content-Language",
+        "Content-Type",
+        "Authorization",
+        "X-Requested-With",
+        "X-CSRF-Token",
+        "Cache-Control",
+    ],
+    expose_headers=["Content-Length", "X-Request-ID"],
+    max_age=3600,  # 预检请求缓存时间
 )
 
 # 信任主机中间件（安全配置）
@@ -60,7 +89,7 @@ async def global_exception_handler(request: Request, exc: Exception):
     """
     # 在生产环境中应使用专业的日志系统
     print(f"🚨 平台错误: {type(exc).__name__}: {exc}")
-
+    
     return JSONResponse(
         status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
         content={
@@ -125,12 +154,12 @@ app.mount("/static", StaticFiles(directory="uploads"), name="static")
 @app.get("/", summary="平台首页", description="留学双边信息平台API首页")
 async def read_root():
     return {
-        "message": "欢迎使用学长帮 - 留学双边信息平台",
+        "message": "欢迎使用启航引路人 - 留学双边信息平台",
         "description": "连接留学申请者与目标学校学长学姐的专业指导平台",
         "version": "3.0.0",
         "features": [
             "🎓 学长学姐指导服务",
-            "🎯 智能匹配算法",
+            "🎯 智能匹配算法", 
             "📚 专业留学指导",
             "💬 实时沟通交流",
             "⭐ 评价反馈体系",
@@ -161,19 +190,19 @@ async def health_check():
 async def log_requests(request: Request, call_next):
     """记录所有HTTP请求"""
     start_time = time.time()
-
+    
     # 记录请求信息
     logger.info(f"收到请求: {request.method} {request.url}")
-
+    
     response = await call_next(request)
-
+    
     # 记录响应信息
     process_time = time.time() - start_time
     logger.info(
         f"请求处理完成: {request.method} {request.url} - "
         f"状态码: {response.status_code} - 耗时: {process_time:.4f}s"
     )
-
+    
     return response
 
 
@@ -189,11 +218,11 @@ import time
 
 if __name__ == "__main__":
     import uvicorn
-
+    
     uvicorn.run(
         "app.main:app",
         host=settings.HOST,
         port=settings.PORT,
         reload=settings.DEBUG,
         log_level="info" if settings.DEBUG else "warning"
-    )
+    ) 

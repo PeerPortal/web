@@ -310,9 +310,10 @@ class AgentExecutor:
         
         # 添加记忆上下文
         if state.memory_context:
+            context_summary = state.memory_context.get('context_summary', '') if isinstance(state.memory_context, dict) else getattr(state.memory_context, 'context_summary', '')
             messages.append({
                 "role": "system",
-                "content": f"历史上下文: {state.memory_context.get('context_summary', '')}"
+                "content": f"历史上下文: {context_summary}"
             })
         
         # 添加知识上下文
@@ -359,7 +360,8 @@ class AgentExecutor:
         
         formatted = []
         for doc in rag_results["documents"][:3]:  # 最多3个文档
-            formatted.append(f"- {doc.get('content', '')}")
+            content = doc.get('content', '') if isinstance(doc, dict) else getattr(doc, 'content', '')
+            formatted.append(f"- {content}")
         
         return "\n".join(formatted)
     
@@ -377,7 +379,8 @@ class AgentExecutor:
             # 执行状态图
             final_state = await self.graph.ainvoke(initial_state)
             
-            return final_state.final_response
+            # LangGraph 返回的是字典，需要正确访问 final_response
+            return final_state.get("final_response", "抱歉，我无法处理您的请求。")
             
         except Exception as e:
             raise AgentException(

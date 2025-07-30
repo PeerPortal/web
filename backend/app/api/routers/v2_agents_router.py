@@ -1,5 +1,5 @@
 """
-OfferIn AI智能体系统 v2.0 API路由
+PeerPortal AI智能体系统 v2.0 API路由
 专注于留学规划和咨询的智能体服务
 """
 import logging
@@ -240,7 +240,7 @@ async def health_check():
         status = config_manager.get_config_status()
         return {
             "status": "healthy" if status['is_initialized'] else "initializing",
-            "system": "OfferIn AI智能体系统 v2.0",
+            "system": "PeerPortal AI智能体系统 v2.0",
             "focus": "留学规划与咨询",
             "agents": ["study_planner", "study_consultant"],
             "timestamp": "2024-07-26"

@@ -17,7 +17,7 @@ INFO:     Waiting for application startup.
 2025-07-26 21:20:50,768 - app.agents.v2.ai_foundation.llm.providers.openai_provider - INFO - OpenAI embedding client initialized successfully
 2025-07-26 21:20:50,779 - app.agents.v2.ai_foundation.llm.providers.openai_provider - INFO - OpenAI embedding client initialized successfully
 2025-07-26 21:20:50,791 - app.agents.v2.ai_foundation.llm.providers.openai_provider - INFO - OpenAI embedding client initialized successfully
-2025-07-26 21:20:50,791 - app.agents.v2.config - INFO - ✅ OfferIn AI智能体架构v2.0初始化完成
+2025-07-26 21:20:50,791 - app.agents.v2.config - INFO - ✅ PeerPortal AI智能体架构v2.0初始化完成
 2025-07-26 21:20:50,791 - app.core.db - INFO - 🎯 v2初始化结果: True
 2025-07-26 21:20:50,791 - app.core.db - INFO - 📊 配置状态: {'is_initialized': True, 'config_loaded': True, 'debug_mode': True, 'external_services': {'redis': True, 'milvus': False, 'mongodb': False, 'elasticsearch': False}}
 2025-07-26 21:20:50,791 - app.core.db - INFO - ✅ AI智能体系统 v2.0 初始化成功
@@ -29,7 +29,7 @@ INFO:     Waiting for application shutdown.
 2025-07-26 21:20:50,793 - app.core.db - INFO - Supabase 客户端已关闭
 INFO:     Application shutdown complete.
 
-🎯 OfferIn AI智能体架构v2.0 配置摘要
+🎯 PeerPortal AI智能体架构v2.0 配置摘要
 ==================================================
 🤖 LLM模型: 3个
 📊 嵌入模型: 3个

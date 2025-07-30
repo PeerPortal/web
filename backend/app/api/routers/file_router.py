@@ -2,7 +2,7 @@
 文件上传相关的 API 路由
 包括头像、文档等文件上传功能
 """
-from fastapi import APIRouter, Depends, HTTPException, status, UploadFile, File, Form
+from fastapi import APIRouter, Depends, HTTPException, status, UploadFile, File, Form, Request
 from typing import List, Optional
 import os
 import uuid
@@ -35,6 +35,21 @@ UPLOAD_DIR = "uploads"
 os.makedirs(UPLOAD_DIR, exist_ok=True)
 os.makedirs(os.path.join(UPLOAD_DIR, "avatars"), exist_ok=True)
 os.makedirs(os.path.join(UPLOAD_DIR, "documents"), exist_ok=True)
+
+def get_file_url(request: Request, relative_path: str) -> str:
+    """构造完整的文件URL"""
+    # 获取请求的基础URL
+    base_url = str(request.base_url).rstrip('/')
+    
+    # 如果是本地开发环境，确保使用正确的端口
+    if 'localhost' in base_url or '127.0.0.1' in base_url:
+        # 确保使用8000端口（开发环境的后端端口）
+        if ':3001' in base_url or ':3000' in base_url:
+            base_url = 'http://localhost:8000'
+        elif 'localhost' in base_url and ':8000' not in base_url:
+            base_url = 'http://localhost:8000'
+    
+    return f"{base_url}{relative_path}"
 
 def validate_file_type(file: UploadFile, allowed_types: set) -> bool:
     """验证文件类型"""
@@ -69,6 +84,7 @@ def generate_unique_filename(original_filename: str) -> str:
     description="上传用户头像图片"
 )
 async def upload_avatar(
+    request: Request,
     file: UploadFile = File(..., description="头像图片文件"),
     current_user: AuthenticatedUser = Depends(get_current_user)
 ):
@@ -105,8 +121,10 @@ async def upload_avatar(
         async with aiofiles.open(file_path, 'wb') as f:
             await f.write(contents)
         
-        # 生成文件URL (实际项目中应该使用CDN或静态文件服务)
-        file_url = f"/static/uploads/avatars/{unique_filename}"
+        # 生成完整的文件URL
+        # 注意：/static/ 已映射到 uploads/ 目录，所以路径不需要包含 uploads/
+        relative_path = f"/static/avatars/{unique_filename}"
+        file_url = get_file_url(request, relative_path)
         
         return {
             "file_id": str(uuid.uuid4()),
@@ -132,6 +150,7 @@ async def upload_avatar(
     description="上传用户文档文件"
 )
 async def upload_document(
+    request: Request,
     file: UploadFile = File(..., description="文档文件"),
     description: Optional[str] = Form(None, description="文件描述"),
     current_user: AuthenticatedUser = Depends(get_current_user)
@@ -170,8 +189,10 @@ async def upload_document(
         async with aiofiles.open(file_path, 'wb') as f:
             await f.write(contents)
         
-        # 生成文件URL
-        file_url = f"/static/uploads/documents/{unique_filename}"
+        # 生成完整的文件URL
+        # 注意：/static/ 已映射到 uploads/ 目录，所以路径不需要包含 uploads/
+        relative_path = f"/static/documents/{unique_filename}"
+        file_url = get_file_url(request, relative_path)
         
         return {
             "file_id": str(uuid.uuid4()),

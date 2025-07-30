@@ -12,7 +12,7 @@ class Settings(BaseSettings):
     """应用配置类"""
     
     # 应用基本配置
-    APP_NAME: str = "学长帮 API"
+    APP_NAME: str = "启航引路人 API"
     VERSION: str = "1.0.0"
     DESCRIPTION: str = "基于 FastAPI 的社交平台后端 API"
     DEBUG: bool = Field(default=False)

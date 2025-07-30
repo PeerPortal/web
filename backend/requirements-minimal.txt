@@ -1,0 +1,45 @@
+# PeerPortal AI智能体系统 v2.0 - 极简Docker部署版本
+# 只包含核心AI功能，避免复杂依赖冲突
+
+# === 核心Web框架 ===
+fastapi==0.115.0
+uvicorn[standard]==0.30.0
+
+# === 数据验证 ===
+pydantic>=2.7.0,<3.0.0
+
+# === AI核心 ===
+openai>=1.50.0,<2.0.0
+langchain-core>=0.3.0,<0.4.0
+langchain>=0.3.0,<0.4.0
+langchain-openai>=0.2.0,<0.3.0
+
+# === 数据库 (基础) ===
+sqlalchemy>=2.0.0,<2.1.0
+asyncpg==0.29.0
+python-dotenv==1.0.1
+
+# === 认证 ===
+python-jose[cryptography]==3.5.0
+passlib[bcrypt]==1.7.4
+
+# === HTTP客户端 ===
+requests==2.32.4
+httpx==0.28.0
+
+# === 文件处理 ===
+python-multipart==0.0.19
+aiofiles==24.1.0
+
+# === 基础工具 ===
+pydantic-settings>=2.0.0,<3.0.0
+typing-extensions>=4.8.0
+click>=7.0
+PyYAML>=5.3
+
+# === 异步支持 ===
+anyio>=4.0.0
+tenacity>=8.1.0,<10.0.0
+
+# === 缓存 (可选) ===
+redis>=5.0.0,<6.0.0 
