@@ -13,10 +13,12 @@ export async function POST(req: Request) {
     console.log('Messages received:', messages);
 
     // Filter out messages with 'parts' and convert to proper format
-    const formattedMessages = messages.map((msg: any) => ({
-      role: msg.role,
-      content: msg.content
-    }));
+    const formattedMessages = messages.map(
+      (msg: { role: string; content: string }) => ({
+        role: msg.role,
+        content: msg.content
+      })
+    );
 
     console.log('Formatted messages:', formattedMessages);
 
