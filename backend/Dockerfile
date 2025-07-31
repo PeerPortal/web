@@ -47,22 +47,17 @@ RUN apt-get update \
 # 复制requirements文件并安装Python依赖
 # 优先使用requirements-docker.txt（如果存在）
 COPY requirements*.txt ./
-RUN if [ -f requirements-docker.txt ]; then \
+RUN pip install --no-cache-dir --upgrade pip setuptools wheel && \
+    if [ -f requirements-docker.txt ]; then \
         echo "Using requirements-docker.txt for Docker build" && \
-        pip install --no-cache-dir --upgrade pip && \
         pip install --no-cache-dir -r requirements-docker.txt \
         --timeout 300 \
-        --retries 5 \
-        -i https://pypi.tuna.tsinghua.edu.cn/simple/ \
-        --trusted-host pypi.tuna.tsinghua.edu.cn; \
+        --retries 5; \
     else \
         echo "Using requirements.txt for Docker build" && \
-        pip install --no-cache-dir --upgrade pip && \
         pip install --no-cache-dir -r requirements.txt \
         --timeout 300 \
-        --retries 5 \
-        -i https://pypi.tuna.tsinghua.edu.cn/simple/ \
-        --trusted-host pypi.tuna.tsinghua.edu.cn; \
+        --retries 5; \
     fi
 
 # 复制应用代码
