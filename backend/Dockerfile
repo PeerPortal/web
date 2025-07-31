@@ -3,6 +3,17 @@
 
 FROM python:3.11-slim
 
+# 构建参数
+ARG BUILD_DATE
+ARG VCS_REF
+
+# 镜像元数据
+LABEL org.label-schema.build-date=$BUILD_DATE \
+      org.label-schema.vcs-ref=$VCS_REF \
+      org.label-schema.name="PeerPortal AI Agent" \
+      org.label-schema.description="AI-powered study abroad planning system" \
+      org.label-schema.version="2.0"
+
 # 设置工作目录
 WORKDIR /app
 
@@ -34,13 +45,25 @@ RUN apt-get update \
     && apt-get clean
 
 # 复制requirements文件并安装Python依赖
-COPY requirements.txt .
-RUN pip install --no-cache-dir --upgrade pip \
-    && pip install --no-cache-dir -r requirements.txt \
-    --timeout 300 \
-    --retries 5 \
-    -i https://pypi.tuna.tsinghua.edu.cn/simple/ \
-    --trusted-host pypi.tuna.tsinghua.edu.cn
+# 优先使用requirements-docker.txt（如果存在）
+COPY requirements*.txt ./
+RUN if [ -f requirements-docker.txt ]; then \
+        echo "Using requirements-docker.txt for Docker build" && \
+        pip install --no-cache-dir --upgrade pip && \
+        pip install --no-cache-dir -r requirements-docker.txt \
+        --timeout 300 \
+        --retries 5 \
+        -i https://pypi.tuna.tsinghua.edu.cn/simple/ \
+        --trusted-host pypi.tuna.tsinghua.edu.cn; \
+    else \
+        echo "Using requirements.txt for Docker build" && \
+        pip install --no-cache-dir --upgrade pip && \
+        pip install --no-cache-dir -r requirements.txt \
+        --timeout 300 \
+        --retries 5 \
+        -i https://pypi.tuna.tsinghua.edu.cn/simple/ \
+        --trusted-host pypi.tuna.tsinghua.edu.cn; \
+    fi
 
 # 复制应用代码
 COPY app/ ./app/
