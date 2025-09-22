@@ -5,7 +5,8 @@ export interface CreatePostData {
   title: string;
   content: string;
   category: ForumCategory;
-  // 可根据实际需求补充字段
+  tags: string[];
+  is_anonymous: boolean;
 }
 
 export type ForumCategory = 'general' | 'qa' | 'share' | 'other';

@@ -27,13 +27,15 @@ export default function CreatePostDialog({
 }: CreatePostDialogProps) {
   const [open, setOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [categories, setCategories] = useState<ForumCategory[]>([]);
+
+  // 固定分类
+  const categories: ForumCategory[] = ['general', 'qa', 'share', 'other'];
 
   // 表单数据
   const [formData, setFormData] = useState<CreatePostData>({
     title: '',
     content: '',
-    category: '',
+    category: 'general',
     tags: [],
     is_anonymous: false
   });
@@ -57,31 +59,15 @@ export default function CreatePostDialog({
     '选校'
   ];
 
-  useEffect(() => {
-    if (open) {
-      loadCategories();
-    }
-  }, [open]);
 
-  const loadCategories = async () => {
-    try {
-      const categoriesData = await forumAPI.getCategories();
-      setCategories(categoriesData);
-      if (categoriesData.length > 0 && !formData.category) {
-        setFormData(prev => ({ ...prev, category: categoriesData[0].id }));
-      }
-    } catch (error) {
-      console.error('加载分类失败:', error);
-    }
-  };
 
   const handleInputChange = (
     field: keyof CreatePostData,
     value: string | string[] | boolean
   ) => {
-    setFormData(prev => ({ ...prev, [field]: value }));
+    setFormData((prev: CreatePostData) => ({ ...prev, [field]: value }));
     // 清除对应字段的错误
-    if (errors[field]) {
+    if (typeof field === 'string' && errors[field]) {
       setErrors(prev => ({ ...prev, [field]: '' }));
     }
   };
@@ -100,7 +86,7 @@ export default function CreatePostDialog({
   const removeTag = (tagToRemove: string) => {
     handleInputChange(
       'tags',
-      formData.tags.filter(tag => tag !== tagToRemove)
+      formData.tags.filter((tag: string) => tag !== tagToRemove)
     );
   };
 
@@ -156,7 +142,7 @@ export default function CreatePostDialog({
       setFormData({
         title: '',
         content: '',
-        category: categories[0]?.id || '',
+        category: categories[0] || 'general',
         tags: [],
         is_anonymous: false
       });
@@ -178,7 +164,7 @@ export default function CreatePostDialog({
     setFormData({
       title: '',
       content: '',
-      category: categories[0]?.id || '',
+      category: categories[0] || 'general',
       tags: [],
       is_anonymous: false
     });
@@ -235,8 +221,8 @@ export default function CreatePostDialog({
             >
               <option value="">请选择分类</option>
               {categories.map(category => (
-                <option key={category.id} value={category.id}>
-                  {category.icon} {category.name}
+                <option key={category} value={category}>
+                  {category}
                 </option>
               ))}
             </select>
@@ -252,7 +238,7 @@ export default function CreatePostDialog({
             {/* 当前标签 */}
             {formData.tags.length > 0 && (
               <div className="flex flex-wrap gap-2">
-                {formData.tags.map(tag => (
+                {formData.tags.map((tag: string) => (
                   <Badge key={tag} variant="secondary" className="text-sm">
                     <Hash className="w-3 h-3 mr-1" />
                     {tag}
