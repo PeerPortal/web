@@ -7,13 +7,15 @@ const footerLinks = {
     { href: '/tutor', label: '导师服务' },
     { href: '/', label: '申请咨询' },
     { href: '/', label: '文书修改' },
-    { href: '/', label: '面试辅导' }
+    { href: '/', label: '面试辅导' },
+    { href: '/community', label: '交流社区' }
   ],
   resources: [
     { href: '/', label: '申请指南' },
     { href: '/', label: '院校信息' },
     { href: '/', label: '专业解析' },
-    { href: '/', label: '成功案例' }
+    { href: '/', label: '成功案例' },
+    { href: '/forum', label: '社区论坛' }
   ],
   company: [
     { href: '/', label: '关于我们' },

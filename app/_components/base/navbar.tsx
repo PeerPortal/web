@@ -25,7 +25,8 @@ import { useAuthStore } from '@/store/auth-store';
 const navigationLinks = [
   { href: '/tutor', label: '导师' },
   { href: '/chat', label: '导师聊天' },
-  { href: '/ai-advisor', label: 'AI 助手' }
+  { href: '/ai-advisor', label: 'AI 助手' },
+  { href: '/forum', label: '论坛' }
 ];
 
 export default function Component() {
