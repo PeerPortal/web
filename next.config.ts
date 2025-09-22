@@ -41,10 +41,12 @@ const nextConfig: NextConfig = {
     ];
   },
   async rewrites() {
+    // Vercel 构建时 process.env.NEXT_PUBLIC_API_BASE_URL 可能未定义，需兜底处理
+    const apiBase = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:8000';
     return [
       {
         source: '/api/:path*',
-        destination: `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/:path*`
+        destination: `${apiBase}/api/:path*`
       }
     ];
   }
