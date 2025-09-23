@@ -12,7 +12,7 @@ const footerLinks = {
   ],
   resources: [
     { href: '/', label: '申请指南' },
-    { href: '/school', label: '院校信息' },
+    { href: '/college', label: '院校信息' },
     { href: '/', label: '专业解析' },
     { href: '/', label: '成功案例' },
     { href: '/forum', label: '社区论坛' }

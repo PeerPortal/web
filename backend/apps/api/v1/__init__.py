@@ -4,6 +4,12 @@ V1 API路由管理器
 from fastapi import APIRouter
 
 def create_v1_router() -> APIRouter:
+
+    try:
+        from .endpoints import colleges
+        v1_router.include_router(colleges.router, tags=["院校"])
+    except ImportError as e:
+        print(f"Warning: Could not import colleges routes: {e}")
     """创建V1 API路由"""
     v1_router = APIRouter()
     
