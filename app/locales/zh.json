@@ -1,0 +1,38 @@
+{
+  "homepage": {
+    "titleLine1": "学长帮：全球学子的",
+    "titleLine2": "留学导师之家",
+    "subtitle": "寻找最适合你的留学申请导师，助力世界顶尖大学申请之路",
+    "cta": {
+      "aiTitle": "学长帮留学规划师",
+      "aiSubtitle": "体验最先进的AI驱动留学咨询服务",
+      "ctaTitle": "立即体验AI咨询",
+      "ctaDesc": "免费与AI留学规划师对话，获得专业的申请建议",
+      "ctaButton": "开始对话"
+    },
+    "popularAreasTitle": "热门留学区域",
+    "popularAreasSub": "探索全球最受欢迎的留学目的地",
+    "popularSchoolsTitle": "热门学校",
+    "popularSchoolsSub": "世界顶尖院校申请专业指导"
+  },
+  "trust": {
+    "verified": "认证导师",
+    "price": "价格保障",
+    "support": "24小时协助"
+  },
+  "chat": {
+    "open": "打开AI助手",
+    "close": "关闭聊天",
+    "placeholder": "输入您的留学问题...",
+    "quickActionsTitle": "快速问题：",
+    "welcome": "您好！我是启航AI留学规划师 ✨\n\n我可以帮助您：\n• 🎯 推荐适合的学校和专业\n• 📋 查询申请要求和截止日期\n• 👥 匹配合适的学长学姐引路人\n• 🛍️ 推荐相关指导服务\n• 📅 制定申请时间规划\n• 💡 提供文书和面试建议\n\n请告诉我您的留学问题，我会竭诚为您服务！",
+    "quickActions": [
+      "我想申请美国的计算机科学硕士，需要什么条件？",
+      "推荐一些英国的商科学校",
+      "帮我制定留学申请时间规划",
+      "找一些经验丰富的引路人"
+    ],
+    "sending": "AI 正在思考...",
+    "note": "按 Enter 发送消息 · AI可能会出错，请验证重要信息"
+  }
+}

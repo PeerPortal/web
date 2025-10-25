@@ -6,6 +6,8 @@ import Footer from '@/components/base/footer';
 import { NuqsAdapter } from 'nuqs/adapters/next/app';
 import { AuthInitializer } from '@/components/auth/auth-initializer';
 import ChatWidget from '@/components/ui/chat-widget';
+import LocaleProvider from '@/components/i18n/LocaleProvider';
+import LanguageSwitcher from '@/components/ui/language-switcher';
 import { FirstVisitModal } from '@/components/first-visit/first-visit-modal';
 import { ConfigProvider } from 'antd';
 import antdTheme from '@/lib/antd-theme';
@@ -44,13 +46,16 @@ export default function RootLayout({
       >
         <StyledComponentsRegistry>
           <ConfigProvider theme={antdTheme} wave={{ disabled: true }}>
-            <AuthInitializer>
-              <Navbar />
-              <NuqsAdapter>{children}</NuqsAdapter>
-              <Footer />
-              <ChatWidget />
-              <FirstVisitModal />
-            </AuthInitializer>
+            <LocaleProvider>
+              <AuthInitializer>
+                <Navbar />
+                <NuqsAdapter>{children}</NuqsAdapter>
+                <Footer />
+                <ChatWidget />
+                <LanguageSwitcher />
+                <FirstVisitModal />
+              </AuthInitializer>
+            </LocaleProvider>
           </ConfigProvider>
         </StyledComponentsRegistry>
       </body>

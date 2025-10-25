@@ -87,12 +87,12 @@ export default function TutorFilterSidebar({
   };
   return (
     <div className="w-full lg:w-64 flex-shrink-0">
-      <div className="border border-gray-200 rounded-lg p-6">
-        <h2 className="text-lg font-semibold text-gray-900 mb-6">筛选</h2>
+      <div className="border rounded-lg p-6 bg-card">
+        <h2 className="text-lg font-semibold text-foreground mb-6">筛选</h2>
 
         {/* Major Filter */}
         <div className="mb-6">
-          <h3 className="font-medium text-gray-900 mb-3">专业领域</h3>
+          <h3 className="font-medium text-foreground mb-3">专业领域</h3>
           <MultipleSelector
             defaultOptions={allMajors.map(major => ({
               value: major,
@@ -113,7 +113,7 @@ export default function TutorFilterSidebar({
 
         {/* University Filter */}
         <div className="mb-6">
-          <h3 className="font-medium text-gray-900 mb-3">毕业院校</h3>
+          <h3 className="font-medium text-foreground mb-3">毕业院校</h3>
           <MultipleSelector
             defaultOptions={allUniversities.map(university => ({
               value: university,
@@ -134,7 +134,7 @@ export default function TutorFilterSidebar({
 
         {/* Service Type Filter */}
         <div className="mb-6">
-          <h3 className="font-medium text-gray-900 mb-3">服务类型</h3>
+          <h3 className="font-medium text-foreground mb-3">服务类型</h3>
           <MultipleSelector
             defaultOptions={allServiceTypes.map(service => ({
               value: service,
@@ -155,7 +155,7 @@ export default function TutorFilterSidebar({
 
         {/* Price Filter */}
         <div>
-          <h3 className="font-medium text-gray-900 mb-3">价格范围 ($/小时)</h3>
+          <h3 className="font-medium text-foreground mb-3">价格范围 ($/小时)</h3>
           <div className="space-y-4">
             <Slider
               value={sliderValue}
@@ -169,7 +169,7 @@ export default function TutorFilterSidebar({
             {/* Min and Max Inputs */}
             <div className="flex items-center justify-between gap-3">
               <div className="flex-1">
-                <Label htmlFor={`${id}-min`} className="text-xs text-gray-600">
+          <Label htmlFor={`${id}-min`} className="text-xs text-muted-foreground">
                   最低价格
                 </Label>
                 <div className="relative">
@@ -198,13 +198,13 @@ export default function TutorFilterSidebar({
                     }}
                     aria-label="输入最低价格"
                   />
-                  <span className="pointer-events-none absolute inset-y-0 left-0 flex items-center justify-center pl-2 text-sm text-gray-500 peer-disabled:opacity-50">
+                      <span className="pointer-events-none absolute inset-y-0 left-0 flex items-center justify-center pl-2 text-sm text-muted-foreground peer-disabled:opacity-50">
                     $
                   </span>
                 </div>
               </div>
               <div className="flex-1">
-                <Label htmlFor={`${id}-max`} className="text-xs text-gray-600">
+          <Label htmlFor={`${id}-max`} className="text-xs text-muted-foreground">
                   最高价格
                 </Label>
                 <div className="relative">
@@ -233,7 +233,7 @@ export default function TutorFilterSidebar({
                     }}
                     aria-label="输入最高价格"
                   />
-                  <span className="pointer-events-none absolute inset-y-0 left-0 flex items-center justify-center pl-2 text-sm text-gray-500 peer-disabled:opacity-50">
+                  <span className="pointer-events-none absolute inset-y-0 left-0 flex items-center justify-center pl-2 text-sm text-muted-foreground peer-disabled:opacity-50">
                     $
                   </span>
                 </div>
@@ -241,9 +241,9 @@ export default function TutorFilterSidebar({
             </div>
 
             {/* Tutor count display */}
-            <div className="text-center text-sm text-gray-600">
+            <div className="text-center text-sm text-muted-foreground">
               在此价格范围内有{' '}
-              <span className="font-medium text-gray-900">
+              <span className="font-medium text-foreground">
                 {countTutorsInRange(sliderValue[0], sliderValue[1])}
               </span>{' '}
               位导师

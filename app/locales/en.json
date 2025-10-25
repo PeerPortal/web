@@ -1,0 +1,38 @@
+{
+  "homepage": {
+    "titleLine1": "XZB: A GLOBAL COMMUNITY",
+    "titleLine2": "OF STUDY-ABROAD MENTORS",
+    "subtitle": "Find the best mentors to help you get into top universities worldwide",
+    "cta": {
+      "aiTitle": "AI Study Abroad Planner",
+      "aiSubtitle": "Experience AI-driven application guidance",
+      "ctaTitle": "Try AI consultation now",
+      "ctaDesc": "Chat with an AI advisor for free and get professional application advice",
+      "ctaButton": "Start chat"
+    },
+    "popularAreasTitle": "Popular Study Regions",
+    "popularAreasSub": "Explore top destinations for international students",
+    "popularSchoolsTitle": "Top Schools",
+    "popularSchoolsSub": "Guidance for elite university applications"
+  },
+  "trust": {
+    "verified": "Verified mentors",
+    "price": "Price protection",
+    "support": "24/7 support"
+  },
+  "chat": {
+    "open": "Open AI assistant",
+    "close": "Close chat",
+    "placeholder": "Type your study-abroad question...",
+    "quickActionsTitle": "Quick questions:",
+    "welcome": "Hello! I'm the AI Study-Abroad Planner ✨\n\nI can help you:\n• Recommend schools and programs\n• Check application requirements and deadlines\n• Match you with mentors\n• Suggest guidance services\n• Plan your application timeline\n• Provide essay & interview tips\n\nTell me your question and I'll help!",
+    "quickActions": [
+      "I want to apply for a CS master's in the US. What are the requirements?",
+      "Recommend some business schools in the UK",
+      "Help me make an application timeline",
+      "Find experienced mentors"
+    ],
+    "sending": "AI is thinking...",
+    "note": "Press Enter to send · AI may be wrong; verify important info"
+  }
+}

@@ -161,8 +161,8 @@ export default function AddFriendPage() {
     return (
       <div className="container mx-auto px-4 py-8 max-w-4xl">
         <Card className="text-center p-8">
-          <h1 className="text-2xl font-bold mb-4">添加好友</h1>
-          <p className="text-gray-600 mb-6">
+          <h1 className="text-2xl font-bold mb-4 text-foreground">添加好友</h1>
+          <p className="text-muted-foreground mb-6">
             登录后即可添加好友，建立联系
           </p>
           <Link href={`/login?returnUrl=${encodeURIComponent('/community/add-friend')}`}>

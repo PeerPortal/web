@@ -1,9 +1,11 @@
-'use client';
+"use client";
 
 import Image from 'next/image';
 import SearchField from '@/components/search-field';
+import ThemeToggle from '@/components/ui/theme-toggle';
 import { CheckCircle, Shield, Clock, ChevronRight } from 'lucide-react';
 import React from 'react';
+import { useTranslation } from '@/components/i18n/LocaleProvider';
 
 type CarouselItem = { title: string; sub: string; image: string };
 
@@ -67,6 +69,7 @@ function Carousel3D({
 }
 
 export default function Homepage() {
+  const { t } = useTranslation();
   const destinations = [
     {
       name: '北美洲',
@@ -152,9 +155,13 @@ export default function Homepage() {
   ];
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen">
       {/* Hero Section */}
       <section className="relative min-h-[600px] flex items-center justify-center">
+        {/* Theme toggle (top-right) */}
+        <div className="absolute right-6 top-6 z-20">
+          <ThemeToggle />
+        </div>
         {/* Background Image */}
         <div className="absolute inset-0 z-0">
           <Image
@@ -170,12 +177,12 @@ export default function Homepage() {
         {/* Content */}
         <div className="relative z-10 text-center px-4 sm:px-6 lg:px-8 max-w-4xl mx-auto">
           <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-white mb-6">
-            学长帮：全球学子的
+            {t('homepage.titleLine1')}
             <br />
-            留学导师之家
+            {t('homepage.titleLine2')}
           </h1>
           <p className="text-lg sm:text-xl text-white/90 mb-8 max-w-3xl mx-auto font-medium">
-            寻找最适合你的留学申请导师，助力世界顶尖大学申请之路
+            {t('homepage.subtitle')}
           </p>
 
           {/* Search Bar */}
@@ -218,12 +225,12 @@ export default function Homepage() {
                 </svg>
                 <div className="absolute -top-1 -right-1 h-3 w-3 bg-yellow-400 rounded-full animate-pulse"></div>
               </div>
-              <h2 className="text-3xl font-bold text-gray-900">
-                学长帮留学规划师
+              <h2 className="text-3xl font-bold text-foreground">
+                {t('homepage.cta.aiTitle')}
               </h2>
             </div>
-            <p className="text-lg text-gray-600 max-w-2xl mx-auto mb-8">
-              体验最先进的AI驱动留学咨询服务，获得个性化的申请指导和专业建议
+            <p className="text-lg text-muted-foreground max-w-2xl mx-auto mb-8">
+              {t('homepage.cta.aiSubtitle')}
             </p>
           </div>
 
@@ -247,10 +254,10 @@ export default function Homepage() {
                   </svg>
                 </div>
                 <div>
-                  <h3 className="font-semibold text-gray-900 mb-2">
+                  <h3 className="font-semibold text-foreground mb-2">
                     智能学校推荐
                   </h3>
-                  <p className="text-gray-600 text-sm">
+                  <p className="text-muted-foreground text-sm">
                     基于您的背景和偏好，AI为您推荐最匹配的学校和专业
                   </p>
                 </div>
@@ -273,10 +280,10 @@ export default function Homepage() {
                   </svg>
                 </div>
                 <div>
-                  <h3 className="font-semibold text-gray-900 mb-2">
+                  <h3 className="font-semibold text-foreground mb-2">
                     引路人匹配
                   </h3>
-                  <p className="text-gray-600 text-sm">
+                  <p className="text-muted-foreground text-sm">
                     AI帮您找到最合适的学长学姐导师，获得一对一指导
                   </p>
                 </div>
@@ -299,10 +306,10 @@ export default function Homepage() {
                   </svg>
                 </div>
                 <div>
-                  <h3 className="font-semibold text-gray-900 mb-2">
+                  <h3 className="font-semibold text-foreground mb-2">
                     申请时间规划
                   </h3>
-                  <p className="text-gray-600 text-sm">
+                  <p className="text-muted-foreground text-sm">
                     制定详细的申请时间表，确保不错过任何重要截止日期
                   </p>
                 </div>
@@ -310,7 +317,7 @@ export default function Homepage() {
             </div>
 
             {/* CTA */}
-            <div className="bg-white rounded-2xl p-8 shadow-lg border">
+            <div className="bg-card rounded-2xl p-8 shadow-lg border">
               <div className="text-center">
                 <div className="w-16 h-16 bg-gradient-to-br from-primary to-primary/70 rounded-full flex items-center justify-center mx-auto mb-4">
                   <svg
@@ -325,17 +332,17 @@ export default function Homepage() {
                     <path d="M9 20v1m6-1v1" />
                   </svg>
                 </div>
-                <h3 className="text-xl font-bold text-gray-900 mb-3">
-                  立即体验AI咨询
+                <h3 className="text-xl font-bold text-foreground mb-3">
+                  {t('homepage.cta.ctaTitle')}
                 </h3>
-                <p className="text-gray-600 mb-6">
-                  免费与AI留学规划师对话，获得专业的申请建议
+                <p className="text-muted-foreground mb-6">
+                  {t('homepage.cta.ctaDesc')}
                 </p>
                 <a
                   href="/ai-advisor"
                   className="inline-flex items-center gap-2 bg-gradient-to-r from-primary to-primary/80 text-white px-6 py-3 rounded-lg font-medium hover:shadow-lg transition-all duration-200 transform hover:scale-105"
                 >
-                  开始对话
+                  {t('homepage.cta.ctaButton')}
                   <ChevronRight className="h-4 w-4" />
                 </a>
               </div>
@@ -348,11 +355,11 @@ export default function Homepage() {
       <section className="py-16 bg-gray-50 ">
         <div className="w-full max-w-7xl mx-auto px-4">
           <div className="mb-6">
-            <h2 className="text-2xl font-bold text-gray-900 mb-2">
-              热门留学区域
+            <h2 className="text-2xl font-bold text-foreground mb-2">
+              {t('homepage.popularAreasTitle')}
             </h2>
-            <p className="text-gray-600 text-base">
-              探索全球最受欢迎的留学目的地
+            <p className="text-muted-foreground text-base">
+              {t('homepage.popularAreasSub')}
             </p>
           </div>
 
@@ -369,11 +376,11 @@ export default function Homepage() {
       </section>
 
       {/* Popular Schools Section */}
-      <section className="py-16 bg-white">
+      <section className="py-16">
         <div className="w-full max-w-7xl mx-auto px-4">
           <div className="mb-6">
-            <h2 className="text-2xl font-bold text-gray-900 mb-2">热门学校</h2>
-            <p className="text-gray-600 text-base">世界顶尖院校申请专业指导</p>
+            <h2 className="text-2xl font-bold text-foreground mb-2">{t('homepage.popularSchoolsTitle')}</h2>
+            <p className="text-muted-foreground text-base">{t('homepage.popularSchoolsSub')}</p>
           </div>
 
           <Carousel3D

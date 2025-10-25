@@ -68,7 +68,7 @@ export default function CollegePage() {
       </div>
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
         {filtered.map((college) => (
-          <div key={college.id} className="border rounded-lg p-4 shadow-sm bg-white flex flex-col">
+          <div key={college.id} className="border rounded-lg p-4 shadow-sm bg-card flex flex-col">
             {college.images && college.images.length > 0 && (
               <Image
                 src={college.images[0].image_url}

@@ -4,6 +4,7 @@ import { useState, useRef, useEffect } from 'react';
 import { MessageSquare, X, Send, Bot, User, Loader2 } from 'lucide-react';
 import { Button, FloatButton, Input, Card } from 'antd';
 import ReactMarkdown from 'react-markdown';
+import { useTranslation } from '@/components/i18n/LocaleProvider';
 
 interface ChatWidgetProps {
   position?: 'bottom-right' | 'bottom-left';
@@ -47,6 +48,7 @@ const ClientTimestamp = ({ date }: { date: Date }) => {
 export default function ChatWidget({
   position = 'bottom-right'
 }: ChatWidgetProps) {
+  const { t } = useTranslation();
   const [isOpen, setIsOpen] = useState(false);
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -59,7 +61,7 @@ export default function ChatWidget({
       parts: [
         {
           type: 'text',
-          text: '您好！我是启航AI留学规划师 ✨\n\n我可以帮助您：\n• 🎯 推荐适合的学校和专业\n• 📋 查询申请要求和截止日期\n• 👥 匹配合适的学长学姐引路人\n• 🛍️ 推荐相关指导服务\n• 📅 制定申请时间规划\n• 💡 提供文书和面试建议\n\n请告诉我您的留学问题，我会竭诚为您服务！'
+          text: String(t('chat.welcome'))
         }
       ]
     }
@@ -162,12 +164,7 @@ export default function ChatWidget({
   const positionClass =
     position === 'bottom-right' ? 'bottom-4 right-4' : 'bottom-4 left-4';
 
-  const quickActions = [
-    '我想申请美国的计算机科学硕士，需要什么条件？',
-    '推荐一些英国的商科学校',
-    '帮我制定留学申请时间规划',
-    '找一些经验丰富的引路人'
-  ];
+  const quickActions = (t('chat.quickActions') as string[]) || [];
 
   return (
     <div className={`fixed ${positionClass} z-50 flex flex-col items-end`}>
@@ -191,7 +188,7 @@ export default function ChatWidget({
                 type="text"
                 size="small"
                 icon={<X className="h-4 w-4" />}
-                className="text-white hover:bg-white/20 border-none"
+                className="text-white hover:bg-popover/20 border-none"
                 onClick={() => setIsOpen(false)}
               />
             </div>
@@ -247,8 +244,8 @@ export default function ChatWidget({
 
                   {/* Quick Actions */}
                   <div className="space-y-2">
-                    <p className="text-xs font-medium text-gray-600">快速问题：</p>
-                    {quickActions.map((action, index) => (
+                    <p className="text-xs font-medium text-gray-600">{t('chat.quickActionsTitle')}</p>
+                    {quickActions.map((action: string, index: number) => (
                       <button
                         key={index}
                         onClick={() => handleQuickQuestion(action)}
@@ -327,7 +324,7 @@ export default function ChatWidget({
                     <div className="rounded-lg bg-muted px-3 py-2">
                       <div className="flex items-center gap-2">
                         <Loader2 className="h-3 w-3 animate-spin" />
-                        <span className="text-xs">AI 正在思考...</span>
+                        <span className="text-xs">{String(t('chat.sending'))}</span>
                       </div>
                     </div>
                   </div>
@@ -344,7 +341,7 @@ export default function ChatWidget({
                   value={input}
                   onChange={e => setInput(e.target.value)}
                   onKeyDown={handleKeyDown}
-                  placeholder="输入您的留学问题..."
+                  placeholder={String(t('chat.placeholder'))}
                   disabled={isLoading}
                   size="small"
                 />
@@ -358,7 +355,7 @@ export default function ChatWidget({
                 />
               </div>
               <p className="text-xs text-center text-gray-500 mt-2">
-                按 Enter 发送消息 · AI可能会出错，请验证重要信息
+                {String(t('chat.note'))}
               </p>
             </div>
         </Card>
@@ -368,7 +365,7 @@ export default function ChatWidget({
       <FloatButton
         icon={isOpen ? <X /> : <MessageSquare />}
         onClick={() => setIsOpen(!isOpen)}
-        tooltip={isOpen ? "关闭聊天" : "打开AI助手"}
+        tooltip={isOpen ? String(t('chat.close')) : String(t('chat.open'))}
         style={{
           width: 56,
           height: 56,

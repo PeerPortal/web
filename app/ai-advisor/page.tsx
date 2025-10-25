@@ -249,7 +249,7 @@ function AIAdvisorContent() {
                 <div className="flex flex-col justify-end gap-2 min-h-full">
                   {messages.map(message => (
                     <div key={`${message.id}-${renderKey}`} className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}>
-                      <div className={`bubble bubble-in ${message.role === 'user' ? 'bg-primary text-primary-foreground' : 'bg-white border'} ${message.role === 'user' ? 'mr-1' : 'ml-1'}`}>
+                      <div className={`bubble bubble-in ${message.role === 'user' ? 'bg-primary text-primary-foreground' : 'bg-card border'} ${message.role === 'user' ? 'mr-1' : 'ml-1'}`}>
                         <div className="text-base">
                           <ReactMarkdown
                             components={{
@@ -270,8 +270,8 @@ function AIAdvisorContent() {
 
                   {isLoading && messages.length > 0 && messages[messages.length - 1]?.role === 'user' && (
                     <div className="flex justify-start">
-                      <div className="bubble bg-white border">
-                        <span className="text-sm">AI 正在思考...</span>
+                      <div className="bubble bg-card border">
+                        <span className="text-sm text-muted-foreground">AI 正在思考...</span>
                       </div>
                     </div>
                   )}
@@ -292,7 +292,7 @@ function AIAdvisorContent() {
                       onKeyDown={handleKeyDown}
                       placeholder="Hello..."
                       disabled={isLoading}
-                      className="h-12 rounded-full bg-white border border-zinc-200 shadow-sm px-3"
+                      className="h-12 rounded-full bg-card border border-zinc-200 shadow-sm px-3"
                       
                       suffix={
                         <button

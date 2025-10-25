@@ -141,7 +141,7 @@ function SearchField({
           ref={inputRef}
           type="text"
           placeholder="搜索专业或大学..."
-          className="w-full py-6 px-4 text-base bg-white"
+          className="w-full py-6 px-4 text-base bg-card"
           value={searchTerm}
           onChange={handleChange}
           onKeyDown={handleKeyDown}

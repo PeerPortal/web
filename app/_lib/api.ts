@@ -63,13 +63,24 @@ class ApiClient {
       `${this.baseUrl}${API_CONFIG.ENDPOINTS.AUTH.LOGIN}`,
       {
         method: 'POST',
+        headers: {
+          Accept: 'application/json'
+        },
         body: formData
       }
     );
 
     if (!response.ok) {
-      const error: ApiError = await response.json();
-      throw new Error(error.detail || 'Login failed');
+      // 尝试解析 JSON 错误信息，如果不是 JSON（例如返回 HTML 错误页），退回到文本并给出友好提示
+      const text = await response.text();
+      try {
+        const error: ApiError = JSON.parse(text);
+        throw new Error(error.detail || 'Login failed');
+      } catch (e) {
+        // 非 JSON 响应（通常是 HTML 错误页）
+        const snippet = text.trim().slice(0, 200);
+        throw new Error(`Server returned non-JSON response (status ${response.status}): ${snippet}`);
+      }
     }
 
     return response.json();
@@ -81,15 +92,22 @@ class ApiClient {
       {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
         },
         body: JSON.stringify(userData)
       }
     );
 
     if (!response.ok) {
-      const error: ApiError = await response.json();
-      throw new Error(error.detail || 'Registration failed');
+      const text = await response.text();
+      try {
+        const error: ApiError = JSON.parse(text);
+        throw new Error(error.detail || 'Registration failed');
+      } catch (e) {
+        const snippet = text.trim().slice(0, 200);
+        throw new Error(`Server returned non-JSON response (status ${response.status}): ${snippet}`);
+      }
     }
 
     return response.json();

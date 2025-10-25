@@ -3,8 +3,9 @@
  * @description 所有端点路径都是完整的，代理配置在 next.config.ts 中
  */
 export const API_CONFIG = {
-  // BASE_URL留空，因为端点路径已完整
-  BASE_URL: '',
+  // 在开发环境中，可以通过 NEXT_PUBLIC_API_BASE_URL 覆盖后端地址（例如 http://localhost:8000）
+  // 如果未设置则保留为空，让运行时通过 getFullUrl 使用当前站点 origin（并走 Next 的代理/rewrites）
+  BASE_URL: process.env.NEXT_PUBLIC_API_BASE_URL || '',
 
   ENDPOINTS: {
     // 身份认证 (Auth)

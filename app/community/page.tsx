@@ -167,8 +167,8 @@ export default function CommunityPage() {
     return (
       <div className="container mx-auto px-4 py-8 max-w-4xl">
         <Card className="text-center p-8">
-          <h1 className="text-2xl font-bold mb-4">社区功能</h1>
-          <p className="text-gray-600 mb-6">
+          <h1 className="text-2xl font-bold mb-4 text-foreground">社区功能</h1>
+          <p className="text-muted-foreground mb-6">
             登录后即可体验好友聊天、群聊等社区功能
           </p>
           <Link href={`/login?returnUrl=${encodeURIComponent('/community')}`}>
@@ -182,8 +182,8 @@ export default function CommunityPage() {
   return (
     <div className="container mx-auto px-4 py-8 max-w-6xl">
       <div className="mb-6">
-        <h1 className="text-3xl font-bold mb-2">社区</h1>
-        <p className="text-gray-600">与留学生朋友交流，分享经验，建立联系</p>
+        <h1 className="text-3xl font-bold mb-2 text-foreground">社区</h1>
+        <p className="text-muted-foreground">与留学生朋友交流，分享经验，建立联系</p>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
@@ -202,8 +202,8 @@ export default function CommunityPage() {
           </Button>
 
           {/* 搜索框 */}
-          <div className="relative mb-6">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+            <div className="relative mb-6">
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
             <Input
               placeholder="搜索用户或群聊..."
               value={searchQuery}

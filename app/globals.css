@@ -48,12 +48,10 @@
   --background: oklch(0.183 0.006 285.79);
   --foreground: oklch(0.985 0 0);
   --card: oklch(0.37 0.013 285.805);
-  --card-foreground: oklch(0.985 0 0);
+  --card-foreground: oklch(30.726% 0.00286 16.641);
   --popover: oklch(0.274 0.006 286.033);
   --popover-foreground: oklch(0.985 0 0);
-  --primary: oklch(0.6586 0.2302 17.2);
-  --primary-to: oklch(0.6586 0.2302 17.2);
-  --primary-foreground: oklch(0.962 0.018 272.314);
+  /* NOTE: keep --primary and related brand colors unchanged to preserve branding across themes */
   --secondary: oklch(0.274 0.006 286.033);
   --secondary-foreground: oklch(0.985 0 0);
   --muted: oklch(0.21 0.006 285.885);
@@ -62,21 +60,21 @@
   --accent-foreground: oklch(0.985 0 0);
   --destructive: oklch(0.637 0.237 25.331);
   --destructive-foreground: oklch(0.637 0.237 25.331);
-  --border: oklch(0.246 0.009 285.69); /* Custom */
+  --border: oklch(44.991% 0.01786 285.627); /* Custom */
   --input: oklch(0.246 0.009 285.69); /* Custom */
   --ring: oklch(0.442 0.017 285.786);
   --chart-1: oklch(0.585 0.233 277.117);
   --chart-2: oklch(0.6 0.118 184.704);
-  --chart-3: oklch(0.398 0.07 227.392);
+  --chart-3: oklch(61.569% 0.10894 227.89);
   --chart-4: oklch(0.828 0.189 84.429);
   --chart-5: oklch(0.769 0.188 70.08);
-  --sidebar: oklch(0.21 0.006 285.885);
+  --sidebar: oklch(63.28% 0.02684 285.578);
   --sidebar-foreground: oklch(0.967 0.001 286.375);
   --sidebar-primary: oklch(0.673 0.182 276.935);
   --sidebar-primary-foreground: oklch(1 0 0);
-  --sidebar-accent: oklch(0.274 0.006 286.033);
+  --sidebar-accent: oklch(60.422% 0.01959 285.756);
   --sidebar-accent-foreground: oklch(0.967 0.001 286.375);
-  --sidebar-border: oklch(0.274 0.006 286.033);
+  --sidebar-border: oklch(43.417% 0.01309 285.795);
   --sidebar-ring: oklch(0.442 0.017 285.786);
 }
 
@@ -182,6 +180,8 @@
   }
   body {
     @apply bg-background text-foreground;
+    /* smooth theme transitions */
+    transition: background-color 220ms ease, color 220ms ease;
   }
 }
 
@@ -215,7 +215,7 @@
 /* 3D 卡片轮播 */
 .pp-carousel{width:100%;max-width:1200px;height:450px;position:relative;perspective:1000px;margin-top:24px;margin-bottom:56px}
 .pp-track{width:100%;height:100%;display:flex;justify-content:center;align-items:center;position:relative;transform-style:preserve-3d;transition:transform .8s cubic-bezier(.25,.46,.45,.94)}
-.pp-card{position:absolute;width:280px;height:380px;background:#fff;border-radius:20px;overflow:hidden;box-shadow:0 20px 40px rgba(0,0,0,.15);transition:all .8s cubic-bezier(.25,.46,.45,.94);cursor:pointer}
+.pp-card{position:absolute;width:280px;height:380px;background:var(--color-card);border-radius:20px;overflow:hidden;box-shadow:var(--shadow-lg);transition:all .8s cubic-bezier(.25,.46,.45,.94);cursor:pointer}
 .pp-card img{width:100%;height:100%;object-fit:cover;transition:all .8s cubic-bezier(.25,.46,.45,.94)}
 .pp-center{z-index:10;transform:scale(1.1) translateZ(0)}
 .pp-left-2{z-index:1;transform:translateX(-400px) scale(.8) translateZ(-300px);opacity:.7}
@@ -225,8 +225,8 @@
 .pp-left-1 img,.pp-left-2 img,.pp-right-1 img,.pp-right-2 img{filter:grayscale(100%)}
 .pp-hidden{opacity:0;pointer-events:none}
 .pp-info{text-align:center;margin-top:16px;transition:all .5s ease-out}
-.pp-name{color:rgb(8,42,123);font-size:1.5rem;font-weight:700;margin-bottom:6px;display:inline-block}
-.pp-sub{color:#848696;font-size:1rem;font-weight:500;opacity:.85;letter-spacing:.06em;text-transform:uppercase}
+.pp-name{color:var(--color-sidebar-primary);font-size:1.5rem;font-weight:700;margin-bottom:6px;display:inline-block}
+.pp-sub{color:var(--color-muted-foreground);font-size:1rem;font-weight:500;opacity:.85;letter-spacing:.06em;text-transform:uppercase}
 .pp-dots{display:flex;justify-content:center;gap:10px;margin-top:16px}
 .pp-dot{width:10px;height:10px;border-radius:50%;background:rgba(8,42,123,.2);cursor:pointer;transition:all .3s ease}
 .pp-dot.pp-active{background:rgb(8,42,123);transform:scale(1.2)}

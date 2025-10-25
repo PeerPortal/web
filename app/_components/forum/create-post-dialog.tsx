@@ -204,7 +204,7 @@ export default function CreatePostDialog({
             {errors.title && (
               <p className="text-sm text-red-500">{errors.title}</p>
             )}
-            <p className="text-xs text-gray-500">
+              <p className="text-xs text-muted-foreground">
               {formData.title.length}/100 字符
             </p>
           </div>
@@ -215,7 +215,7 @@ export default function CreatePostDialog({
             <select
               value={formData.category}
               onChange={e => handleInputChange('category', e.target.value)}
-              className={`w-full px-3 py-2 border rounded-md bg-white ${
+                className={`w-full px-3 py-2 border rounded-md bg-card ${
                 errors.category ? 'border-red-500' : 'border-gray-300'
               }`}
             >

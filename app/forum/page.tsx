@@ -187,8 +187,8 @@ export default function ForumPage() {
     <div className="container mx-auto px-4 py-8 max-w-7xl">
       {/* 页面标题 */}
       <div className="mb-8">
-        <h1 className="text-3xl font-bold mb-2">留学论坛</h1>
-        <p className="text-gray-600">
+        <h1 className="text-3xl font-bold mb-2 text-foreground">留学论坛</h1>
+        <p className="text-muted-foreground">
           与学长学姐交流申请经验，分享留学生活点滴
         </p>
       </div>
@@ -218,9 +218,9 @@ export default function ForumPage() {
                     : 'hover:bg-gray-50'
                 }`}
               >
-                <div className="flex justify-between items-center">
+                  <div className="flex justify-between items-center">
                   <span className="font-medium">🔥 全部</span>
-                  <span className="text-sm text-gray-500">
+                  <span className="text-sm text-muted-foreground">
                     {categories.reduce((sum, cat) => sum + cat.postCount, 0)}
                   </span>
                 </div>
@@ -240,11 +240,11 @@ export default function ForumPage() {
                     <span className="font-medium">
                       {category.icon} {category.name}
                     </span>
-                    <span className="text-sm text-gray-500">
+                    <span className="text-sm text-muted-foreground">
                       {category.postCount}
                     </span>
                   </div>
-                  <p className="text-xs text-gray-500">
+                  <p className="text-xs text-muted-foreground">
                     {category.description}
                   </p>
                 </button>
@@ -287,7 +287,7 @@ export default function ForumPage() {
           {/* 搜索和筛选 */}
           <div className="flex flex-col sm:flex-row gap-4 mb-6">
             <div className="relative flex-1">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
               <Input
                 placeholder="搜索帖子、标签..."
                 value={searchQuery}
@@ -304,7 +304,7 @@ export default function ForumPage() {
                 onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
                   setSortBy(e.target.value as 'latest' | 'hot' | 'replies')
                 }
-                className="px-3 py-2 border rounded-md bg-white"
+                className="px-3 py-2 border rounded-md bg-card text-foreground"
               >
                 <option value="latest">最新回复</option>
                 <option value="hot">最热门</option>

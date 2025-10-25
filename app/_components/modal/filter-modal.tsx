@@ -94,7 +94,7 @@ export default function FilterModal({
               <div className="flex flex-col gap-6">
                 {/* Major Filter */}
                 <div>
-                  <h3 className="font-semibold text-gray-900 mb-4 text-base">
+                  <h3 className="font-semibold text-foreground mb-4 text-base">
                     专业领域
                   </h3>
                   <MultipleSelector
@@ -113,7 +113,7 @@ export default function FilterModal({
 
                 {/* University Filter */}
                 <div>
-                  <h3 className="font-semibold text-gray-900 mb-4 text-base">
+                  <h3 className="font-semibold text-foreground mb-4 text-base">
                     毕业院校
                   </h3>
                   <MultipleSelector
@@ -134,7 +134,7 @@ export default function FilterModal({
 
                 {/* Language Filter */}
                 <div>
-                  <h3 className="font-semibold text-gray-900 mb-4 text-base">
+                  <h3 className="font-semibold text-foreground mb-4 text-base">
                     授课语言
                   </h3>
                   <MultipleSelector
@@ -153,7 +153,7 @@ export default function FilterModal({
 
                 {/* Price Filter */}
                 <div>
-                  <h3 className="font-semibold text-gray-900 mb-4 text-base">
+                  <h3 className="font-semibold text-foreground mb-4 text-base">
                     价格范围 ($/小时)
                   </h3>
                   <div className="space-y-4">
@@ -175,7 +175,7 @@ export default function FilterModal({
                         }}
                       />
                     </div>
-                    <div className="flex justify-between text-sm text-gray-600 font-medium">
+                    <div className="flex justify-between text-sm text-muted-foreground font-medium">
                       <span>$0</span>
                       <span>${priceRange[1]}</span>
                     </div>
